@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Search</title>
+    <link rel="stylesheet" href="/static/core/site.css" />
+  </head>
+  <body>
+    <main class="container">
+      <div class="topbar">
+        <div class="lang">
+          <a class="link" href="/set-lang/en/?next={{ request.get_full_path|urlencode }}">English</a>
+          <span> | </span>
+          <a class="link" href="/set-lang/ta/?next={{ request.get_full_path|urlencode }}">தமிழ்</a>
+        </div>
+      </div>
+      {% if data_vintage_label %}
+      <div class="banner">{{ data_vintage_label }}</div>
+      {% endif %}
+      <a class="link" href="/">← {% if current_language == "ta" %}முகப்பு{% else %}Back to home{% endif %}</a>
+      <h1>{% if current_language == "ta" %}தேடல்{% else %}Search{% endif %}</h1>
+
+      <section class="card">
+        <form class="search" action="/search/" method="get">
+          <input
+            type="text"
+            name="q"
+            value="{{ query }}"
+            placeholder="{% if current_language == 'ta' %}தொகுதி/வேட்பாளர்/கட்சி{% else %}Constituency / Candidate / Party{% endif %}"
+          />
+          <button type="submit" class="button">
+            {% if current_language == "ta" %}தேடு{% else %}Search{% endif %}
+          </button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>{% if current_language == "ta" %}தொகுதிகள்{% else %}Constituencies{% endif %}</h2>
+        <ul class="list">
+          {% for constituency in constituencies %}
+          <li>
+            <a href="/constituency/{{ constituency.id }}/">
+              {% if current_language == "ta" and constituency.name_ta %}{{ constituency.name_ta }}{% else %}{{ constituency.name }}{% endif %}
+            </a>
+          </li>
+          {% empty %}
+          <li>{% if query %}{% if current_language == "ta" %}முடிவு இல்லை.{% else %}No results.{% endif %}{% endif %}</li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>{% if current_language == "ta" %}வேட்பாளர்கள்{% else %}Candidates{% endif %}</h2>
+        <ul class="list">
+          {% for candidate in candidates %}
+          <li>
+            <a href="/candidate/{{ candidate.id }}/">
+              {% if current_language == "ta" and candidate.name_ta %}{{ candidate.name_ta }}{% else %}{{ candidate.name }}{% endif %}
+            </a>
+            <span class="muted">
+              • {% if current_language == "ta" and candidate.constituency.name_ta %}{{ candidate.constituency.name_ta }}{% else %}{{ candidate.constituency.name }}{% endif %}
+            </span>
+          </li>
+          {% empty %}
+          <li>{% if query %}{% if current_language == "ta" %}முடிவு இல்லை.{% else %}No results.{% endif %}{% endif %}</li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>{% if current_language == "ta" %}கட்சிகள்{% else %}Parties{% endif %}</h2>
+        <ul class="list">
+          {% for party in parties %}
+          <li>
+            {% if current_language == "ta" and party.name_ta %}{{ party.name_ta }}{% else %}{{ party.name }}{% endif %}
+          </li>
+          {% empty %}
+          <li>{% if query %}{% if current_language == "ta" %}முடிவு இல்லை.{% else %}No results.{% endif %}{% endif %}</li>
+          {% endfor %}
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load indian_numbers %}
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ constituency.name }} - Candidates</title>
+    <link rel="stylesheet" href="/static/core/site.css" />
+  </head>
+  <body>
+    <main class="container">
+      <div class="topbar">
+        <div class="lang">
+          <a class="link" href="/set-lang/en/?next={{ request.get_full_path|urlencode }}">English</a>
+          <span> | </span>
+          <a class="link" href="/set-lang/ta/?next={{ request.get_full_path|urlencode }}">தமிழ்</a>
+        </div>
+      </div>
+      {% if data_vintage_label %}
+      <div class="banner">{{ data_vintage_label }}</div>
+      {% endif %}
+      <a class="link" href="/map/">← {% if current_language == "ta" %}வரைபடம்{% else %}Back to map{% endif %}</a>
+      <h1>
+        {% if current_language == "ta" and constituency.name_ta %}{{ constituency.name_ta }}{% else %}{{ constituency.name }}{% endif %}
+      </h1>
+      <p class="muted">
+        {% if current_language == "ta" and constituency.district_ta %}{{ constituency.district_ta }}{% else %}{{ district_name }}{% endif %}
+      </p>
+
+      <section class="card">
+        <h2>{% if current_language == "ta" %}சுருக்கம்{% else %}Summary{% endif %}</h2>
+        <div class="stat-grid">
+          {% for stat in summary_cards %}
+          <div class="stat-card">
+            <div class="stat-value">{{ stat.value }}</div>
+            <div class="stat-label">{{ stat.label }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>{% if current_language == "ta" %}வேட்பாளர்கள்{% else %}Candidates{% endif %}</h2>
+        <div class="candidate-grid">
+          {% for candidate in candidate_cards %}
+          <div class="candidate-card">
+            <div class="candidate-header">
+              <div>
+                <div class="candidate-name">{{ candidate.name }}</div>
+                <div class="muted">{{ candidate.party }}</div>
+              </div>
+              {% if candidate.sitting %}
+                <span class="tag">{% if current_language == "ta" %}தற்போதைய எம்.எல்.ஏ{% else %}Sitting MLA{% endif %}</span>
+              {% endif %}
+            </div>
+            <div class="candidate-meta">
+              {% if candidate.education %}<span>{% if current_language == "ta" %}கல்வி{% else %}Education{% endif %}: {{ candidate.education }}</span>{% endif %}
+              {% if candidate.age %}<span>{% if current_language == "ta" %}வயது{% else %}Age{% endif %}: {{ candidate.age|indian }}</span>{% endif %}
+              {% if candidate.criminal_cases is not None %}<span>{% if current_language == "ta" %}வழக்குகள்{% else %}Cases{% endif %}: {{ candidate.criminal_cases|indian }}</span>{% endif %}
+              <span>{% if current_language == "ta" %}சொத்துகள்{% else %}Assets{% endif %}: {% if candidate.assets %}₹ {{ candidate.assets|indian }}{% else %}N/A{% endif %}</span>
+              <span>{% if current_language == "ta" %}பாக்கிகள்{% else %}Liabilities{% endif %}: {% if candidate.liabilities %}₹ {{ candidate.liabilities|indian }}{% else %}N/A{% endif %}</span>
+            </div>
+          </div>
+          {% empty %}
+          <p>{% if current_language == "ta" %}வேட்பாளர்கள் இல்லை.{% else %}No candidates loaded yet.{% endif %}</p>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+[
+  {
+    "party": "Example Party",
+    "constituency": "Example Constituency",
+    "candidate": "",
+    "summary": "Short English summary of promises for the constituency.",
+    "summary_ta": "",
+    "document_url": "https://example.com/manifesto.pdf",
+    "source_title": "Example Party 2021 Manifesto",
+    "source_url": "https://example.com/manifesto.pdf",
+    "source_type": "official",
+    "published_at": "2021-03-01"
+  }
+]

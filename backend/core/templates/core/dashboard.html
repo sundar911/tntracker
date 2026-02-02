@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load indian_numbers %}
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Data Quality Dashboard</title>
+    <link rel="stylesheet" href="/static/core/site.css" />
+  </head>
+  <body>
+    <main class="container">
+      <div class="topbar">
+        <div class="lang">
+          <a class="link" href="/set-lang/en/?next={{ request.get_full_path|urlencode }}">English</a>
+          <span> | </span>
+          <a class="link" href="/set-lang/ta/?next={{ request.get_full_path|urlencode }}">தமிழ்</a>
+        </div>
+      </div>
+      {% if data_vintage_label %}
+      <div class="banner">{{ data_vintage_label }}</div>
+      {% endif %}
+      <a class="link" href="/">← {% if current_language == "ta" %}முகப்பு{% else %}Back to home{% endif %}</a>
+      <h1>{% if current_language == "ta" %}தரத் தரவுக் காட்சிப்பலகை{% else %}Data Quality Dashboard{% endif %}</h1>
+
+      <section class="card">
+        <h2>{% if current_language == "ta" %}அடிப்படை கணக்குகள்{% else %}Overview{% endif %}</h2>
+        <dl class="grid">
+          <div>
+            <dt>{% if current_language == "ta" %}மொத்த தொகுதிகள்{% else %}Total constituencies{% endif %}</dt>
+            <dd>{{ total_constituencies|indian }}</dd>
+          </div>
+          <div>
+            <dt>{% if current_language == "ta" %}மொத்த வேட்பாளர்கள்{% else %}Total candidates{% endif %}</dt>
+            <dd>{{ total_candidates|indian }}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="card">
+        <h2>{% if current_language == "ta" %}பற்றாக்குறை பகுதிகள்{% else %}Data gaps{% endif %}</h2>
+        <ul class="list">
+          <li>
+            {% if current_language == "ta" %}வேட்பாளர்கள் இல்லாத தொகுதிகள்{% else %}Constituencies missing candidates{% endif %}:
+            <strong>{{ constituencies_missing_candidates|indian }}</strong>
+          </li>
+          <li>
+            {% if current_language == "ta" %}சத்தியப்பத்திரம் இல்லாத வேட்பாளர்கள்{% else %}Candidates missing affidavits{% endif %}:
+            <strong>{{ candidates_missing_affidavit|indian }}</strong>
+          </li>
+          <li>
+            {% if current_language == "ta" %}சட்ட வரலாறு இல்லை என்ற வேட்பாளர்கள்{% else %}Candidates missing legal history{% endif %}:
+            <strong>{{ candidates_missing_legal|indian }}</strong>
+          </li>
+          <li>
+            {% if current_language == "ta" %}அறிக்கைகள் இல்லாத தொகுதிகள்{% else %}Constituencies missing manifestos{% endif %}:
+            <strong>{{ constituencies_missing_manifestos|indian }}</strong>
+          </li>
+          <li>
+            {% if current_language == "ta" %}அறிக்கைகள் இல்லாத கட்சிகள்{% else %}Parties missing manifestos{% endif %}:
+            <strong>{{ parties_missing_manifestos|indian }}</strong>
+          </li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

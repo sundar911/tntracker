@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load indian_numbers %}
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Party Details</title>
+    <link rel="stylesheet" href="/static/core/site.css" />
+  </head>
+  <body>
+    <main class="container">
+      <div class="topbar">
+        <div class="lang">
+          <a class="link" href="/set-lang/en/?next={{ request.get_full_path|urlencode }}">English</a>
+          <span> | </span>
+          <a class="link" href="/set-lang/ta/?next={{ request.get_full_path|urlencode }}">தமிழ்</a>
+        </div>
+      </div>
+      {% if data_vintage_label %}
+      <div class="banner">{{ data_vintage_label }}</div>
+      {% endif %}
+      <a class="link" href="/party-dashboard/?year={{ year }}">← {% if current_language == "ta" %}கட்சி காட்சிப்பலகை{% else %}Party Dashboard{% endif %}</a>
+      <h1>{{ party_name }}</h1>
+      <p class="muted">
+        {% if current_language == "ta" %}
+          {{ year }} ஆண்டுக்கான வேட்பாளர் பட்டியல் ({{ row_count|indian }} பதிவுகள்).
+        {% else %}
+          Candidate rows for {{ year }} ({{ row_count|indian }} rows).
+        {% endif %}
+      </p>
+
+      <section class="card">
+        <h2>{% if current_language == "ta" %}வடிகட்டிகள்{% else %}Filters{% endif %}</h2>
+        <form class="filters" method="get">
+          <label>
+            {% if current_language == "ta" %}ஆண்டு{% else %}Year{% endif %}
+            <select name="year">
+              <option value="2021" {% if year == "2021" %}selected{% endif %}>2021</option>
+              <option value="2026" {% if year == "2026" %}selected{% endif %}>2026</option>
+            </select>
+          </label>
+          <label>
+            {% if current_language == "ta" %}குற்ற வழக்குகள்{% else %}Criminal cases{% endif %}
+            <div class="range-wrap">
+              <div class="range-pair">
+                <input
+                  type="range"
+                  name="min_cases"
+                  min="{{ cases_bounds.0 }}"
+                  max="{{ cases_bounds.1 }}"
+                  value="{{ min_cases }}"
+                  step="1"
+                />
+                <input
+                  type="range"
+                  name="max_cases"
+                  min="{{ cases_bounds.0 }}"
+                  max="{{ cases_bounds.1 }}"
+                  value="{{ max_cases|default:cases_bounds.1 }}"
+                  step="1"
+                />
+              </div>
+              <div class="range-values">
+                <output class="min-value">{{ min_cases|indian }}</output>
+                <span>–</span>
+                <output class="max-value">{{ max_cases|default:cases_bounds.1|indian }}</output>
+              </div>
+            </div>
+          </label>
+          <label>
+            {% if current_language == "ta" %}வயது{% else %}Age{% endif %}
+            <div class="range-wrap">
+              <div class="range-pair">
+                <input
+                  type="range"
+                  name="min_age"
+                  min="{{ age_bounds.0 }}"
+                  max="{{ age_bounds.1 }}"
+                  value="{{ min_age }}"
+                  step="1"
+                />
+                <input
+                  type="range"
+                  name="max_age"
+                  min="{{ age_bounds.0 }}"
+                  max="{{ age_bounds.1 }}"
+                  value="{{ max_age }}"
+                  step="1"
+                />
+              </div>
+              <div class="range-values">
+                <output class="min-value">{{ min_age|indian }}</output>
+                <span>–</span>
+                <output class="max-value">{{ max_age|indian }}</output>
+              </div>
+            </div>
+          </label>
+          <label>
+            {% if current_language == "ta" %}சொத்துகள் (₹){% else %}Assets (₹){% endif %}
+            <div class="range-wrap">
+              <div class="range-pair">
+                <input
+                  type="range"
+                  name="min_assets"
+                  min="{{ assets_bounds.0 }}"
+                  max="{{ assets_bounds.1 }}"
+                  value="{{ min_assets }}"
+                  step="1"
+                />
+                <input
+                  type="range"
+                  name="max_assets"
+                  min="{{ assets_bounds.0 }}"
+                  max="{{ assets_bounds.1 }}"
+                  value="{{ max_assets }}"
+                  step="1"
+                />
+              </div>
+              <div class="range-values">
+                <output class="min-value">{{ min_assets|indian }}</output>
+                <span>–</span>
+                <output class="max-value">{{ max_assets|indian }}</output>
+              </div>
+            </div>
+          </label>
+          <label>
+            {% if current_language == "ta" %}பாக்கிகள் (₹){% else %}Liabilities (₹){% endif %}
+            <div class="range-wrap">
+              <div class="range-pair">
+                <input
+                  type="range"
+                  name="min_liabilities"
+                  min="{{ liabilities_bounds.0 }}"
+                  max="{{ liabilities_bounds.1 }}"
+                  value="{{ min_liabilities }}"
+                  step="1"
+                />
+                <input
+                  type="range"
+                  name="max_liabilities"
+                  min="{{ liabilities_bounds.0 }}"
+                  max="{{ liabilities_bounds.1 }}"
+                  value="{{ max_liabilities }}"
+                  step="1"
+                />
+              </div>
+              <div class="range-values">
+                <output class="min-value">{{ min_liabilities|indian }}</output>
+                <span>–</span>
+                <output class="max-value">{{ max_liabilities|indian }}</output>
+              </div>
+            </div>
+          </label>
+          <label>
+            {% if current_language == "ta" %}தற்போதைய எம்.எல்.ஏ{% else %}Sitting MLA{% endif %}
+            <select name="sitting_mla">
+              <option value="" {% if not sitting_mla %}selected{% endif %}>
+                {% if current_language == "ta" %}எல்லாம்{% else %}All{% endif %}
+              </option>
+              <option value="1" {% if sitting_mla == "1" %}selected{% endif %}>
+                {% if current_language == "ta" %}ஆம்{% else %}Only sitting{% endif %}
+              </option>
+              <option value="0" {% if sitting_mla == "0" %}selected{% endif %}>
+                {% if current_language == "ta" %}இல்லை{% else %}Exclude sitting{% endif %}
+              </option>
+            </select>
+          </label>
+          <label>
+            {% if current_language == "ta" %}மாவட்டம்{% else %}District{% endif %}
+            <select name="district">
+              <option value="" {% if not selected_district %}selected{% endif %}>
+                {% if current_language == "ta" %}அனைத்தும்{% else %}All districts{% endif %}
+              </option>
+              {% for district in districts %}
+                <option value="{{ district }}" {% if district == selected_district %}selected{% endif %}>{{ district }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <label>
+            {% if current_language == "ta" %}தொகுதி{% else %}Constituency{% endif %}
+            <select name="constituency">
+              <option value="" {% if not selected_constituency %}selected{% endif %}>
+                {% if current_language == "ta" %}அனைத்தும்{% else %}All constituencies{% endif %}
+              </option>
+              {% for constituency in constituencies %}
+                <option value="{{ constituency }}" {% if constituency == selected_constituency %}selected{% endif %}>{{ constituency }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <button type="submit" class="button">
+            {% if current_language == "ta" %}பயன் காட்ட{% else %}Apply{% endif %}
+          </button>
+        </form>
+      </section>
+
+      <section class="card">
+        {% if rows %}
+        <table class="table">
+          <thead>
+            <tr>
+              {% for column in columns %}
+              <th>{{ column.label }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+            <tr>
+              {% for column in columns %}
+              {% with cell=row|get_item:column.key %}
+              <td>
+                {% if column.key == myneta_key and cell %}
+                  <a class="link" href="{{ cell }}" target="_blank" rel="noopener">Link</a>
+                {% elif column.is_currency %}
+                  {% if cell %}
+                    ₹ {{ cell|indian }}
+                  {% else %}
+                    —
+                  {% endif %}
+                {% elif column.is_number %}
+                  {% if cell %}
+                    {{ cell|indian }}
+                  {% else %}
+                    —
+                  {% endif %}
+                {% else %}
+                  {{ cell }}
+                {% endif %}
+              </td>
+              {% endwith %}
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p class="muted">
+          {% if current_language == "ta" %}
+            தரவு கிடைக்கவில்லை.
+          {% else %}
+            No data found.
+          {% endif %}
+        </p>
+        {% endif %}
+      </section>
+    </main>
+    <script>
+      document.querySelectorAll(".range-wrap").forEach((wrap) => {
+        const [minInput, maxInput] = wrap.querySelectorAll("input[type='range']");
+        const minOutput = wrap.querySelector(".min-value");
+        const maxOutput = wrap.querySelector(".max-value");
+
+        const format = (value) => Number(value).toLocaleString("en-IN");
+        const sync = () => {
+          const minValue = Math.min(Number(minInput.value), Number(maxInput.value));
+          const maxValue = Math.max(Number(minInput.value), Number(maxInput.value));
+          minInput.value = minValue;
+          maxInput.value = maxValue;
+          minOutput.textContent = format(minValue);
+          maxOutput.textContent = format(maxValue);
+        };
+
+        minInput.addEventListener("input", sync);
+        maxInput.addEventListener("input", sync);
+        sync();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load indian_numbers %}
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ candidate.name }} - Profile</title>
+    <link rel="stylesheet" href="/static/core/site.css" />
+  </head>
+  <body>
+    <main class="container">
+      <div class="topbar">
+        <div class="lang">
+          <a class="link" href="/set-lang/en/?next={{ request.get_full_path|urlencode }}">English</a>
+          <span> | </span>
+          <a class="link" href="/set-lang/ta/?next={{ request.get_full_path|urlencode }}">தமிழ்</a>
+        </div>
+      </div>
+      {% if data_vintage_label %}
+      <div class="banner">{{ data_vintage_label }}</div>
+      {% endif %}
+      <a class="link" href="/constituency/{{ candidate.constituency.id }}/">
+        ← {% if current_language == "ta" %}தொகுதி{% else %}Back to constituency{% endif %}
+      </a>
+      <h1>
+        {% if current_language == "ta" and candidate.name_ta %}{{ candidate.name_ta }}{% else %}{{ candidate.name }}{% endif %}
+      </h1>
+      <p class="muted">
+        {% if current_language == "ta" and candidate.party.name_ta %}{{ candidate.party.name_ta }}{% else %}{{ candidate.party }}{% endif %}
+        •
+        {% if current_language == "ta" and candidate.constituency.name_ta %}{{ candidate.constituency.name_ta }}{% else %}{{ candidate.constituency.name }}{% endif %}
+      </p>
+      {% if missing_affidavit or missing_legal or missing_results %}
+        <div class="banner">
+          {% if current_language == "ta" %}
+            இந்த வேட்பாளருக்கான சில தரவு கிடைக்கவில்லை.
+          {% else %}
+            Some candidate data is missing.
+          {% endif %}
+          <ul class="list">
+            {% if missing_results %}
+              <li>{% if current_language == "ta" %}2021 வாக்கு முடிவு இல்லை{% else %}2021 results missing{% endif %}</li>
+            {% endif %}
+            {% if missing_affidavit %}
+              <li>{% if current_language == "ta" %}சத்தியப்பத்திரத் தரவு இல்லை{% else %}Affidavit data missing{% endif %}</li>
+            {% endif %}
+            {% if missing_legal %}
+              <li>{% if current_language == "ta" %}சட்ட வரலாறு இல்லை{% else %}Legal history missing{% endif %}</li>
+            {% endif %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <section class="card">
+        <h2>{% if current_language == "ta" %}சுயவிவரம்{% else %}Profile{% endif %}</h2>
+        <dl class="grid">
+          <div>
+            <dt>{% if current_language == "ta" %}நிலை{% else %}Status{% endif %}</dt>
+            <dd>{{ candidate.status }}</dd>
+          </div>
+          <div>
+            <dt>{% if current_language == "ta" %}வயது{% else %}Age{% endif %}</dt>
+            <dd>{% if candidate.age %}{{ candidate.age|indian }}{% else %}-{% endif %}</dd>
+          </div>
+          <div>
+            <dt>{% if current_language == "ta" %}பாலினம்{% else %}Gender{% endif %}</dt>
+            <dd>{{ candidate.gender|default:"-" }}</dd>
+          </div>
+          <div>
+            <dt>{% if current_language == "ta" %}கல்வி{% else %}Education{% endif %}</dt>
+            <dd>
+              {% if current_language == "ta" and candidate.education_ta %}
+                {{ candidate.education_ta }}
+              {% else %}
+                {{ candidate.education|default:"-" }}
+              {% endif %}
+            </dd>
+          </div>
+          <div>
+            <dt>{% if current_language == "ta" %}தொழில்{% else %}Profession{% endif %}</dt>
+            <dd>
+              {% if current_language == "ta" and candidate.profession_ta %}
+                {{ candidate.profession_ta }}
+              {% else %}
+                {{ candidate.profession|default:"-" }}
+              {% endif %}
+            </dd>
+          </div>
+          <div>
+            <dt>{% if current_language == "ta" %}வாக்குகள் (2021){% else %}Votes (2021){% endif %}</dt>
+            <dd>
+              {% if candidate.results_2021 %}
+                {% if candidate.results_2021.0.votes %}
+                  {{ candidate.results_2021.0.votes|indian }}
+                {% else %}
+                  -
+                {% endif %}
+              {% else %}
+                -
+              {% endif %}
+            </dd>
+          </div>
+          <div>
+            <dt>{% if current_language == "ta" %}வாக்கு பகிர்வு (2021){% else %}Vote share (2021){% endif %}</dt>
+            <dd>
+              {% if candidate.results_2021 %}
+                {% if candidate.results_2021.0.vote_share %}
+                  {{ candidate.results_2021.0.vote_share|indian }}%
+                {% else %}
+                  -
+                {% endif %}
+              {% else %}
+                -
+              {% endif %}
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="card">
+        <h2>{% if current_language == "ta" %}சத்தியப்பத்திர சுருக்கம்{% else %}Affidavit Summary{% endif %}</h2>
+        <ul class="list">
+          {% for affidavit in candidate.affidavits.all %}
+          <li>
+            <strong>{% if current_language == "ta" %}குற்ற வழக்குகள்{% else %}Criminal cases{% endif %}:</strong>
+            {% if affidavit.criminal_cases_count is not None %}
+              {{ affidavit.criminal_cases_count|indian }}
+            {% else %}
+              -
+            {% endif %}
+            • <strong>{% if current_language == "ta" %}கடுமையானவை{% else %}Serious{% endif %}:</strong>
+            {% if affidavit.serious_criminal_cases_count is not None %}
+              {{ affidavit.serious_criminal_cases_count|indian }}
+            {% else %}
+              -
+            {% endif %}
+            • <strong>{% if current_language == "ta" %}சொத்துகள்{% else %}Assets{% endif %}:</strong>
+            {% if affidavit.assets_total %}
+              ₹ {{ affidavit.assets_total|indian }}
+            {% else %}
+              -
+            {% endif %}
+            • <strong>{% if current_language == "ta" %}பாக்கிகள்{% else %}Liabilities{% endif %}:</strong>
+            {% if affidavit.liabilities_total %}
+              ₹ {{ affidavit.liabilities_total|indian }}
+            {% else %}
+              -
+            {% endif %}
+          </li>
+          {% empty %}
+          <li>{% if current_language == "ta" %}சத்தியப்பத்திரத் தகவல் இல்லை.{% else %}No affidavit data loaded yet.{% endif %}</li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>{% if current_language == "ta" %}சட்ட வரலாறு{% else %}Legal History{% endif %}</h2>
+        <ul class="list">
+          {% for case in candidate.legal_cases.all %}
+          <li>
+            <strong>{{ case.case_number|default:"Case" }}</strong>
+            <span class="muted">
+              {% if current_language == "ta" and case.court_ta %}{{ case.court_ta }}{% else %}{{ case.court }}{% endif %}
+              •
+              {% if current_language == "ta" and case.status_ta %}{{ case.status_ta }}{% else %}{{ case.status }}{% endif %}
+            </span>
+            <p>
+              {% if current_language == "ta" and case.description_ta %}
+                {{ case.description_ta }}
+              {% else %}
+                {{ case.description|default:"Details pending." }}
+              {% endif %}
+            </p>
+          </li>
+          {% empty %}
+          <li>{% if current_language == "ta" %}சட்ட வரலாறு இல்லை.{% else %}No legal history recorded.{% endif %}</li>
+          {% endfor %}
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tamil Nadu Assembly Elections 2026</title>
+    <link rel="stylesheet" href="/static/core/site.css" />
+  </head>
+  <body class="home">
+    <header class="site-header">
+      <div class="container nav">
+        <div class="brand">
+          <span class="brand-mark">TN</span>
+          <div class="brand-text">
+            <div class="brand-title">
+              {% if current_language == "ta" %}தமிழ்நாடு தேர்தல் தரவகம்{% else %}Tamil Nadu Election Hub{% endif %}
+            </div>
+            <div class="brand-subtitle">
+              {% if current_language == "ta" %}2026 சட்டமன்றத் தேர்தல்{% else %}Assembly Elections 2026{% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="nav-links">
+          <a class="nav-link" href="/map/">{% if current_language == "ta" %}வரைபடம்{% else %}Maps{% endif %}</a>
+          <a class="nav-link" href="/party-dashboard/">{% if current_language == "ta" %}வேட்பாளர்களை அறியவும்{% else %}Know your Candidates{% endif %}</a>
+        </div>
+        <div class="nav-actions">
+          <div class="lang-switch">
+            <a href="/set-lang/en/?next={{ request.get_full_path|urlencode }}">English</a>
+            <span>•</span>
+            <a href="/set-lang/ta/?next={{ request.get_full_path|urlencode }}">தமிழ்</a>
+          </div>
+          <a class="button small" href="/party-dashboard/">
+            {% if current_language == "ta" %}தொடங்கு{% else %}Get Started{% endif %}
+          </a>
+        </div>
+      </div>
+      {% if data_vintage_label %}
+      <div class="container">
+        <div class="notice">{{ data_vintage_label }}</div>
+      </div>
+      {% endif %}
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow">
+              {% if current_language == "ta" %}தமிழ்நாடு முழுவதும் ஒரே இடத்தில்{% else %}Made for every constituency{% endif %}
+            </div>
+            <h1>
+              {% if current_language == "ta" %}
+                உங்கள் தொகுதியைத் தெரிந்துகொள்ளுங்கள்.
+              {% else %}
+                Know your constituency, clearly and confidently.
+              {% endif %}
+            </h1>
+            <p class="hero-subtitle">
+              {% if current_language == "ta" %}
+                வேட்பாளர்கள், அறிக்கைகள், தேர்தல் வரலாறு — அனைத்தும் ஒரே இடத்தில், எளிமையாக.
+              {% else %}
+                Candidates, manifestos, and election history curated for Tamil Nadu, built for quick understanding.
+              {% endif %}
+            </p>
+            <div class="cta">
+              <a class="button" href="/map/">
+                {% if current_language == "ta" %}தொகுதி வரைபடம்{% else %}Explore Maps{% endif %}
+              </a>
+              <a class="button secondary" href="/party-dashboard/">
+                {% if current_language == "ta" %}வேட்பாளர்களை அறியவும்{% else %}Know your Candidates{% endif %}
+              </a>
+            </div>
+            <div class="hero-stats">
+              <div class="stat-tile">
+                <div class="stat-value">234</div>
+                <div class="stat-label">{% if current_language == "ta" %}சட்டமன்ற தொகுதிகள்{% else %}Assembly Constituencies{% endif %}</div>
+              </div>
+              <div class="stat-tile">
+                <div class="stat-value">38</div>
+                <div class="stat-label">{% if current_language == "ta" %}மாவட்டங்கள்{% else %}Districts{% endif %}</div>
+              </div>
+              <div class="stat-tile">
+                <div class="stat-value">2</div>
+                <div class="stat-label">{% if current_language == "ta" %}மொழிகள்{% else %}Languages{% endif %}</div>
+              </div>
+              <div class="stat-tile">
+                <div class="stat-value">2026</div>
+                <div class="stat-label">{% if current_language == "ta" %}தேர்தல் வருடம்{% else %}Election Year{% endif %}</div>
+              </div>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="visual-card">
+              <div class="visual-header">
+                {% if current_language == "ta" %}உங்கள் தொகுதியைத் தேடுங்கள்{% else %}Find your constituency{% endif %}
+              </div>
+              <div class="visual-map"></div>
+              <div class="visual-list">
+                <div class="visual-item">
+                  <span class="dot dot-saffron"></span>
+                  {% if current_language == "ta" %}அருகிலுள்ள தொகுதிகள்{% else %}Nearby constituencies{% endif %}
+                </div>
+                <div class="visual-item">
+                  <span class="dot dot-leaf"></span>
+                  {% if current_language == "ta" %}கட்சி நிலவரம்{% else %}Party landscape{% endif %}
+                </div>
+                <div class="visual-item">
+                  <span class="dot dot-maroon"></span>
+                  {% if current_language == "ta" %}வேட்பாளர் விவரங்கள்{% else %}Candidate details{% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="visual-card compact">
+              <div class="visual-header">
+                {% if current_language == "ta" %}வேட்பாளர் விவரங்கள்{% else %}Candidate insights{% endif %}
+              </div>
+              <p>
+                {% if current_language == "ta" %}
+                  கட்சி நிலவரம், சொத்து விவரம், வயது, வழக்குகள் அனைத்தும் ஒரே இடத்தில்.
+                {% else %}
+                  Party landscape, assets, age, and case history — all in one place.
+                {% endif %}
+              </p>
+              <a class="link" href="/party-dashboard/">{% if current_language == "ta" %}வேட்பாளர்கள் பார்க்கவும்{% else %}View candidates{% endif %}</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="feature-section">
+        <div class="container">
+          <div class="section-title">
+            <h2>{% if current_language == "ta" %}விரைவு வழிகள்{% else %}Quick paths{% endif %}</h2>
+            <p class="muted">
+              {% if current_language == "ta" %}
+                இரண்டு முக்கிய வழிகள் — வரைபடம் மற்றும் வேட்பாளர் தகவல்.
+              {% else %}
+                Two clear paths: maps and candidate knowledge.
+              {% endif %}
+            </p>
+          </div>
+          <div class="feature-grid">
+            <a class="feature-card feature-map" href="/map/">
+              <div class="feature-icon">🗺️</div>
+              <div class="feature-title">{% if current_language == "ta" %}வரைபடங்கள்{% else %}Maps{% endif %}</div>
+              <p class="feature-body">{% if current_language == "ta" %}அந்த பகுதியின் எல்லைகள் மற்றும் வரலாறு பார்க்கவும்.{% else %}Explore boundaries and local context quickly.{% endif %}</p>
+            </a>
+            <a class="feature-card feature-candidates" href="/party-dashboard/">
+              <div class="feature-icon">🗳️</div>
+              <div class="feature-title">{% if current_language == "ta" %}வேட்பாளர்களை அறியவும்{% else %}Know your Candidates{% endif %}</div>
+              <p class="feature-body">{% if current_language == "ta" %}கட்சி நிலவரம், வயது, சொத்து விவரங்கள் பார்க்கவும்.{% else %}View party trends, age, and asset details.{% endif %}</p>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="mission">
+        <div class="container mission-grid">
+          <div>
+            <h2>{% if current_language == "ta" %}தமிழ்நாட்டுக்காக வடிவமைக்கப்பட்டது{% else %}Designed for Tamil Nadu{% endif %}</h2>
+            <p>
+              {% if current_language == "ta" %}
+                இரு மொழி ஆதரவு, தெளிவான வரைபடம், மற்றும் விரைவான வழிசெலுத்தல் — அனைவருக்கும் எளிதாக.
+              {% else %}
+                Bilingual, mobile-first, and simple to navigate — so every voter can get to the facts fast.
+              {% endif %}
+            </p>
+            <div class="mission-tags">
+              <span>{% if current_language == "ta" %}தமிழ் + English{% else %}Tamil + English{% endif %}</span>
+              <span>{% if current_language == "ta" %}மொபைல் முதல் வடிவமைப்பு{% else %}Mobile-first design{% endif %}</span>
+              <span>{% if current_language == "ta" %}துல்லியமான தரவு{% else %}Verified data{% endif %}</span>
+            </div>
+          </div>
+          <div class="mission-card">
+            <div class="mission-title">{% if current_language == "ta" %}ஒரே நோக்கம்{% else %}Our purpose{% endif %}</div>
+            <div class="mission-highlight">
+              {% if current_language == "ta" %}
+                தமிழ்நாட்டில் உள்ள அனைவருக்கும் தேர்தல் தரவைப் பார்ப்பதை மிக எளிதாக்குவது.
+              {% else %}
+                Make election data accessible to everyone in Tamil Nadu.
+              {% endif %}
+            </div>
+            <div class="mission-cta">
+              <a class="button" href="/map/">
+                {% if current_language == "ta" %}உங்கள் தொகுதியை கண்டறியவும்{% else %}Find your constituency{% endif %}
+              </a>
+              <a class="button ghost" href="/party-dashboard/">
+                {% if current_language == "ta" %}கட்சி நிலவரம்{% else %}Explore parties{% endif %}
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
