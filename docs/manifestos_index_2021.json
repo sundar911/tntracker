@@ -1,0 +1,76 @@
+[
+  {
+    "year": 2021,
+    "party": "Example Party",
+    "coalition": "",
+    "coalition_members": [],
+    "summary": "Short English summary of the party's 2021 manifesto.",
+    "summary_ta": "2021 கட்சியின் அறிக்கையின் குறும் சுருக்கம்.",
+    "documents": [
+      {
+        "language": "en",
+        "url": "https://example.com/manifesto-en.pdf",
+        "source_title": "Example Party 2021 Manifesto (English)",
+        "source_url": "https://example.com/manifesto-en.pdf",
+        "source_type": "official",
+        "published_at": "2021-03-01"
+      },
+      {
+        "language": "ta",
+        "url": "https://example.com/manifesto-ta.pdf",
+        "source_title": "Example Party 2021 Manifesto (Tamil)",
+        "source_url": "https://example.com/manifesto-ta.pdf",
+        "source_type": "official",
+        "published_at": "2021-03-01"
+      }
+    ],
+    "promises": [
+      {
+        "slug": "clean-drinking-water",
+        "text": "24x7 clean drinking water supply.",
+        "text_ta": "24x7 சுத்தமான குடிநீர் வழங்கல்.",
+        "category": "Water",
+        "is_key": true,
+        "position": 1,
+        "tags": ["water", "infrastructure"]
+      },
+      {
+        "text": "Increase government school infrastructure spending.",
+        "text_ta": "அரசுப் பள்ளி கட்டமைப்புக்கு கூடுதல் நிதி.",
+        "category": "Education",
+        "is_key": true,
+        "position": 2,
+        "tags": ["education"]
+      }
+    ]
+  },
+  {
+    "year": 2021,
+    "party": "",
+    "coalition": "Example Coalition",
+    "coalition_ta": "எடுத்துக்காட்டு கூட்டணி",
+    "coalition_members": ["Example Party A", "Example Party B"],
+    "summary": "Short English summary of the coalition manifesto.",
+    "summary_ta": "கூட்டணி அறிக்கையின் குறும் சுருக்கம்.",
+    "documents": [
+      {
+        "language": "en",
+        "url": "https://example.com/coalition-manifesto-en.pdf",
+        "source_title": "Example Coalition Manifesto (English)",
+        "source_url": "https://example.com/coalition-manifesto-en.pdf",
+        "source_type": "official",
+        "published_at": "2021-03-01"
+      },
+      {
+        "language": "ta",
+        "url": "https://example.com/coalition-manifesto-ta.pdf",
+        "source_title": "Example Coalition Manifesto (Tamil)",
+        "source_url": "https://example.com/coalition-manifesto-ta.pdf",
+        "source_type": "official",
+        "published_at": "2021-03-01"
+      }
+    ],
+    "promises": []
+  }
+]
+

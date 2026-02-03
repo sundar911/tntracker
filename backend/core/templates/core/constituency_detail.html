@@ -8,6 +8,28 @@
     <link rel="stylesheet" href="/static/core/site.css" />
   </head>
   <body>
+    <header class="site-header compact">
+      <div class="container nav">
+        <a class="brand-link" href="/">
+          <div class="brand">
+            <span class="brand-mark">TN</span>
+            <div class="brand-text">
+              <div class="brand-title">
+                {% if current_language == "ta" %}தமிழ்நாடு தேர்தல் தரவகம்{% else %}Tamil Nadu Election Hub{% endif %}
+              </div>
+              <div class="brand-subtitle">
+                {% if current_language == "ta" %}2026 சட்டமன்றத் தேர்தல்{% else %}Assembly Elections 2026{% endif %}
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="nav-actions">
+          <button class="theme-toggle" type="button" data-theme-toggle>
+            {% if current_language == "ta" %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}
+          </button>
+        </div>
+      </div>
+    </header>
     <main class="container">
       <div class="topbar">
         <div class="lang">
@@ -49,9 +71,19 @@
                 <div class="candidate-name">{{ candidate.name }}</div>
                 <div class="muted">{{ candidate.party }}</div>
               </div>
-              {% if candidate.sitting %}
-                <span class="tag">{% if current_language == "ta" %}தற்போதைய எம்.எல்.ஏ{% else %}Sitting MLA{% endif %}</span>
-              {% endif %}
+              <div class="candidate-badges">
+                {% if candidate.party_symbol %}
+                  <img
+                    class="party-symbol"
+                    src="{{ candidate.party_symbol }}"
+                    alt="{{ candidate.party }} symbol"
+                    loading="lazy"
+                  />
+                {% endif %}
+                {% if candidate.sitting %}
+                  <span class="tag">{% if current_language == "ta" %}தற்போதைய எம்.எல்.ஏ{% else %}Sitting MLA{% endif %}</span>
+                {% endif %}
+              </div>
             </div>
             <div class="candidate-meta">
               {% if candidate.education %}<span>{% if current_language == "ta" %}கல்வி{% else %}Education{% endif %}: {{ candidate.education }}</span>{% endif %}
@@ -60,6 +92,52 @@
               <span>{% if current_language == "ta" %}சொத்துகள்{% else %}Assets{% endif %}: {% if candidate.assets %}₹ {{ candidate.assets|indian }}{% else %}N/A{% endif %}</span>
               <span>{% if current_language == "ta" %}பாக்கிகள்{% else %}Liabilities{% endif %}: {% if candidate.liabilities %}₹ {{ candidate.liabilities|indian }}{% else %}N/A{% endif %}</span>
             </div>
+            {% if candidate.key_promises %}
+              <div class="promise-tags" aria-label="Key manifesto promises">
+                {% for promise in candidate.key_promises %}
+                  <span>{{ promise.text }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+            {% if candidate.sitting and candidate.state_delivery %}
+              <div class="fulfilment-block" aria-label="Promise fulfilment summary">
+                <div class="fulfilment-row">
+                  <strong>{% if current_language == "ta" %}மாநிலம்{% else %}State{% endif %}</strong>
+                  <span class="muted">
+                    {% if candidate.state_delivery.claim_percent %}
+                      {% if current_language == "ta" %}கூற்று{% else %}Claim{% endif %}: {{ candidate.state_delivery.claim_percent }}
+                    {% elif candidate.state_delivery.avg_score is not None %}
+                      {% if current_language == "ta" %}சராசரி மதிப்பெண்{% else %}Avg score{% endif %}: {{ candidate.state_delivery.avg_score }}
+                    {% else %}
+                      {% if current_language == "ta" %}உறுதிப்படுத்தப்படவில்லை{% else %}Unverified{% endif %}
+                    {% endif %}
+                  </span>
+                  {% if candidate.state_delivery.claim_url %}
+                    <a class="link" href="{{ candidate.state_delivery.claim_url }}" target="_blank" rel="noopener">
+                      {% if current_language == "ta" %}மூலம்{% else %}Source{% endif %}
+                    </a>
+                  {% endif %}
+                </div>
+                {% if candidate.state_delivery.summary %}
+                  <div class="fulfilment-summary">{{ candidate.state_delivery.summary }}</div>
+                {% endif %}
+                <div class="fulfilment-row">
+                  <strong>{% if current_language == "ta" %}தொகுதி{% else %}Constituency{% endif %}</strong>
+                  <span class="muted">
+                    {% if candidate.constituency_delivery and candidate.constituency_delivery.avg_score is not None %}
+                      {% if current_language == "ta" %}சராசரி மதிப்பெண்{% else %}Avg score{% endif %}: {{ candidate.constituency_delivery.avg_score }}
+                    {% elif candidate.constituency_delivery and candidate.constituency_delivery.summary %}
+                      {% if current_language == "ta" %}சுருக்கம்{% else %}Summary{% endif %}
+                    {% else %}
+                      {% if current_language == "ta" %}உறுதிப்படுத்தப்படவில்லை{% else %}Unverified{% endif %}
+                    {% endif %}
+                  </span>
+                </div>
+                {% if candidate.constituency_delivery and candidate.constituency_delivery.summary %}
+                  <div class="fulfilment-summary">{{ candidate.constituency_delivery.summary }}</div>
+                {% endif %}
+              </div>
+            {% endif %}
           </div>
           {% empty %}
           <p>{% if current_language == "ta" %}வேட்பாளர்கள் இல்லை.{% else %}No candidates loaded yet.{% endif %}</p>
@@ -67,5 +145,26 @@
         </div>
       </section>
     </main>
+    <script>
+      const themeToggles = document.querySelectorAll("[data-theme-toggle]");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const storedTheme = localStorage.getItem("theme");
+      const isDark = storedTheme ? storedTheme === "dark" : prefersDark;
+
+      const applyTheme = (dark) => {
+        document.body.classList.toggle("theme-dark", dark);
+        localStorage.setItem("theme", dark ? "dark" : "light");
+        themeToggles.forEach((btn) => {
+          btn.textContent = dark
+            ? "{% if current_language == 'ta' %}ஒளி தோற்றம்{% else %}Light mode{% endif %}"
+            : "{% if current_language == 'ta' %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}";
+        });
+      };
+
+      applyTheme(isDark);
+      themeToggles.forEach((btn) => {
+        btn.addEventListener("click", () => applyTheme(!document.body.classList.contains("theme-dark")));
+      });
+    </script>
   </body>
 </html>

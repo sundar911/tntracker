@@ -14,7 +14,18 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from rest_framework import viewsets, filters
 
-from .models import Candidate, CandidateResult, Constituency, Election, Manifesto, Party
+from .models import (
+    Candidate,
+    CandidateResult,
+    CoalitionMembership,
+    Constituency,
+    Election,
+    Manifesto,
+    ManifestoPromise,
+    Party,
+    PartyFulfilmentClaim,
+    PromiseAssessment,
+)
 from .serializers import CandidateSerializer, ConstituencySerializer, ManifestoSerializer, PartySerializer
 
 
@@ -58,7 +69,7 @@ def _load_official_constituencies() -> dict[str, str]:
         return mapping
 
 
-def _match_constituency_key(key: str, candidates: set[str]) -> str:
+def _match_constituency_key(key: str, candidates: set[str], cutoff: float = 0.9) -> str:
     if key in candidates:
         return key
     for suffix in (" SC", " ST"):
@@ -70,8 +81,29 @@ def _match_constituency_key(key: str, candidates: set[str]) -> str:
             expanded = f"{key}{suffix}"
             if expanded in candidates:
                 return expanded
-    matches = difflib.get_close_matches(key, candidates, n=1, cutoff=0.9)
+    matches = difflib.get_close_matches(key, candidates, n=1, cutoff=cutoff)
     return matches[0] if matches else key
+
+
+def _resolve_constituency_key(
+    raw_key: str,
+    district_key: str,
+    constituency_seen: set[str],
+    district_candidates: dict[str, set[str]],
+    alias_by_district: dict[str, dict[str, str]],
+    cutoff: float = 0.85,
+) -> str:
+    if district_key and district_key in alias_by_district:
+        mapped = alias_by_district[district_key].get(raw_key)
+        if mapped:
+            return mapped
+    if raw_key in alias_by_district.get("", {}):
+        mapped = alias_by_district[""].get(raw_key)
+        if mapped:
+            return mapped
+    if district_key and district_key in district_candidates:
+        return _match_constituency_key(raw_key, district_candidates[district_key], cutoff=cutoff)
+    return _match_constituency_key(raw_key, constituency_seen, cutoff=cutoff)
 
 
 def _format_indian_number(value: Optional[float]) -> str:
@@ -99,6 +131,13 @@ def _format_indian_number(value: Optional[float]) -> str:
         if decimal_part:
             formatted = f"{integer_part}.{decimal_part}"
     return f"-{formatted}" if negative else formatted
+
+
+def _display_party_name(party_name: str) -> str:
+    cleaned = (party_name or "").strip()
+    if cleaned == "IND":
+        return "Independent"
+    return cleaned
 
 
 PARTY_COLORS = {
@@ -132,10 +171,21 @@ def map_data(request):
     sitting_lookup: dict[str, dict] = {}
     constituency_seen: set[str] = set()
     official_lookup = _load_official_constituencies()
+    district_lookup: dict[str, str] = {}
+    district_candidates: dict[str, set[str]] = defaultdict(set)
+    alias_by_district: dict[str, dict[str, str]] = defaultdict(dict)
     for row in rows:
         constituency_key = _normalize_constituency_name(row.get("2021_constituency"))
+        district_key = _normalize_constituency_name(row.get("2021_district"))
         if constituency_key:
             constituency_seen.add(constituency_key)
+            if district_key:
+                district_candidates[district_key].add(constituency_key)
+                district_lookup.setdefault(constituency_key, (row.get("2021_district") or "").strip())
+            official_key = _normalize_constituency_name(row.get("const_off"))
+            if official_key:
+                alias_by_district[district_key][official_key] = constituency_key
+                alias_by_district[""].setdefault(official_key, constituency_key)
         if str(row.get("sitting_MLA", "")).strip() != "1":
             continue
         party_name = (row.get("party") or "").strip()
@@ -144,21 +194,51 @@ def map_data(request):
             "party_color": _party_color(party_name),
         }
 
+    # Explicit spelling aliases for map/CSV mismatches.
+    explicit_aliases = {
+        "PALACODU": "PALACODE",
+        "THALLI": "THALLY",
+        "SHOZHINGANALLUR": "SHOLINGANALLUR",
+        "VANDAVASI": "VANDAVASI SC",
+        "VANDAVASI (SC)": "VANDAVASI (SC)",
+    }
+    for raw, mapped in explicit_aliases.items():
+        alias_by_district[""].setdefault(raw, mapped)
+        for district_key in district_candidates.keys():
+            alias_by_district[district_key].setdefault(raw, mapped)
+    explicit_district_aliases = {
+        "TIRUVANNAMALAI": {"VANDAVASI (SC)": "VANDAVASI (SC)", "VANDAVASI": "VANDAVASI (SC)"},
+        "TIRUPATHUR": {"TIRUPPATTUR": "TIRUPATTUR", "TIRUPATHUR": "TIRUPATTUR"},
+        "SIVAGANGA": {"TIRUPPATTUR": "TIRUPPATHUR"},
+    }
+    for district_key, mapping in explicit_district_aliases.items():
+        for raw, mapped in mapping.items():
+            alias_by_district[district_key].setdefault(raw, mapped)
+
     features = []
     for constituency in Constituency.objects.exclude(boundary_geojson__isnull=True):
         raw_key = _normalize_constituency_name(constituency.name)
-        constituency_key = _match_constituency_key(raw_key, constituency_seen)
+        district_key = _normalize_constituency_name(constituency.district)
+        constituency_key = _resolve_constituency_key(
+            raw_key,
+            district_key,
+            constituency_seen,
+            district_candidates,
+            alias_by_district,
+            cutoff=0.85,
+        )
         lookup = sitting_lookup.get(constituency_key, {})
         is_vacant = constituency_key in constituency_seen and not lookup
         is_unknown = constituency_key not in constituency_seen
         official_name = official_lookup.get(constituency_key) or official_lookup.get(raw_key) or constituency.name
+        display_district = constituency.district or district_lookup.get(constituency_key, "")
         features.append(
             {
                 "type": "Feature",
                 "properties": {
                     "id": constituency.id,
                     "name": official_name,
-                    "district": constituency.district,
+                    "district": display_district,
                     "party": lookup.get("party", ""),
                     "party_color": lookup.get("party_color"),
                     "vacant": is_vacant,
@@ -190,13 +270,172 @@ def constituency_detail(request, constituency_id: int):
         Constituency.objects.all(),
         pk=constituency_id,
     )
+    party_symbols: dict[str, str] = {}
+    for party in Party.objects.exclude(symbol_url="").only("name", "abbreviation", "symbol_url"):
+        if party.name:
+            party_symbols[party.name] = party.symbol_url
+        if party.abbreviation:
+            party_symbols[party.abbreviation] = party.symbol_url
     rows = _load_smla_rows()
-    constituency_key = _normalize_constituency_name(constituency.name)
+    constituency_seen: set[str] = set()
+    district_candidates: dict[str, set[str]] = defaultdict(set)
+    alias_by_district: dict[str, dict[str, str]] = defaultdict(dict)
+    for row in rows:
+        constituency_key = _normalize_constituency_name(row.get("2021_constituency"))
+        district_key = _normalize_constituency_name(row.get("2021_district"))
+        if constituency_key:
+            constituency_seen.add(constituency_key)
+            if district_key:
+                district_candidates[district_key].add(constituency_key)
+            official_key = _normalize_constituency_name(row.get("const_off"))
+            if official_key:
+                alias_by_district[district_key][official_key] = constituency_key
+                alias_by_district[""].setdefault(official_key, constituency_key)
+    explicit_aliases = {
+        "PALACODU": "PALACODE",
+        "THALLI": "THALLY",
+        "SHOZHINGANALLUR": "SHOLINGANALLUR",
+        "VANDAVASI": "VANDAVASI SC",
+        "VANDAVASI SC": "VANDAVASI SC",
+    }
+    for raw, mapped in explicit_aliases.items():
+        alias_by_district[""].setdefault(raw, mapped)
+        for district_key in district_candidates.keys():
+            alias_by_district[district_key].setdefault(raw, mapped)
+    explicit_district_aliases = {
+        "TIRUVANNAMALAI": {"VANDAVASI SC": "VANDAVASI SC", "VANDAVASI": "VANDAVASI SC"},
+        "VILUPPURAM": {"VANDAVASI SC": "VANDAVASI SC", "VANDAVASI": "VANDAVASI SC"},
+        "TIRUPATHUR": {"TIRUPPATTUR": "TIRUPATTUR", "TIRUPATHUR": "TIRUPATTUR"},
+        "VELLORE": {"TIRUPPATTUR": "TIRUPATTUR", "TIRUPATHUR": "TIRUPATTUR"},
+        "SIVAGANGA": {"TIRUPPATTUR": "TIRUPPATHUR", "TIRUPATHUR": "TIRUPPATHUR"},
+    }
+    for district_key, mapping in explicit_district_aliases.items():
+        for raw, mapped in mapping.items():
+            alias_by_district[district_key].setdefault(raw, mapped)
+
+    constituency_key = _resolve_constituency_key(
+        _normalize_constituency_name(constituency.name),
+        _normalize_constituency_name(constituency.district),
+        constituency_seen,
+        district_candidates,
+        alias_by_district,
+        cutoff=0.85,
+    )
     candidates = [
         row for row in rows
         if _normalize_constituency_name(row.get("2021_constituency")) == constituency_key
     ]
     district_name = (candidates[0].get("2021_district") if candidates else None) or constituency.district
+    current_language = request.session.get("language", "en")
+
+    # Attach key promises for each party/coalition (best-effort; missing data is OK).
+    party_lookup: dict[str, Party] = {}
+    for party in Party.objects.all().only("id", "name", "abbreviation"):
+        if party.name:
+            party_lookup[party.name.strip().lower()] = party
+        if party.abbreviation:
+            party_lookup[party.abbreviation.strip().lower()] = party
+
+    party_ids: set[int] = set()
+    for row in candidates:
+        raw_party = (row.get("party") or "").strip().lower()
+        match = party_lookup.get(raw_party)
+        if match:
+            party_ids.add(match.id)
+
+    coalition_by_party_id: dict[int, int] = {}
+    if party_ids:
+        election_2021 = Election.objects.filter(year=2021).first()
+        memberships = CoalitionMembership.objects.select_related("coalition", "coalition__election").filter(
+            party_id__in=party_ids
+        )
+        if election_2021:
+            memberships = memberships.filter(coalition__election=election_2021)
+        for membership in memberships:
+            if membership.party_id and membership.coalition_id:
+                coalition_by_party_id.setdefault(membership.party_id, membership.coalition_id)
+
+    manifesto_by_party_id: dict[int, Manifesto] = {}
+    manifesto_by_coalition_id: dict[int, Manifesto] = {}
+    promise_chips_by_manifesto_id: dict[int, list[dict]] = {}
+    state_assessment_by_party_promise: dict[tuple[int, int], PromiseAssessment] = {}
+    constituency_assessment_by_promise: dict[int, PromiseAssessment] = {}
+    claim_by_party_id: dict[int, PartyFulfilmentClaim] = {}
+    if party_ids:
+        coalition_ids = {cid for cid in coalition_by_party_id.values() if cid}
+        manifestos = (
+            Manifesto.objects.filter(constituency__isnull=True, candidate__isnull=True)
+            .filter(Q(party_id__in=party_ids) | Q(coalition_id__in=coalition_ids))
+            .select_related("party", "coalition")
+            .order_by("-last_updated", "-id")
+        )
+        for manifesto in manifestos:
+            if manifesto.coalition_id and manifesto.coalition_id not in manifesto_by_coalition_id:
+                manifesto_by_coalition_id[manifesto.coalition_id] = manifesto
+            if manifesto.party_id and manifesto.party_id not in manifesto_by_party_id:
+                manifesto_by_party_id[manifesto.party_id] = manifesto
+
+        selected_manifesto_ids = {
+            m.id for m in list(manifesto_by_party_id.values()) + list(manifesto_by_coalition_id.values()) if m
+        }
+        if selected_manifesto_ids:
+            promises = (
+                ManifestoPromise.objects.filter(manifesto_id__in=selected_manifesto_ids, is_key=True)
+                .only("id", "manifesto_id", "slug", "text", "text_ta", "position")
+                .order_by("position", "id")
+            )
+            for promise in promises:
+                bucket = promise_chips_by_manifesto_id.setdefault(promise.manifesto_id, [])
+                if len(bucket) >= 4:
+                    continue
+                text = (
+                    promise.text_ta.strip()
+                    if current_language == "ta" and promise.text_ta
+                    else (promise.text.strip() if promise.text else "")
+                )
+                if not text:
+                    continue
+                bucket.append({"id": promise.id, "slug": promise.slug, "text": text})
+
+            promise_ids = {chip["id"] for chips in promise_chips_by_manifesto_id.values() for chip in chips if chip.get("id")}
+            if promise_ids:
+                state_qs = (
+                    PromiseAssessment.objects.filter(
+                        scope=PromiseAssessment.Scope.STATE,
+                        party_id__in=party_ids,
+                        promise_id__in=promise_ids,
+                    )
+                    .only("id", "promise_id", "party_id", "status", "score", "summary", "summary_ta", "as_of")
+                    .order_by("-as_of", "-id")
+                )
+                for assessment in state_qs:
+                    key = (assessment.party_id or 0, assessment.promise_id)
+                    if key not in state_assessment_by_party_promise:
+                        state_assessment_by_party_promise[key] = assessment
+
+                const_qs = (
+                    PromiseAssessment.objects.filter(
+                        scope=PromiseAssessment.Scope.CONSTITUENCY,
+                        constituency=constituency,
+                        promise_id__in=promise_ids,
+                    )
+                    .only("id", "promise_id", "status", "score", "summary", "summary_ta", "as_of")
+                    .order_by("-as_of", "-id")
+                )
+                for assessment in const_qs:
+                    if assessment.promise_id not in constituency_assessment_by_promise:
+                        constituency_assessment_by_promise[assessment.promise_id] = assessment
+
+            election_2021 = Election.objects.filter(year=2021).first()
+            claim_qs = PartyFulfilmentClaim.objects.filter(party_id__in=party_ids).select_related(
+                "source_document", "election"
+            )
+            if election_2021:
+                claim_qs = claim_qs.filter(election=election_2021)
+            claim_qs = claim_qs.order_by("-as_of", "-id")
+            for claim in claim_qs:
+                if claim.party_id and claim.party_id not in claim_by_party_id:
+                    claim_by_party_id[claim.party_id] = claim
 
     cases_values = [_parse_int(row.get("criminal_cases")) for row in candidates]
     cases_values = [value for value in cases_values if value is not None]
@@ -236,16 +475,107 @@ def constituency_detail(request, constituency_id: int):
     for row in candidates:
         assets_value = _parse_int(row.get("total_assets_rs"))
         liabilities_value = _parse_int(row.get("liabilities_rs"))
+        raw_party = (row.get("party") or "").strip()
+        party_obj = party_lookup.get(raw_party.strip().lower()) if raw_party else None
+        coalition_id = coalition_by_party_id.get(party_obj.id) if party_obj else None
+        manifesto = (
+            manifesto_by_coalition_id.get(coalition_id) if coalition_id else None
+        ) or (manifesto_by_party_id.get(party_obj.id) if party_obj else None)
+        key_promises = promise_chips_by_manifesto_id.get(manifesto.id, []) if manifesto else []
+
+        state_delivery = None
+        constituency_delivery = None
+        if str(row.get("sitting_MLA", "")).strip() == "1" and party_obj and key_promises:
+            promise_ids = [chip["id"] for chip in key_promises if chip.get("id")]
+            statuses = []
+            scores = []
+            summary_text = ""
+            summary_as_of = None
+            for pid in promise_ids:
+                assessment = state_assessment_by_party_promise.get((party_obj.id, pid))
+                if not assessment:
+                    continue
+                statuses.append(assessment.status)
+                if assessment.score is not None:
+                    try:
+                        scores.append(float(assessment.score))
+                    except (TypeError, ValueError):
+                        pass
+                text_summary = (
+                    assessment.summary_ta.strip()
+                    if current_language == "ta" and assessment.summary_ta
+                    else (assessment.summary.strip() if assessment.summary else "")
+                )
+                if text_summary and not summary_text:
+                    summary_text = text_summary
+                    summary_as_of = assessment.as_of
+
+            breakdown = {key: statuses.count(key) for key in PromiseAssessment.Status.values}
+            scored_count = len(scores)
+            avg_score = (sum(scores) / scored_count) if scored_count else None
+            claim = claim_by_party_id.get(party_obj.id)
+            claim_label = None
+            claim_url = None
+            claim_as_of = None
+            if claim and claim.claimed_percent is not None:
+                claim_label = f"{claim.claimed_percent}%"
+                claim_url = claim.source_document.url if getattr(claim, "source_document", None) else ""
+                claim_as_of = claim.as_of
+
+            state_delivery = {
+                "claim_percent": claim_label,
+                "claim_url": claim_url or "",
+                "claim_as_of": claim_as_of,
+                "avg_score": round(avg_score, 2) if avg_score is not None else None,
+                "breakdown": breakdown,
+                "summary": summary_text,
+                "as_of": summary_as_of,
+            }
+
+            c_statuses = []
+            c_scores = []
+            c_summary = ""
+            c_as_of = None
+            for pid in promise_ids:
+                assessment = constituency_assessment_by_promise.get(pid)
+                if not assessment:
+                    continue
+                c_statuses.append(assessment.status)
+                if assessment.score is not None:
+                    try:
+                        c_scores.append(float(assessment.score))
+                    except (TypeError, ValueError):
+                        pass
+                text_summary = (
+                    assessment.summary_ta.strip()
+                    if current_language == "ta" and assessment.summary_ta
+                    else (assessment.summary.strip() if assessment.summary else "")
+                )
+                if text_summary and not c_summary:
+                    c_summary = text_summary
+                    c_as_of = assessment.as_of
+            c_breakdown = {key: c_statuses.count(key) for key in PromiseAssessment.Status.values}
+            c_avg = (sum(c_scores) / len(c_scores)) if c_scores else None
+            constituency_delivery = {
+                "avg_score": round(c_avg, 2) if c_avg is not None else None,
+                "breakdown": c_breakdown,
+                "summary": c_summary,
+                "as_of": c_as_of,
+            }
         candidate_cards.append(
             {
                 "name": (row.get("candidate") or "").strip() or "Unknown",
                 "party": (row.get("party") or "").strip() or "Independent / Unknown",
+                "party_symbol": party_symbols.get((row.get("party") or "").strip()),
                 "education": (row.get("education") or "").strip(),
                 "age": _parse_int(row.get("age")),
                 "criminal_cases": _parse_int(row.get("criminal_cases")),
                 "assets": assets_value,
                 "liabilities": liabilities_value,
                 "sitting": str(row.get("sitting_MLA", "")).strip() == "1",
+                "key_promises": key_promises,
+                "state_delivery": state_delivery,
+                "constituency_delivery": constituency_delivery,
             }
         )
     return render(
@@ -566,18 +896,17 @@ def party_dashboard(request):
             else None
         )
         cases_pct = round((stats["cases_positive"] / stats["count"]) * 100, 1) if stats["count"] else 0.0
-        sitting_pct = round((stats["sitting_total"] / stats["count"]) * 100, 1) if stats["count"] else 0.0
         top_education = stats["education_counts"].most_common(1)
         party_stats.append(
             {
                 "party": party,
+                "party_display": _display_party_name(party),
                 "candidate_count": stats["count"],
                 "avg_cases": avg_cases,
                 "avg_age": avg_age,
                 "avg_assets": avg_assets,
                 "avg_liabilities": avg_liabilities,
                 "cases_pct": cases_pct,
-                "sitting_pct": sitting_pct,
                 "top_education": top_education[0][0] if top_education else "",
             }
         )
@@ -590,7 +919,6 @@ def party_dashboard(request):
         "avg_age": "avg_age",
         "avg_assets": "avg_assets",
         "avg_liabilities": "avg_liabilities",
-        "sitting_pct": "sitting_pct",
         "top_education": "top_education",
     }
     sort_field = sort_map.get(sort_key, "candidate_count")
@@ -648,6 +976,12 @@ def party_dashboard(request):
         "district": district_filter,
         "constituency": constituency_filter,
     }
+    base_query_no_party = dict(base_query)
+    base_query_no_party.pop("party", None)
+    party_options = sorted(
+        [{"value": party, "label": _display_party_name(party)} for party in party_set],
+        key=lambda item: item["label"].lower(),
+    )
     return render(
         request,
         "core/party_dashboard.html",
@@ -675,7 +1009,7 @@ def party_dashboard(request):
             "liabilities_bounds": liabilities_bounds,
             "sitting_mla": sitting_filter if has_sitting else "",
             "rows_count": len(filtered_rows),
-            "all_parties": sorted(party_set),
+            "party_options": party_options,
             "selected_party": selected_party,
             "districts": sorted(district_set),
             "selected_district": district_filter,
@@ -684,6 +1018,7 @@ def party_dashboard(request):
             "sort_key": sort_key,
             "sort_order": sort_order,
             "base_query": urlencode(base_query, doseq=True),
+            "base_query_no_party": urlencode(base_query_no_party, doseq=True),
         },
     )
 
@@ -692,6 +1027,7 @@ def party_detail(request, party_name: str):
     year = request.GET.get("year", "2021").strip()
     if year not in {"2021", "2026"}:
         year = "2021"
+    party_display_name = _display_party_name(party_name)
     min_cases_raw = request.GET.get("min_cases", "").strip()
     max_cases_raw = request.GET.get("max_cases", "").strip()
     min_age_raw = request.GET.get("min_age", "").strip()
@@ -813,7 +1149,7 @@ def party_detail(request, party_name: str):
         party_rows.append(row)
 
     headers = list(rows[0].keys()) if rows else []
-    excluded_headers = {"party", "sitting_MLA", "bye_election", "total_assets", "liabilities"}
+    excluded_headers = {"party", "sitting_MLA", "bye_election", "total_assets", "liabilities", "const_off"}
     allowed_headers = [header for header in headers if header not in excluded_headers]
     label_overrides = {
         "total_assets_rs": "Total Assets (₹)",
@@ -821,7 +1157,7 @@ def party_detail(request, party_name: str):
         "criminal_cases": "Criminal cases",
         "2021_constituency": "Constituency",
         "2021_district": "District",
-        "myneta_url": "Myneta",
+        "myneta_url": "More Info",
     }
     columns = [
         {
@@ -833,10 +1169,21 @@ def party_detail(request, party_name: str):
         for header in allowed_headers
     ]
     myneta_key = "myneta_url"
-    rows_table = [
-        {header: row.get(header, "") for header in allowed_headers}
-        for row in party_rows
-    ]
+    constituency_header = None
+    if "2021_constituency" in allowed_headers:
+        constituency_header = "2021_constituency"
+    elif "constituency" in allowed_headers:
+        constituency_header = "constituency"
+    rows_table = []
+    for row in party_rows:
+        row_data = {header: row.get(header, "") for header in allowed_headers}
+        const_off = (row.get("const_off") or "").strip()
+        if constituency_header and const_off:
+            row_data[constituency_header] = const_off
+        for district_header in ("2021_district", "district"):
+            if district_header in row_data and row_data[district_header]:
+                row_data[district_header] = str(row_data[district_header]).strip().title()
+        rows_table.append(row_data)
     available_constituencies = sorted(district_map.get(district_filter, set())) if district_filter else sorted(
         {const for consts in district_map.values() for const in consts}
     )
@@ -850,6 +1197,7 @@ def party_detail(request, party_name: str):
         "core/party_detail.html",
         {
             "party_name": party_name,
+            "party_display_name": party_display_name,
             "year": year,
             "rows": rows_table,
             "columns": columns,

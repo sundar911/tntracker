@@ -1,0 +1,56 @@
+[
+  {
+    "year": 2021,
+    "party": "Example Party",
+    "claimed_percent": 62.5,
+    "claimed_by": "Chief Minister (example)",
+    "as_of": "2024-01-01",
+    "source": {
+      "title": "Example Party claims % of manifesto delivered",
+      "url": "https://example.com/news/claim.html",
+      "source_type": "media",
+      "published_at": "2024-01-01",
+      "quote": "The CM claimed that 62.5% of the 2021 manifesto promises were fulfilled."
+    }
+  },
+  {
+    "year": 2021,
+    "party": "Example Party",
+    "promise_slug": "clean-drinking-water",
+    "scope": "state",
+    "status": "partial",
+    "score": 0.5,
+    "summary": "Some schemes expanded coverage, but 24x7 supply is not universal across the state.",
+    "summary_ta": "சில திட்டங்கள் மூலம் வழங்கல் மேம்பட்டது; ஆனால் 24x7 வழங்கல் மாநிலம் முழுவதும் இல்லை.",
+    "as_of": "2024-01-01",
+    "evidence": [
+      {
+        "source_title": "State water board annual report (example)",
+        "url": "https://example.com/gov/report.pdf",
+        "source_type": "official",
+        "published_at": "2023-12-15",
+        "quote": "Coverage increased from X to Y, but continuous supply remains limited."
+      },
+      {
+        "source_title": "Credible media explainer (example)",
+        "url": "https://example.com/news/explainer.html",
+        "source_type": "media",
+        "published_at": "2024-01-02",
+        "quote": "Experts noted that continuous supply depends on local infrastructure upgrades."
+      }
+    ]
+  },
+  {
+    "year": 2021,
+    "party": "Example Party",
+    "promise_slug": "clean-drinking-water",
+    "scope": "constituency",
+    "constituency": "ARIYALUR",
+    "status": "unknown",
+    "summary": "No clear, constituency-specific evidence was found in public sources; status remains unverified.",
+    "summary_ta": "தொகுதி-சார்ந்த பொது ஆதாரங்கள் தெளிவாக இல்லை; நிலை உறுதிப்படுத்தப்படவில்லை.",
+    "as_of": "2024-01-01",
+    "evidence": []
+  }
+]
+

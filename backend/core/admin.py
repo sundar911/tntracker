@@ -4,11 +4,18 @@ from .models import (
     Affidavit,
     Candidate,
     CandidateResult,
+    Coalition,
+    CoalitionMembership,
     Constituency,
     Election,
     LegalCase,
     Manifesto,
+    ManifestoDocument,
+    ManifestoPromise,
     Party,
+    PartyFulfilmentClaim,
+    PromiseAssessment,
+    PromiseEvidence,
     SourceDocument,
     UpdateLog,
 )
@@ -66,8 +73,22 @@ class LegalCaseAdmin(admin.ModelAdmin):
 
 @admin.register(Manifesto)
 class ManifestoAdmin(admin.ModelAdmin):
-    list_display = ("party", "constituency", "candidate", "last_updated")
-    search_fields = ("party__name", "constituency__name", "candidate__name")
+    list_display = ("party", "coalition", "constituency", "candidate", "last_updated")
+    search_fields = ("party__name", "coalition__name", "constituency__name", "candidate__name")
+
+
+@admin.register(ManifestoDocument)
+class ManifestoDocumentAdmin(admin.ModelAdmin):
+    list_display = ("manifesto", "language", "url", "last_updated")
+    search_fields = ("manifesto__party__name", "manifesto__coalition__name", "url")
+    list_filter = ("language",)
+
+
+@admin.register(ManifestoPromise)
+class ManifestoPromiseAdmin(admin.ModelAdmin):
+    list_display = ("manifesto", "slug", "category", "is_key", "position", "last_updated")
+    search_fields = ("slug", "text", "text_ta", "manifesto__party__name", "manifesto__coalition__name")
+    list_filter = ("is_key", "category")
 
 
 @admin.register(SourceDocument)
@@ -79,3 +100,38 @@ class SourceDocumentAdmin(admin.ModelAdmin):
 @admin.register(UpdateLog)
 class UpdateLogAdmin(admin.ModelAdmin):
     list_display = ("entity_type", "entity_id", "source_document", "created_at")
+
+
+@admin.register(Coalition)
+class CoalitionAdmin(admin.ModelAdmin):
+    list_display = ("name", "election")
+    search_fields = ("name",)
+    list_filter = ("election",)
+
+
+@admin.register(CoalitionMembership)
+class CoalitionMembershipAdmin(admin.ModelAdmin):
+    list_display = ("coalition", "party")
+    search_fields = ("coalition__name", "party__name")
+    list_filter = ("coalition",)
+
+
+@admin.register(PromiseAssessment)
+class PromiseAssessmentAdmin(admin.ModelAdmin):
+    list_display = ("promise", "scope", "party", "constituency", "status", "score", "as_of", "last_updated")
+    list_filter = ("scope", "status", "as_of")
+    search_fields = ("promise__slug", "promise__text", "promise__text_ta", "summary", "summary_ta")
+
+
+@admin.register(PromiseEvidence)
+class PromiseEvidenceAdmin(admin.ModelAdmin):
+    list_display = ("assessment", "source_document", "published_at", "created_at")
+    search_fields = ("source_document__title", "source_document__url", "quote", "url")
+    list_filter = ("published_at",)
+
+
+@admin.register(PartyFulfilmentClaim)
+class PartyFulfilmentClaimAdmin(admin.ModelAdmin):
+    list_display = ("party", "election", "claimed_percent", "claimed_by", "as_of", "last_updated")
+    list_filter = ("election", "as_of")
+    search_fields = ("party__name", "claimed_by", "snippet", "source_document__title")

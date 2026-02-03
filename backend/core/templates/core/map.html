@@ -24,6 +24,7 @@
         padding: 12px 14px;
         font-size: 14px;
         line-height: 1.4;
+        max-width: 220px;
         max-height: 55vh;
         overflow: auto;
       }
@@ -52,6 +53,28 @@
     </style>
   </head>
   <body>
+    <header class="site-header compact">
+      <div class="container nav">
+        <a class="brand-link" href="/">
+          <div class="brand">
+            <span class="brand-mark">TN</span>
+            <div class="brand-text">
+              <div class="brand-title">
+                {% if current_language == "ta" %}தமிழ்நாடு தேர்தல் தரவகம்{% else %}Tamil Nadu Election Hub{% endif %}
+              </div>
+              <div class="brand-subtitle">
+                {% if current_language == "ta" %}2026 சட்டமன்றத் தேர்தல்{% else %}Assembly Elections 2026{% endif %}
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="nav-actions">
+          <button class="theme-toggle" type="button" data-theme-toggle>
+            {% if current_language == "ta" %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}
+          </button>
+        </div>
+      </div>
+    </header>
     <main class="container">
       <div class="topbar">
         <div class="lang">
@@ -68,6 +91,27 @@
       <div id="map"></div>
     </main>
 
+    <script>
+      const themeToggles = document.querySelectorAll("[data-theme-toggle]");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const storedTheme = localStorage.getItem("theme");
+      const isDark = storedTheme ? storedTheme === "dark" : prefersDark;
+
+      const applyTheme = (dark) => {
+        document.body.classList.toggle("theme-dark", dark);
+        localStorage.setItem("theme", dark ? "dark" : "light");
+        themeToggles.forEach((btn) => {
+          btn.textContent = dark
+            ? "{% if current_language == 'ta' %}ஒளி தோற்றம்{% else %}Light mode{% endif %}"
+            : "{% if current_language == 'ta' %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}";
+        });
+      };
+
+      applyTheme(isDark);
+      themeToggles.forEach((btn) => {
+        btn.addEventListener("click", () => applyTheme(!document.body.classList.contains("theme-dark")));
+      });
+    </script>
     <script
       src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
@@ -79,21 +123,33 @@
         attributionControl: false,
       }).setView([10.9, 78.7], 7);
 
+      const partyLabel = {
+        "Pattali Makkal Katchi": "PMK",
+        "Viduthalai Chiruthaigal Katchi": "VCK",
+        IND: "Independent",
+      };
+
       fetch("/map/data/")
         .then((response) => response.json())
         .then((data) => {
+          let activeParty = null;
+          const legendRows = [];
+
+          const styleFeature = (feature) => {
+            const partyColor = feature.properties.party_color;
+            const isVacant = feature.properties.vacant;
+            const isUnknown = feature.properties.unknown;
+            const isFilteredOut = activeParty && feature.properties.party !== activeParty;
+            return {
+              color: isFilteredOut ? "#cbd5f5" : "#94a3b8",
+              weight: isFilteredOut ? 0.5 : 1,
+              fillColor: partyColor || (isVacant ? "#CBD5F5" : "#E2E8F0"),
+              fillOpacity: isUnknown ? 0 : isFilteredOut ? 0.1 : 0.9,
+            };
+          };
+
           const geoJsonLayer = L.geoJSON(data, {
-            style: (feature) => {
-              const partyColor = feature.properties.party_color;
-              const isVacant = feature.properties.vacant;
-              const isUnknown = feature.properties.unknown;
-              return {
-                color: "#94a3b8",
-                weight: 1,
-                fillColor: partyColor || (isVacant ? "#CBD5F5" : "#E2E8F0"),
-                fillOpacity: isUnknown ? 0 : 0.9,
-              };
-            },
+            style: styleFeature,
             onEachFeature: (feature, layer) => {
               const { id, name, district } = feature.properties;
               const tooltip = `<strong>${name}</strong><br /><span>${district}</span>`;
@@ -104,6 +160,9 @@
               });
               layer.on({
                 mouseover: (event) => {
+                  if (activeParty && feature.properties.party !== activeParty) {
+                    return;
+                  }
                   event.target.setStyle({
                     weight: 2,
                     color: "#0f172a",
@@ -125,8 +184,17 @@
             map.options.maxBoundsViscosity = 1.0;
           }
 
+          const applyLegendFilter = () => {
+            geoJsonLayer.eachLayer((layer) => {
+              layer.setStyle(styleFeature(layer.feature));
+            });
+            legendRows.forEach((row) => {
+              row.classList.toggle("active", row.dataset.party === activeParty);
+            });
+          };
+
           if (Array.isArray(data.legend) && data.legend.length) {
-            const legendControl = L.control({ position: "topright" });
+            const legendControl = L.control({ position: "bottomright" });
             legendControl.onAdd = () => {
               const div = L.DomUtil.create("div", "map-legend");
               div.innerHTML = `<h3>Legend</h3>`;
@@ -134,14 +202,21 @@
               data.legend.forEach((item) => {
                 const row = document.createElement("div");
                 row.className = "legend-row";
-                row.innerHTML = `<span class="swatch" style="background:${item.color}"></span>${item.party}`;
+                row.dataset.party = item.party;
+                row.innerHTML = `<span class="swatch" style="background:${item.color}"></span><span class="legend-label">${partyLabel[item.party] || item.party}</span>`;
+                row.addEventListener("click", () => {
+                  activeParty = activeParty === item.party ? null : item.party;
+                  applyLegendFilter();
+                });
+                legendRows.push(row);
                 fragment.appendChild(row);
               });
               const vacantRow = document.createElement("div");
-              vacantRow.className = "legend-row";
+              vacantRow.className = "legend-row legend-row-static";
               vacantRow.innerHTML = `<span class="swatch" style="background:#CBD5F5"></span>Vacant`;
               fragment.appendChild(vacantRow);
               div.appendChild(fragment);
+              L.DomEvent.disableClickPropagation(div);
               return div;
             };
             legendControl.addTo(map);
