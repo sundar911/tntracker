@@ -12,10 +12,10 @@
       <div class="container nav">
         <a class="brand-link" href="/">
           <div class="brand">
-            <span class="brand-mark">TN</span>
+            <img class="brand-logo" src="/static/core/logo.png" alt="Tamil Nadu Election Tracker" />
             <div class="brand-text">
               <div class="brand-title">
-                {% if current_language == "ta" %}தமிழ்நாடு தேர்தல் தரவகம்{% else %}Tamil Nadu Election Hub{% endif %}
+                {% if current_language == "ta" %}தமிழ்நாடு தேர்தல் கண்காணிப்பான்{% else %}Tamil Nadu Election Tracker{% endif %}
               </div>
               <div class="brand-subtitle">
                 {% if current_language == "ta" %}2026 சட்டமன்றத் தேர்தல்{% else %}Assembly Elections 2026{% endif %}
@@ -23,6 +23,11 @@
             </div>
           </div>
         </a>
+        <div class="nav-links">
+          <a class="nav-link" href="/map/">{% if current_language == "ta" %}வரைபடம்{% else %}Maps{% endif %}</a>
+          <a class="nav-link nav-link-active" href="/party-dashboard/">{% if current_language == "ta" %}வேட்பாளர்களை அறியவும்{% else %}Know your Candidates{% endif %}</a>
+          <a class="nav-link" href="/resources/">{% if current_language == "ta" %}வளங்கள்{% else %}Resources{% endif %}</a>
+        </div>
         <div class="nav-actions">
           <button class="theme-toggle" type="button" data-theme-toggle>
             {% if current_language == "ta" %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}
@@ -272,7 +277,7 @@
           <thead>
             <tr>
               <th>
-                <a class="link sort-link" href="?{{ base_query }}&sort=party&order={% if sort_key == 'party' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                <a class="link sort-link" href="?{{ base_query }}&sort=party&order={% if sort_key == 'party' and sort_order == 'desc' %}asc{% else %}desc{% endif %}">
                   {% if current_language == "ta" %}கட்சி{% else %}Party{% endif %}
                   <span class="sort-indicator{% if sort_key == 'party' %} active{% endif %}">
                     {% if sort_key == "party" %}
@@ -284,7 +289,7 @@
                 </a>
               </th>
               <th>
-                <a class="link sort-link" href="?{{ base_query }}&sort=candidate_count&order={% if sort_key == 'candidate_count' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                <a class="link sort-link" href="?{{ base_query }}&sort=candidate_count&order={% if sort_key == 'candidate_count' and sort_order == 'desc' %}asc{% else %}desc{% endif %}">
                   {% if current_language == "ta" %}வேட்பாளர் எண்ணிக்கை{% else %}Candidates{% endif %}
                   <span class="sort-indicator{% if sort_key == 'candidate_count' %} active{% endif %}">
                     {% if sort_key == "candidate_count" %}
@@ -296,7 +301,7 @@
                 </a>
               </th>
               <th>
-                <a class="link sort-link" href="?{{ base_query }}&sort=avg_cases&order={% if sort_key == 'avg_cases' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                <a class="link sort-link" href="?{{ base_query }}&sort=avg_cases&order={% if sort_key == 'avg_cases' and sort_order == 'desc' %}asc{% else %}desc{% endif %}">
                   {% if current_language == "ta" %}சராசரி குற்ற வழக்குகள்{% else %}Avg criminal cases{% endif %}
                   <span class="sort-indicator{% if sort_key == 'avg_cases' %} active{% endif %}">
                     {% if sort_key == "avg_cases" %}
@@ -308,7 +313,7 @@
                 </a>
               </th>
               <th>
-                <a class="link sort-link" href="?{{ base_query }}&sort=cases_pct&order={% if sort_key == 'cases_pct' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                <a class="link sort-link" href="?{{ base_query }}&sort=cases_pct&order={% if sort_key == 'cases_pct' and sort_order == 'desc' %}asc{% else %}desc{% endif %}">
                   {% if current_language == "ta" %}குற்ற வழக்குகள் உள்ளவர்களின் விகிதம்{% else %}% w/ criminal cases{% endif %}
                   <span class="sort-indicator{% if sort_key == 'cases_pct' %} active{% endif %}">
                     {% if sort_key == "cases_pct" %}
@@ -320,7 +325,7 @@
                 </a>
               </th>
               <th>
-                <a class="link sort-link" href="?{{ base_query }}&sort=avg_age&order={% if sort_key == 'avg_age' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                <a class="link sort-link" href="?{{ base_query }}&sort=avg_age&order={% if sort_key == 'avg_age' and sort_order == 'desc' %}asc{% else %}desc{% endif %}">
                   {% if current_language == "ta" %}சராசரி வயது{% else %}Avg. age{% endif %}
                   <span class="sort-indicator{% if sort_key == 'avg_age' %} active{% endif %}">
                     {% if sort_key == "avg_age" %}
@@ -332,7 +337,7 @@
                 </a>
               </th>
               <th>
-                <a class="link sort-link" href="?{{ base_query }}&sort=avg_assets&order={% if sort_key == 'avg_assets' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                <a class="link sort-link" href="?{{ base_query }}&sort=avg_assets&order={% if sort_key == 'avg_assets' and sort_order == 'desc' %}asc{% else %}desc{% endif %}">
                   {% if current_language == "ta" %}சராசரி சொத்து (₹){% else %}Avg. assets (₹){% endif %}
                   <span class="sort-indicator{% if sort_key == 'avg_assets' %} active{% endif %}">
                     {% if sort_key == "avg_assets" %}
@@ -344,7 +349,7 @@
                 </a>
               </th>
               <th>
-                <a class="link sort-link" href="?{{ base_query }}&sort=avg_liabilities&order={% if sort_key == 'avg_liabilities' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                <a class="link sort-link" href="?{{ base_query }}&sort=avg_liabilities&order={% if sort_key == 'avg_liabilities' and sort_order == 'desc' %}asc{% else %}desc{% endif %}">
                   {% if current_language == "ta" %}சராசரி கடன்கள் (₹){% else %}Avg. liabilities (₹){% endif %}
                   <span class="sort-indicator{% if sort_key == 'avg_liabilities' %} active{% endif %}">
                     {% if sort_key == "avg_liabilities" %}
@@ -356,7 +361,7 @@
                 </a>
               </th>
               <th>
-                <a class="link sort-link" href="?{{ base_query }}&sort=top_education&order={% if sort_key == 'top_education' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                <a class="link sort-link" href="?{{ base_query }}&sort=top_education&order={% if sort_key == 'top_education' and sort_order == 'desc' %}asc{% else %}desc{% endif %}">
                   {% if current_language == "ta" %}அதிகம் காணப்படும் கல்வி{% else %}Most common education{% endif %}
                   <span class="sort-indicator{% if sort_key == 'top_education' %} active{% endif %}">
                     {% if sort_key == "top_education" %}
@@ -373,9 +378,19 @@
             {% for party in party_stats %}
             <tr>
               <td>
-                <a class="link" href="/party/{{ party.party|urlencode }}/{% if base_query_no_party %}?{{ base_query_no_party }}{% endif %}">
-                  {{ party.party_display|default:party.party }}
-                </a>
+                <div class="party-cell">
+                  {% if party.party_symbol %}
+                    <img
+                      class="party-symbol"
+                      src="{{ party.party_symbol }}"
+                      alt="{{ party.party }} symbol"
+                      onerror="this.style.display='none'"
+                    />
+                  {% endif %}
+                  <a class="link" href="/party/{{ party.party|urlencode }}/{% if base_query_no_party %}?{{ base_query_no_party }}{% endif %}">
+                    {{ party.party_display|default:party.party }}
+                  </a>
+                </div>
               </td>
               <td>{{ party.candidate_count|indian }}</td>
               <td>{% if party.avg_cases is not None %}{{ party.avg_cases|indian }}{% else %}—{% endif %}</td>

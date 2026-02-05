@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% if current_language == "ta" %}வளங்கள் - தமிழ்நாடு தேர்தல் கண்காணிப்பான்{% else %}Resources - Tamil Nadu Election Tracker{% endif %}</title>
+    <link rel="stylesheet" href="/static/core/site.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand-link" href="/">
+          <div class="brand">
+            <img class="brand-logo" src="/static/core/logo.png" alt="Tamil Nadu Election Tracker" />
+            <div class="brand-text">
+              <div class="brand-title">
+                {% if current_language == "ta" %}தமிழ்நாடு தேர்தல் கண்காணிப்பான்{% else %}Tamil Nadu Election Tracker{% endif %}
+              </div>
+              <div class="brand-subtitle">
+                {% if current_language == "ta" %}2026 சட்டமன்றத் தேர்தல்{% else %}Assembly Elections 2026{% endif %}
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="nav-links">
+          <a class="nav-link" href="/map/">{% if current_language == "ta" %}வரைபடம்{% else %}Maps{% endif %}</a>
+          <a class="nav-link" href="/party-dashboard/">{% if current_language == "ta" %}வேட்பாளர்களை அறியவும்{% else %}Know your Candidates{% endif %}</a>
+          <a class="nav-link nav-link-active" href="/resources/">{% if current_language == "ta" %}வளங்கள்{% else %}Resources{% endif %}</a>
+        </div>
+        <div class="nav-actions">
+          <div class="lang-switch">
+            <a href="/set-lang/en/?next={{ request.get_full_path|urlencode }}">English</a>
+            <span>•</span>
+            <a href="/set-lang/ta/?next={{ request.get_full_path|urlencode }}">தமிழ்</a>
+          </div>
+          <button class="theme-toggle" type="button" data-theme-toggle>
+            {% if current_language == "ta" %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="resources-section">
+        <div class="container">
+          <a class="link" href="/">← {% if current_language == "ta" %}முகப்பு{% else %}Back to home{% endif %}</a>
+          <h1>{% if current_language == "ta" %}வெளிப்புற வளங்கள்{% else %}External Resources{% endif %}</h1>
+          <p class="resources-intro">
+            {% if current_language == "ta" %}
+              தமிழ்நாடு தேர்தல்கள் தொடர்பான நம்பகமான தரவு மூலங்களின் தொகுப்பு. இந்த இணைப்புகள் வெளிப்புற இணையதளங்களுக்கு செல்லும்.
+            {% else %}
+              A curated collection of trusted data sources related to Tamil Nadu elections. These links lead to external websites.
+            {% endif %}
+          </p>
+
+          <div class="resources-grid">
+            {% for resource in resources %}
+            <a class="resource-card" href="{{ resource.url }}" target="_blank" rel="noopener noreferrer">
+              <div class="resource-category">{{ resource.category }}</div>
+              <h3 class="resource-title">{{ resource.title }}</h3>
+              <p class="resource-description">
+                {% if current_language == "ta" and resource.description_ta %}
+                  {{ resource.description_ta }}
+                {% else %}
+                  {{ resource.description }}
+                {% endif %}
+              </p>
+              <span class="resource-link-indicator">
+                {% if current_language == "ta" %}வெளிப்புற இணைப்பு{% else %}External link{% endif %} →
+              </span>
+            </a>
+            {% endfor %}
+          </div>
+
+          <div class="resources-disclaimer">
+            <p>
+              {% if current_language == "ta" %}
+                <strong>குறிப்பு:</strong> இந்த வளங்கள் தகவல் நோக்கங்களுக்காக மட்டுமே வழங்கப்படுகின்றன. தமிழ்நாடு தேர்தல் தரவகம் வெளிப்புற இணையதளங்களின் உள்ளடக்கத்திற்கு பொறுப்பேற்காது.
+              {% else %}
+                <strong>Note:</strong> These resources are provided for informational purposes only. Tamil Nadu Election Hub is not responsible for the content of external websites.
+              {% endif %}
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const themeToggles = document.querySelectorAll("[data-theme-toggle]");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const storedTheme = localStorage.getItem("theme");
+      const isDark = storedTheme ? storedTheme === "dark" : prefersDark;
+
+      const applyTheme = (dark) => {
+        document.body.classList.toggle("theme-dark", dark);
+        localStorage.setItem("theme", dark ? "dark" : "light");
+        themeToggles.forEach((btn) => {
+          btn.textContent = dark
+            ? "{% if current_language == 'ta' %}ஒளி தோற்றம்{% else %}Light mode{% endif %}"
+            : "{% if current_language == 'ta' %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}";
+        });
+      };
+
+      applyTheme(isDark);
+      themeToggles.forEach((btn) => {
+        btn.addEventListener("click", () => applyTheme(!document.body.classList.contains("theme-dark")));
+      });
+    </script>
+  </body>
+</html>

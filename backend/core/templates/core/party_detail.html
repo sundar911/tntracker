@@ -12,10 +12,10 @@
       <div class="container nav">
         <a class="brand-link" href="/">
           <div class="brand">
-            <span class="brand-mark">TN</span>
+            <img class="brand-logo" src="/static/core/logo.png" alt="Tamil Nadu Election Tracker" />
             <div class="brand-text">
               <div class="brand-title">
-                {% if current_language == "ta" %}தமிழ்நாடு தேர்தல் தரவகம்{% else %}Tamil Nadu Election Hub{% endif %}
+                {% if current_language == "ta" %}தமிழ்நாடு தேர்தல் கண்காணிப்பான்{% else %}Tamil Nadu Election Tracker{% endif %}
               </div>
               <div class="brand-subtitle">
                 {% if current_language == "ta" %}2026 சட்டமன்றத் தேர்தல்{% else %}Assembly Elections 2026{% endif %}
@@ -23,6 +23,11 @@
             </div>
           </div>
         </a>
+        <div class="nav-links">
+          <a class="nav-link" href="/map/">{% if current_language == "ta" %}வரைபடம்{% else %}Maps{% endif %}</a>
+          <a class="nav-link nav-link-active" href="/party-dashboard/">{% if current_language == "ta" %}வேட்பாளர்களை அறியவும்{% else %}Know your Candidates{% endif %}</a>
+          <a class="nav-link" href="/resources/">{% if current_language == "ta" %}வளங்கள்{% else %}Resources{% endif %}</a>
+        </div>
         <div class="nav-actions">
           <button class="theme-toggle" type="button" data-theme-toggle>
             {% if current_language == "ta" %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}
@@ -42,7 +47,17 @@
       <div class="banner">{{ data_vintage_label }}</div>
       {% endif %}
       <a class="link" href="/party-dashboard/?year={{ year }}">← {% if current_language == "ta" %}கட்சி காட்சிப்பலகை{% else %}Party Dashboard{% endif %}</a>
-      <h1>{{ party_display_name }}</h1>
+      <div class="party-header">
+        <h1>{{ party_display_name }}</h1>
+        {% if party_symbol %}
+          <img
+            class="party-symbol"
+            src="{{ party_symbol }}"
+            alt="{{ party_display_name }} symbol"
+            onerror="this.style.display='none'"
+          />
+        {% endif %}
+      </div>
       <p class="muted">
         {% if current_language == "ta" %}
           {{ year }} ஆண்டுக்கான வேட்பாளர் பட்டியல் ({{ row_count|indian }} பதிவுகள்).
@@ -227,11 +242,23 @@
           </thead>
           <tbody>
             {% for row in rows %}
-            <tr>
+            <tr class="{% if row.is_2016 %}is-2016{% endif %}">
               {% for column in columns %}
               {% with cell=row|get_item:column.key %}
               <td>
-                {% if column.key == myneta_key and cell %}
+                {% if column.key == "candidate" and row.is_2016 %}
+                  <div class="cell-with-info">
+                    <span>{{ cell }}</span>
+                    <button class="info-button" type="button" data-info-toggle>i</button>
+                    <span class="info-popup" role="tooltip" hidden>
+                      {% if current_language == "ta" %}
+                        இந்த பதிவில் 2016 தகவல்கள் உள்ளன.
+                      {% else %}
+                        This record contains 2016 information.
+                      {% endif %}
+                    </span>
+                  </div>
+                {% elif column.key == myneta_key and cell %}
                   <a class="link" href="{{ cell }}" target="_blank" rel="noopener">Link</a>
                 {% elif column.is_currency %}
                   {% if cell %}
@@ -267,6 +294,23 @@
       </section>
     </main>
     <script>
+      document.querySelectorAll("[data-info-toggle]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const popup = btn.nextElementSibling;
+          if (!popup) return;
+          const isHidden = popup.hasAttribute("hidden");
+          document.querySelectorAll(".info-popup").forEach((item) => item.setAttribute("hidden", ""));
+          if (isHidden) {
+            popup.removeAttribute("hidden");
+          }
+        });
+      });
+      document.addEventListener("click", (event) => {
+        if (!event.target.closest(".info-button") && !event.target.closest(".info-popup")) {
+          document.querySelectorAll(".info-popup").forEach((item) => item.setAttribute("hidden", ""));
+        }
+      });
+
       const themeToggles = document.querySelectorAll("[data-theme-toggle]");
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       const storedTheme = localStorage.getItem("theme");

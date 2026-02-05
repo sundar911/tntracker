@@ -1,4 +1,5 @@
 import csv
+import json
 import difflib
 import re
 from collections import Counter, defaultdict
@@ -30,7 +31,76 @@ from .serializers import CandidateSerializer, ConstituencySerializer, ManifestoS
 
 
 def home(request):
-    return render(request, "core/home.html")
+    # Load 2021 candidate data for overview stats
+    data_dir = settings.BASE_DIR.parent / "data"
+    csv_path = data_dir / "fct_candidates_21.csv"
+    rows = _load_party_rows(csv_path)
+    stats = _compute_overview_stats(rows)
+
+    return render(request, "core/home.html", {
+        "total_parties": stats["total_parties"],
+        "total_candidates": stats["total_candidates"],
+        "overall_avg_cases": stats["overall_avg_cases"],
+        "overall_avg_age": stats["overall_avg_age"],
+        "overall_avg_assets": stats["overall_avg_assets"],
+        "overall_avg_liabilities": stats["overall_avg_liabilities"],
+    })
+
+
+def resources(request):
+    """External resources page with curated links to election data sources."""
+    resources_list = [
+        {
+            "title": "IndiaVotes - Tamil Nadu 2021 Results",
+            "url": "https://www.indiavotes.com/vidhan-sabha/2021/tamil-nadu/283/40",
+            "description": "Comprehensive assembly-wise election results for Tamil Nadu 2021, including vote counts and margins for all constituencies.",
+            "description_ta": "தமிழ்நாடு 2021 தொகுதி வாரியான தேர்தல் முடிவுகள், வாக்கு எண்ணிக்கை மற்றும் வெற்றி வித்தியாசம் உள்ளிட்ட தகவல்கள்.",
+            "category": "Results",
+        },
+        {
+            "title": "Tamil Nadu Assembly Elections Visual Analytics",
+            "url": "https://data-analytics.github.io/Election_Data/tamil_nadu.html?extra_year=2021#individual_hold",
+            "description": "Interactive visualizations of Tamil Nadu assembly elections from 1967 to 2021, with party-wise trends and constituency-level analysis.",
+            "description_ta": "1967 முதல் 2021 வரையிலான தமிழ்நாடு சட்டமன்றத் தேர்தல்களின் ஊடாடும் காட்சிப்படுத்தல்கள், கட்சி வாரியான போக்குகள் மற்றும் தொகுதி நிலை பகுப்பாய்வு.",
+            "category": "Analytics",
+        },
+        {
+            "title": "DMK's 2021 Manifesto Promise Fulfilment (The Hindu)",
+            "url": "https://www.thehindu.com/news/national/tamil-nadu/dmk-says-its-govt-fulfilled-80-of-poll-promises/article70467002.ece",
+            "description": "News report on DMK's claim of fulfilling 80% of its 2021 election manifesto promises, with details on implemented and pending commitments.",
+            "description_ta": "2021 தேர்தல் அறிக்கை வாக்குறுதிகளில் 80% நிறைவேற்றப்பட்டதாக திமுக அறிவிப்பு, செயல்படுத்தப்பட்ட மற்றும் நிலுவையில் உள்ள உறுதிமொழிகள் குறித்த விவரங்கள்.",
+            "category": "News",
+        },
+        {
+            "title": "MyNeta - Tamil Nadu Assembly Elections",
+            "url": "https://myneta.info/state_assembly.php?state=Tamil%20Nadu",
+            "description": "Candidate affidavit data from Election Commission archives, including criminal records, assets, liabilities, and educational qualifications for all candidates.",
+            "description_ta": "தேர்தல் ஆணையக் காப்பகங்களிலிருந்து வேட்பாளர் வாக்குறுதி தரவு, குற்றப் பதிவுகள், சொத்துக்கள், கடன்கள் மற்றும் கல்வித் தகுதிகள் உள்ளிட்டவை.",
+            "category": "Affidavits",
+        },
+        {
+            "title": "MLA Election Expenditure Analysis 2021 (ADR)",
+            "url": "https://adrindia.org/sites/default/files/Analysis_of_Election_Expenditure_Statements_of_MLA_Tamil_Nadu_Assembly_2021_English.pdf",
+            "description": "Association for Democratic Reforms analysis of election expenditure statements filed by MLAs in Tamil Nadu 2021, including party-wise spending patterns.",
+            "description_ta": "தமிழ்நாடு 2021-ல் சட்டமன்ற உறுப்பினர்கள் தாக்கல் செய்த தேர்தல் செலவு அறிக்கைகளின் ஜனநாயக சீர்திருத்த சங்கம் பகுப்பாய்வு.",
+            "category": "Expenditure",
+        },
+        {
+            "title": "16th Tamil Nadu Legislative Assembly Members",
+            "url": "https://assembly.tn.gov.in/16thassembly/members.php",
+            "description": "Official list of current MLAs from the Tamil Nadu Legislative Assembly website, with contact details and constituency information.",
+            "description_ta": "தமிழ்நாடு சட்டமன்ற இணையதளத்திலிருந்து தற்போதைய சட்டமன்ற உறுப்பினர்களின் அதிகாரப்பூர்வ பட்டியல், தொடர்பு விவரங்கள் மற்றும் தொகுதி தகவல்கள்.",
+            "category": "Official",
+        },
+        {
+            "title": "NITI Aayog - Tamil Nadu Fiscal Landscape",
+            "url": "https://www.niti.gov.in/sites/default/files/2025-03/Macro-and-Fiscal-Landscape-of-the-State-of-Tamil-Nadu.pdf",
+            "description": "NITI Aayog report on Tamil Nadu's macroeconomic and fiscal landscape, providing context on state finances and development indicators.",
+            "description_ta": "தமிழ்நாட்டின் பொருளாதார மற்றும் நிதி நிலப்பரப்பு குறித்த நிதி ஆயோக் அறிக்கை, மாநில நிதி மற்றும் வளர்ச்சி குறியீடுகள் பற்றிய சூழல்.",
+            "category": "Economy",
+        },
+    ]
+    return render(request, "core/resources.html", {"resources": resources_list})
 
 
 def map_view(request):
@@ -51,6 +121,24 @@ def _normalize_constituency_name(name: Optional[str]) -> str:
     normalized = re.sub(r"[^A-Z0-9]+", " ", (name or "").strip().upper())
     return re.sub(r"\s+", " ", normalized).strip()
 
+
+def _is_2016_row(row: dict) -> bool:
+    candidate_name = (row.get("candidate") or "").strip().lower()
+    constituency_name = _normalize_constituency_name(
+        row.get("2021_constituency") or row.get("constituency")
+    )
+    return candidate_name == "ambethkumar s" and constituency_name == "VANDAVASI SC"
+
+
+@lru_cache(maxsize=1)
+def _load_party_symbol_map() -> dict[str, str]:
+    symbols_path = Path(__file__).resolve().parent / "static" / "core" / "party-symbols" / "party_symbols.json"
+    if not symbols_path.exists():
+        return {}
+    try:
+        return json.loads(symbols_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
 
 @lru_cache(maxsize=1)
 def _load_official_constituencies() -> dict[str, str]:
@@ -159,11 +247,41 @@ PARTY_COLORS = {
     "IND": "#64748B",
 }
 
+LOCAL_PARTY_SYMBOLS = {
+    "aiadmk": "aiadmk.svg",
+    "all india anna dravida munnetra kazhagam": "aiadmk.svg",
+    "bjp": "bjp.png",
+    "bharatiya janata party": "bjp.png",
+    "dmk": "Dravida_Munnetra_Kazhagam_logo.png",
+    "dravida munnetra kazhagam": "Dravida_Munnetra_Kazhagam_logo.png",
+    "inc": "inc.png",
+    "indian national congress": "inc.png",
+    "pmk": "Pmk_flag.jpg",
+    "pattali makkal katchi": "Pmk_flag.jpg",
+    "cpi": "cpi_election_symbol.svg.png",
+    "communist party of india": "cpi_election_symbol.svg.png",
+    "cpi(m)": "cpim.svg.png",
+    "cpi m": "cpim.svg.png",
+    "communist party of india (marxist)": "cpim.svg.png",
+    "vck": "vck_election_symbol.png",
+    "viduthalai chiruthaigal katchi": "vck_election_symbol.png",
+}
+
 
 def _party_color(party_name: Optional[str]) -> Optional[str]:
     if not party_name:
         return None
     return PARTY_COLORS.get(party_name.strip())
+
+
+def _party_symbol_url(party_name: Optional[str]) -> Optional[str]:
+    if not party_name:
+        return None
+    key = party_name.strip().lower()
+    filename = LOCAL_PARTY_SYMBOLS.get(key)
+    if filename:
+        return f"/static/party_symbols/{filename}"
+    return None
 
 
 def map_data(request):
@@ -200,20 +318,24 @@ def map_data(request):
         "THALLI": "THALLY",
         "SHOZHINGANALLUR": "SHOLINGANALLUR",
         "VANDAVASI": "VANDAVASI SC",
-        "VANDAVASI (SC)": "VANDAVASI (SC)",
+        "VANDAVASI SC": "VANDAVASI SC",
     }
     for raw, mapped in explicit_aliases.items():
         alias_by_district[""].setdefault(raw, mapped)
         for district_key in district_candidates.keys():
             alias_by_district[district_key].setdefault(raw, mapped)
     explicit_district_aliases = {
-        "TIRUVANNAMALAI": {"VANDAVASI (SC)": "VANDAVASI (SC)", "VANDAVASI": "VANDAVASI (SC)"},
-        "TIRUPATHUR": {"TIRUPPATTUR": "TIRUPATTUR", "TIRUPATHUR": "TIRUPATTUR"},
+        "TIRUVANNAMALAI": {"VANDAVASI SC": "VANDAVASI SC", "VANDAVASI": "VANDAVASI SC"},
+        "TIRUPATHUR": {"TIRUPPATTUR": "TIRUPATTUR"},
         "SIVAGANGA": {"TIRUPPATTUR": "TIRUPPATHUR"},
     }
     for district_key, mapping in explicit_district_aliases.items():
         for raw, mapped in mapping.items():
             alias_by_district[district_key].setdefault(raw, mapped)
+
+    # Force correct global alias for Tirupathur (overrides any auto-generated alias)
+    # GeoJSON has "Tiruppattur" -> normalized "TIRUPPATTUR", CSV has "TIRUPATTUR"
+    alias_by_district[""]["TIRUPPATTUR"] = "TIRUPATTUR"
 
     features = []
     for constituency in Constituency.objects.exclude(boundary_geojson__isnull=True):
@@ -258,6 +380,211 @@ def map_data(request):
     return JsonResponse({"type": "FeatureCollection", "features": features, "legend": legend})
 
 
+def _calculate_bounds(boundary_geojson):
+    """Extract bounding box from GeoJSON geometry."""
+    if not boundary_geojson:
+        return None
+    try:
+        coords = []
+        
+        def extract_coords(obj):
+            if isinstance(obj, list):
+                if len(obj) >= 2 and isinstance(obj[0], (int, float)) and isinstance(obj[1], (int, float)):
+                    coords.append((obj[1], obj[0]))  # lat, lng
+                else:
+                    for item in obj:
+                        extract_coords(item)
+        
+        if "coordinates" in boundary_geojson:
+            extract_coords(boundary_geojson["coordinates"])
+        
+        if coords:
+            lats = [c[0] for c in coords]
+            lngs = [c[1] for c in coords]
+            return [[min(lats), min(lngs)], [max(lats), max(lngs)]]
+    except (KeyError, TypeError, ValueError):
+        pass
+    return None
+
+
+def _fuzzy_match_score(query: str, target: str, threshold: float = 0.6) -> float:
+    """
+    Calculate similarity score between query and target string.
+    Returns a score between 0 and 1, where 1 is exact match.
+    Uses a combination of substring matching and character-level similarity.
+    """
+    if not query or not target:
+        return 0.0
+    
+    query = query.lower().strip()
+    target = target.lower().strip()
+    
+    # Exact match
+    if query == target:
+        return 1.0
+    
+    # Query is substring of target (starts with gets higher score)
+    if target.startswith(query):
+        return 0.95
+    if query in target:
+        return 0.85
+    
+    # Target is substring of query
+    if query.startswith(target):
+        return 0.9
+    if target in query:
+        return 0.8
+    
+    # Use difflib for fuzzy matching
+    ratio = difflib.SequenceMatcher(None, query, target).ratio()
+    
+    # Also check if words match
+    query_words = set(query.split())
+    target_words = set(target.split())
+    if query_words & target_words:  # Any common words
+        ratio = max(ratio, 0.7)
+    
+    return ratio if ratio >= threshold else 0.0
+
+
+def map_search(request):
+    """Return constituencies matching search query for map autocomplete with fuzzy matching."""
+    query = request.GET.get("q", "").strip()
+    if len(query) < 2:
+        return JsonResponse({"results": []})
+    
+    query_lower = query.lower()
+    query_normalized = _normalize_constituency_name(query)
+    
+    constituencies = Constituency.objects.exclude(boundary_geojson__isnull=True)
+    
+    # Build list of all searchable items with scores
+    scored_results = []
+    
+    # Track districts for district-level results
+    district_constituencies: dict[str, list] = {}
+    
+    for constituency in constituencies:
+        # Score against constituency name
+        name_score = max(
+            _fuzzy_match_score(query_lower, (constituency.name or "").lower()),
+            _fuzzy_match_score(query_normalized, _normalize_constituency_name(constituency.name)),
+        )
+        
+        # Score against Tamil name
+        name_ta_score = _fuzzy_match_score(query_lower, (constituency.name_ta or "").lower())
+        
+        # Score against district
+        district = (constituency.district or "").strip()
+        district_score = _fuzzy_match_score(query_lower, district.lower())
+        district_ta_score = _fuzzy_match_score(query_lower, (constituency.district_ta or "").lower())
+        
+        # Best score for this constituency
+        best_score = max(name_score, name_ta_score, district_score, district_ta_score)
+        
+        if best_score > 0:
+            # Determine match type
+            if name_score >= district_score and name_score >= district_ta_score:
+                match_type = "name"
+            elif name_ta_score >= district_score and name_ta_score >= district_ta_score:
+                match_type = "name"
+            else:
+                match_type = "district"
+            
+            scored_results.append({
+                "id": constituency.id,
+                "name": constituency.name,
+                "name_ta": constituency.name_ta or "",
+                "district": district,
+                "district_ta": constituency.district_ta or "",
+                "bounds": _calculate_bounds(constituency.boundary_geojson),
+                "match_type": match_type,
+                "score": best_score,
+                "is_district_result": False,
+            })
+        
+        # Group by district for district-level results
+        if district:
+            if district not in district_constituencies:
+                district_constituencies[district] = []
+            district_constituencies[district].append(constituency)
+    
+    # Add district-level results (shows "X constituencies in District")
+    for district, const_list in district_constituencies.items():
+        district_lower = district.lower()
+        district_score = _fuzzy_match_score(query_lower, district_lower)
+        
+        # Also check Tamil district name from first constituency
+        district_ta = const_list[0].district_ta or "" if const_list else ""
+        district_ta_score = _fuzzy_match_score(query_lower, district_ta.lower())
+        
+        best_district_score = max(district_score, district_ta_score)
+        
+        if best_district_score >= 0.7:  # Higher threshold for district-level results
+            # Calculate combined bounds for all constituencies in district
+            all_bounds = [_calculate_bounds(c.boundary_geojson) for c in const_list]
+            all_bounds = [b for b in all_bounds if b]
+            
+            if all_bounds:
+                min_lat = min(b[0][0] for b in all_bounds)
+                min_lng = min(b[0][1] for b in all_bounds)
+                max_lat = max(b[1][0] for b in all_bounds)
+                max_lng = max(b[1][1] for b in all_bounds)
+                combined_bounds = [[min_lat, min_lng], [max_lat, max_lng]]
+            else:
+                combined_bounds = None
+            
+            scored_results.append({
+                "id": None,  # District-level result, no single ID
+                "name": f"{district} District",
+                "name_ta": f"{district_ta} மாவட்டம்" if district_ta else "",
+                "district": district,
+                "district_ta": district_ta,
+                "bounds": combined_bounds,
+                "match_type": "district_group",
+                "score": best_district_score + 0.1,  # Slight boost for district groups
+                "is_district_result": True,
+                "constituency_count": len(const_list),
+            })
+    
+    # Sort by score (descending), then by match type, then alphabetically
+    def sort_key(item):
+        # Priority: higher score first, then name matches, then district matches
+        type_priority = {"name": 0, "district_group": 1, "district": 2}
+        return (
+            -item["score"],
+            type_priority.get(item["match_type"], 3),
+            item["name"].lower(),
+        )
+    
+    scored_results.sort(key=sort_key)
+    
+    # Remove duplicates (keep highest scored version)
+    seen_ids = set()
+    seen_districts = set()
+    unique_results = []
+    
+    for result in scored_results:
+        if result["is_district_result"]:
+            if result["district"] not in seen_districts:
+                seen_districts.add(result["district"])
+                unique_results.append(result)
+        else:
+            if result["id"] not in seen_ids:
+                seen_ids.add(result["id"])
+                unique_results.append(result)
+    
+    # Limit results
+    unique_results = unique_results[:15]
+    
+    # Clean up internal fields before returning
+    for result in unique_results:
+        result.pop("score", None)
+        result.pop("is_district_result", None)
+    
+    return JsonResponse({"results": unique_results})
+
+
 def set_language(request, language: str):
     if language not in {"en", "ta"}:
         language = "en"
@@ -273,9 +600,9 @@ def constituency_detail(request, constituency_id: int):
     party_symbols: dict[str, str] = {}
     for party in Party.objects.exclude(symbol_url="").only("name", "abbreviation", "symbol_url"):
         if party.name:
-            party_symbols[party.name] = party.symbol_url
+            party_symbols[party.name.strip().lower()] = party.symbol_url
         if party.abbreviation:
-            party_symbols[party.abbreviation] = party.symbol_url
+            party_symbols[party.abbreviation.strip().lower()] = party.symbol_url
     rows = _load_smla_rows()
     constituency_seen: set[str] = set()
     district_candidates: dict[str, set[str]] = defaultdict(set)
@@ -305,13 +632,17 @@ def constituency_detail(request, constituency_id: int):
     explicit_district_aliases = {
         "TIRUVANNAMALAI": {"VANDAVASI SC": "VANDAVASI SC", "VANDAVASI": "VANDAVASI SC"},
         "VILUPPURAM": {"VANDAVASI SC": "VANDAVASI SC", "VANDAVASI": "VANDAVASI SC"},
-        "TIRUPATHUR": {"TIRUPPATTUR": "TIRUPATTUR", "TIRUPATHUR": "TIRUPATTUR"},
-        "VELLORE": {"TIRUPPATTUR": "TIRUPATTUR", "TIRUPATHUR": "TIRUPATTUR"},
-        "SIVAGANGA": {"TIRUPPATTUR": "TIRUPPATHUR", "TIRUPATHUR": "TIRUPPATHUR"},
+        "TIRUPATHUR": {"TIRUPPATTUR": "TIRUPATTUR"},
+        "VELLORE": {"TIRUPPATTUR": "TIRUPATTUR"},
+        "SIVAGANGA": {"TIRUPPATTUR": "TIRUPPATHUR"},
     }
     for district_key, mapping in explicit_district_aliases.items():
         for raw, mapped in mapping.items():
             alias_by_district[district_key].setdefault(raw, mapped)
+
+    # Force correct global alias for Tirupathur (overrides any auto-generated alias)
+    # GeoJSON has "Tiruppattur" -> normalized "TIRUPPATTUR", CSV has "TIRUPATTUR"
+    alias_by_district[""]["TIRUPPATTUR"] = "TIRUPATTUR"
 
     constituency_key = _resolve_constituency_key(
         _normalize_constituency_name(constituency.name),
@@ -566,7 +897,8 @@ def constituency_detail(request, constituency_id: int):
             {
                 "name": (row.get("candidate") or "").strip() or "Unknown",
                 "party": (row.get("party") or "").strip() or "Independent / Unknown",
-                "party_symbol": party_symbols.get((row.get("party") or "").strip()),
+                "party_symbol": _party_symbol_url(raw_party) or party_symbols.get(raw_party.lower()),
+                "is_2016": _is_2016_row(row),
                 "education": (row.get("education") or "").strip(),
                 "age": _parse_int(row.get("age")),
                 "criminal_cases": _parse_int(row.get("criminal_cases")),
@@ -607,6 +939,9 @@ def candidate_detail(request, candidate_id: int):
         ),
         pk=candidate_id,
     )
+    party_symbol = None
+    if candidate.party:
+        party_symbol = _party_symbol_url(candidate.party.abbreviation or candidate.party.name)
     return render(
         request,
         "core/candidate_detail.html",
@@ -616,6 +951,7 @@ def candidate_detail(request, candidate_id: int):
             "missing_affidavit": not candidate.affidavits.all(),
             "missing_legal": not candidate.legal_cases.all(),
             "missing_results": not candidate.results_2021,
+            "party_symbol": party_symbol,
         },
     )
 
@@ -707,6 +1043,60 @@ def _load_party_rows(csv_path: Path) -> list[dict]:
     with csv_path.open("r", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
         return list(reader)
+
+
+def _compute_overview_stats(rows: list[dict]) -> dict:
+    """Compute overview statistics from candidate rows."""
+    if not rows:
+        return {
+            "total_parties": 0,
+            "total_candidates": 0,
+            "overall_avg_cases": None,
+            "overall_avg_age": None,
+            "overall_avg_assets": None,
+            "overall_avg_liabilities": None,
+        }
+
+    party_set = set()
+    cases_total = 0
+    cases_count = 0
+    age_total = 0
+    age_count = 0
+    assets_total = 0
+    assets_count = 0
+    liabilities_total = 0
+    liabilities_count = 0
+
+    for row in rows:
+        party_name = (row.get("party") or "").strip() or "Independent / Unknown"
+        party_set.add(party_name)
+
+        cases_value = _parse_int(row.get("criminal_cases"))
+        age_value = _parse_int(row.get("age"))
+        assets_value = _parse_int(row.get("total_assets_rs"))
+        liabilities_value = _parse_int(row.get("liabilities_rs"))
+
+        if cases_value is not None:
+            cases_total += cases_value
+            cases_count += 1
+        if age_value is not None:
+            age_total += age_value
+            age_count += 1
+        if assets_value is not None:
+            assets_total += assets_value
+            assets_count += 1
+        if liabilities_value is not None:
+            liabilities_total += liabilities_value
+            liabilities_count += 1
+
+    return {
+        "total_parties": len(party_set),
+        "total_candidates": len(rows),
+        "overall_avg_cases": round(cases_total / cases_count, 2) if cases_count else None,
+        "overall_avg_age": round(age_total / age_count, 1) if age_count else None,
+        "overall_avg_assets": round(assets_total / assets_count, 0) if assets_count else None,
+        "overall_avg_liabilities": round(liabilities_total / liabilities_count, 0) if liabilities_count else None,
+    }
 
 
 def party_dashboard(request):
@@ -901,6 +1291,7 @@ def party_dashboard(request):
             {
                 "party": party,
                 "party_display": _display_party_name(party),
+                "party_symbol": _party_symbol_url(party),
                 "candidate_count": stats["count"],
                 "avg_cases": avg_cases,
                 "avg_age": avg_age,
@@ -1028,6 +1419,7 @@ def party_detail(request, party_name: str):
     if year not in {"2021", "2026"}:
         year = "2021"
     party_display_name = _display_party_name(party_name)
+    party_symbol = _party_symbol_url(party_name)
     min_cases_raw = request.GET.get("min_cases", "").strip()
     max_cases_raw = request.GET.get("max_cases", "").strip()
     min_age_raw = request.GET.get("min_age", "").strip()
@@ -1183,6 +1575,7 @@ def party_detail(request, party_name: str):
         for district_header in ("2021_district", "district"):
             if district_header in row_data and row_data[district_header]:
                 row_data[district_header] = str(row_data[district_header]).strip().title()
+        row_data["is_2016"] = _is_2016_row(row)
         rows_table.append(row_data)
     available_constituencies = sorted(district_map.get(district_filter, set())) if district_filter else sorted(
         {const for consts in district_map.values() for const in consts}
@@ -1198,6 +1591,7 @@ def party_detail(request, party_name: str):
         {
             "party_name": party_name,
             "party_display_name": party_display_name,
+            "party_symbol": party_symbol,
             "year": year,
             "rows": rows_table,
             "columns": columns,

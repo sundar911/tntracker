@@ -12,10 +12,10 @@
       <div class="container nav">
         <a class="brand-link" href="/">
           <div class="brand">
-            <span class="brand-mark">TN</span>
+            <img class="brand-logo" src="/static/core/logo.png" alt="Tamil Nadu Election Tracker" />
             <div class="brand-text">
               <div class="brand-title">
-                {% if current_language == "ta" %}தமிழ்நாடு தேர்தல் தரவகம்{% else %}Tamil Nadu Election Hub{% endif %}
+                {% if current_language == "ta" %}தமிழ்நாடு தேர்தல் கண்காணிப்பான்{% else %}Tamil Nadu Election Tracker{% endif %}
               </div>
               <div class="brand-subtitle">
                 {% if current_language == "ta" %}2026 சட்டமன்றத் தேர்தல்{% else %}Assembly Elections 2026{% endif %}
@@ -23,6 +23,11 @@
             </div>
           </div>
         </a>
+        <div class="nav-links">
+          <a class="nav-link" href="/map/">{% if current_language == "ta" %}வரைபடம்{% else %}Maps{% endif %}</a>
+          <a class="nav-link" href="/party-dashboard/">{% if current_language == "ta" %}வேட்பாளர்களை அறியவும்{% else %}Know your Candidates{% endif %}</a>
+          <a class="nav-link" href="/resources/">{% if current_language == "ta" %}வளங்கள்{% else %}Resources{% endif %}</a>
+        </div>
         <div class="nav-actions">
           <button class="theme-toggle" type="button" data-theme-toggle>
             {% if current_language == "ta" %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}
@@ -65,7 +70,7 @@
         <h2>{% if current_language == "ta" %}வேட்பாளர்கள்{% else %}Candidates{% endif %}</h2>
         <div class="candidate-grid">
           {% for candidate in candidate_cards %}
-          <div class="candidate-card">
+          <div class="candidate-card {% if candidate.is_2016 %}is-2016{% endif %}">
             <div class="candidate-header">
               <div>
                 <div class="candidate-name">{{ candidate.name }}</div>
@@ -78,7 +83,20 @@
                     src="{{ candidate.party_symbol }}"
                     alt="{{ candidate.party }} symbol"
                     loading="lazy"
+                    onerror="this.style.display='none'"
                   />
+                {% endif %}
+                {% if candidate.is_2016 %}
+                  <button class="info-button" type="button" data-info-toggle>
+                    i
+                  </button>
+                  <span class="info-popup" role="tooltip" hidden>
+                    {% if current_language == "ta" %}
+                      இந்த பதிவில் 2016 தகவல்கள் உள்ளன.
+                    {% else %}
+                      This record contains 2016 information.
+                    {% endif %}
+                  </span>
                 {% endif %}
                 {% if candidate.sitting %}
                   <span class="tag">{% if current_language == "ta" %}தற்போதைய எம்.எல்.ஏ{% else %}Sitting MLA{% endif %}</span>
@@ -146,6 +164,23 @@
       </section>
     </main>
     <script>
+      document.querySelectorAll("[data-info-toggle]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const popup = btn.nextElementSibling;
+          if (!popup) return;
+          const isHidden = popup.hasAttribute("hidden");
+          document.querySelectorAll(".info-popup").forEach((item) => item.setAttribute("hidden", ""));
+          if (isHidden) {
+            popup.removeAttribute("hidden");
+          }
+        });
+      });
+      document.addEventListener("click", (event) => {
+        if (!event.target.closest(".info-button") && !event.target.closest(".info-popup")) {
+          document.querySelectorAll(".info-popup").forEach((item) => item.setAttribute("hidden", ""));
+        }
+      });
+    </script>
       const themeToggles = document.querySelectorAll("[data-theme-toggle]");
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       const storedTheme = localStorage.getItem("theme");

@@ -12,10 +12,10 @@
       <div class="container nav">
         <a class="brand-link" href="/">
           <div class="brand">
-            <span class="brand-mark">TN</span>
+            <img class="brand-logo" src="/static/core/logo.png" alt="Tamil Nadu Election Tracker" />
             <div class="brand-text">
               <div class="brand-title">
-                {% if current_language == "ta" %}தமிழ்நாடு தேர்தல் தரவகம்{% else %}Tamil Nadu Election Hub{% endif %}
+                {% if current_language == "ta" %}தமிழ்நாடு தேர்தல் கண்காணிப்பான்{% else %}Tamil Nadu Election Tracker{% endif %}
               </div>
               <div class="brand-subtitle">
                 {% if current_language == "ta" %}2026 சட்டமன்றத் தேர்தல்{% else %}Assembly Elections 2026{% endif %}
@@ -23,6 +23,11 @@
             </div>
           </div>
         </a>
+        <div class="nav-links">
+          <a class="nav-link" href="/map/">{% if current_language == "ta" %}வரைபடம்{% else %}Maps{% endif %}</a>
+          <a class="nav-link" href="/party-dashboard/">{% if current_language == "ta" %}வேட்பாளர்களை அறியவும்{% else %}Know your Candidates{% endif %}</a>
+          <a class="nav-link" href="/resources/">{% if current_language == "ta" %}வளங்கள்{% else %}Resources{% endif %}</a>
+        </div>
         <div class="nav-actions">
           <button class="theme-toggle" type="button" data-theme-toggle>
             {% if current_language == "ta" %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}
@@ -48,7 +53,19 @@
         {% if current_language == "ta" and candidate.name_ta %}{{ candidate.name_ta }}{% else %}{{ candidate.name }}{% endif %}
       </h1>
       <p class="muted">
-        {% if current_language == "ta" and candidate.party.name_ta %}{{ candidate.party.name_ta }}{% else %}{{ candidate.party }}{% endif %}
+        <span class="party-inline">
+          {% if party_symbol %}
+            <img
+              class="party-symbol"
+              src="{{ party_symbol }}"
+              alt="{{ candidate.party }} symbol"
+              onerror="this.style.display='none'"
+            />
+          {% endif %}
+          <span>
+            {% if current_language == "ta" and candidate.party.name_ta %}{{ candidate.party.name_ta }}{% else %}{{ candidate.party }}{% endif %}
+          </span>
+        </span>
         •
         {% if current_language == "ta" and candidate.constituency.name_ta %}{{ candidate.constituency.name_ta }}{% else %}{{ candidate.constituency.name }}{% endif %}
       </p>

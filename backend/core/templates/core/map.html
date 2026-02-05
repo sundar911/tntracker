@@ -50,6 +50,310 @@
         border-radius: 4px;
         border: 1px solid rgba(15, 23, 42, 0.15);
       }
+
+      /* Search bar styles */
+      .map-search-container {
+        margin-bottom: 16px;
+      }
+      .map-search-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: stretch;
+      }
+      .map-search-input-wrapper {
+        flex: 1;
+        min-width: 200px;
+        position: relative;
+      }
+      .map-search-input {
+        width: 100%;
+        padding: 12px 16px;
+        padding-right: 44px;
+        font-size: 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        background: #ffffff;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        box-sizing: border-box;
+      }
+      .map-search-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      }
+      .map-search-input::placeholder {
+        color: #94a3b8;
+      }
+      .map-search-clear {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 24px;
+        height: 24px;
+        border: none;
+        background: #e2e8f0;
+        border-radius: 50%;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: #64748b;
+        line-height: 1;
+      }
+      .map-search-clear:hover {
+        background: #cbd5e1;
+        color: #334155;
+      }
+      .map-search-input:not(:placeholder-shown) + .map-search-clear {
+        display: flex;
+      }
+      .map-search-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        margin-top: 4px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        box-shadow: 0 10px 40px rgba(15, 23, 42, 0.15);
+        max-height: 320px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+      }
+      .map-search-dropdown.active {
+        display: block;
+      }
+      .map-search-dropdown-item {
+        padding: 12px 16px;
+        cursor: pointer;
+        border-bottom: 1px solid #f1f5f9;
+        transition: background 0.15s;
+      }
+      .map-search-dropdown-item:last-child {
+        border-bottom: none;
+      }
+      .map-search-dropdown-item:hover,
+      .map-search-dropdown-item.highlighted {
+        background: #f1f5f9;
+      }
+      .map-search-dropdown-item-name {
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 2px;
+      }
+      .map-search-dropdown-item-district {
+        font-size: 13px;
+        color: #64748b;
+      }
+      .map-search-dropdown-empty {
+        padding: 16px;
+        text-align: center;
+        color: #64748b;
+      }
+      .map-search-dropdown-loading {
+        padding: 16px;
+        text-align: center;
+        color: #64748b;
+      }
+      .map-search-dropdown-item-district-group {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        border-left: 3px solid #3b82f6;
+      }
+      .map-search-dropdown-item-district-group:hover,
+      .map-search-dropdown-item-district-group.highlighted {
+        background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+      }
+      .theme-dark .map-search-dropdown-item-district-group {
+        background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%);
+      }
+      .theme-dark .map-search-dropdown-item-district-group:hover,
+      .theme-dark .map-search-dropdown-item-district-group.highlighted {
+        background: linear-gradient(135deg, #1e4976 0%, #334155 100%);
+      }
+      .locate-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 20px;
+        font-size: 15px;
+        font-weight: 500;
+        background: #3b82f6;
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s;
+        white-space: nowrap;
+        min-height: 48px;
+      }
+      .locate-btn:hover {
+        background: #2563eb;
+      }
+      .locate-btn:active {
+        transform: scale(0.98);
+      }
+      .locate-btn:disabled {
+        background: #94a3b8;
+        cursor: not-allowed;
+      }
+      .locate-btn svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+      .locate-btn .spinner {
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      /* Dark mode adjustments */
+      .theme-dark .map-search-input {
+        background: #1e293b;
+        border-color: #334155;
+        color: #f1f5f9;
+      }
+      .theme-dark .map-search-input:focus {
+        border-color: #3b82f6;
+      }
+      .theme-dark .map-search-dropdown {
+        background: #1e293b;
+        border-color: #334155;
+      }
+      .theme-dark .map-search-dropdown-item {
+        border-color: #334155;
+      }
+      .theme-dark .map-search-dropdown-item:hover,
+      .theme-dark .map-search-dropdown-item.highlighted {
+        background: #334155;
+      }
+      .theme-dark .map-search-dropdown-item-name {
+        color: #f1f5f9;
+      }
+      .theme-dark .map-search-clear {
+        background: #334155;
+        color: #94a3b8;
+      }
+      .theme-dark .map-search-clear:hover {
+        background: #475569;
+        color: #e2e8f0;
+      }
+      .theme-dark .map-legend {
+        background: #1e293b;
+      }
+      .theme-dark .map-legend h3 {
+        color: #94a3b8;
+      }
+
+      /* Mobile responsiveness */
+      @media (max-width: 640px) {
+        .map-search-row {
+          flex-direction: column;
+        }
+        .map-search-input-wrapper {
+          min-width: 100%;
+        }
+        .map-search-input {
+          font-size: 16px; /* Prevent iOS zoom on focus */
+          padding: 14px 16px;
+          padding-right: 48px;
+        }
+        .map-search-dropdown {
+          max-height: 50vh;
+        }
+        .map-search-dropdown-item {
+          padding: 14px 16px; /* Larger touch targets */
+          min-height: 48px;
+        }
+        .map-search-clear {
+          width: 32px;
+          height: 32px;
+          font-size: 18px;
+        }
+        .locate-btn {
+          width: 100%;
+          padding: 14px 20px;
+          font-size: 16px;
+        }
+        #map {
+          height: 55vh;
+          border-radius: 8px;
+        }
+        .map-legend {
+          max-width: 180px;
+          padding: 10px 12px;
+          font-size: 13px;
+        }
+      }
+
+      /* Ensure smooth scrolling in dropdown */
+      .map-search-dropdown {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+      }
+
+      /* Better focus states for accessibility */
+      .locate-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+      }
+      .map-search-clear:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+      }
+
+      /* Location marker pulse animation */
+      @keyframes pulse {
+        0% { transform: scale(1); opacity: 0.6; }
+        100% { transform: scale(2); opacity: 0; }
+      }
+
+      /* Toast notifications */
+      .map-toast {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: #1e293b;
+        color: #f1f5f9;
+        padding: 14px 24px;
+        border-radius: 10px;
+        box-shadow: 0 10px 40px rgba(15, 23, 42, 0.3);
+        font-size: 15px;
+        z-index: 2000;
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        max-width: 90vw;
+        text-align: center;
+      }
+      .map-toast.visible {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+      .map-toast.error {
+        background: #dc2626;
+      }
+      .map-toast.info {
+        background: #3b82f6;
+      }
+      .theme-dark .map-toast {
+        background: #334155;
+      }
+      .theme-dark .map-toast.error {
+        background: #b91c1c;
+      }
     </style>
   </head>
   <body>
@@ -57,10 +361,10 @@
       <div class="container nav">
         <a class="brand-link" href="/">
           <div class="brand">
-            <span class="brand-mark">TN</span>
+            <img class="brand-logo" src="/static/core/logo.png" alt="Tamil Nadu Election Tracker" />
             <div class="brand-text">
               <div class="brand-title">
-                {% if current_language == "ta" %}தமிழ்நாடு தேர்தல் தரவகம்{% else %}Tamil Nadu Election Hub{% endif %}
+                {% if current_language == "ta" %}தமிழ்நாடு தேர்தல் கண்காணிப்பான்{% else %}Tamil Nadu Election Tracker{% endif %}
               </div>
               <div class="brand-subtitle">
                 {% if current_language == "ta" %}2026 சட்டமன்றத் தேர்தல்{% else %}Assembly Elections 2026{% endif %}
@@ -68,6 +372,11 @@
             </div>
           </div>
         </a>
+        <div class="nav-links">
+          <a class="nav-link nav-link-active" href="/map/">{% if current_language == "ta" %}வரைபடம்{% else %}Maps{% endif %}</a>
+          <a class="nav-link" href="/party-dashboard/">{% if current_language == "ta" %}வேட்பாளர்களை அறியவும்{% else %}Know your Candidates{% endif %}</a>
+          <a class="nav-link" href="/resources/">{% if current_language == "ta" %}வளங்கள்{% else %}Resources{% endif %}</a>
+        </div>
         <div class="nav-actions">
           <button class="theme-toggle" type="button" data-theme-toggle>
             {% if current_language == "ta" %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}
@@ -88,7 +397,40 @@
       {% endif %}
       <a class="link" href="/">← {% if current_language == "ta" %}முகப்பு{% else %}Back to home{% endif %}</a>
       <h1>{% if current_language == "ta" %}தொகுதி வரைபடம்{% else %}Interactive Constituency Map{% endif %}</h1>
+      
+      <!-- Search bar -->
+      <div class="map-search-container">
+        <div class="map-search-row">
+          <div class="map-search-input-wrapper">
+            <input 
+              type="text" 
+              id="map-search-input" 
+              class="map-search-input" 
+              placeholder="{% if current_language == 'ta' %}தொகுதி அல்லது மாவட்டத்தைத் தேடுங்கள்...{% else %}Search constituency or district...{% endif %}"
+              autocomplete="off"
+              aria-label="{% if current_language == 'ta' %}தொகுதி தேடல்{% else %}Search constituency{% endif %}"
+            />
+            <button type="button" class="map-search-clear" id="map-search-clear" aria-label="Clear search">×</button>
+            <div class="map-search-dropdown" id="map-search-dropdown"></div>
+          </div>
+          <button type="button" class="locate-btn" id="locate-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <circle cx="12" cy="12" r="3"/>
+              <line x1="12" y1="2" x2="12" y2="6"/>
+              <line x1="12" y1="18" x2="12" y2="22"/>
+              <line x1="2" y1="12" x2="6" y2="12"/>
+              <line x1="18" y1="12" x2="22" y2="12"/>
+            </svg>
+            <span id="locate-btn-text">{% if current_language == "ta" %}என் இருப்பிடம்{% else %}My Location{% endif %}</span>
+          </button>
+        </div>
+      </div>
+
       <div id="map"></div>
+      
+      <!-- Toast notification -->
+      <div id="map-toast" class="map-toast"></div>
     </main>
 
     <script>
@@ -118,10 +460,24 @@
       crossorigin=""
     ></script>
     <script>
+      // Tamil Nadu bounds with buffer for surrounding context
+      const tnBounds = L.latLngBounds([7.5, 76.0], [14.0, 81.0]);
+      
       const map = L.map("map", {
         zoomControl: true,
-        attributionControl: false,
+        attributionControl: true,
+        minZoom: 6,
+        maxZoom: 14,
+        maxBounds: tnBounds.pad(0.1),
+        maxBoundsViscosity: 0.8,
       }).setView([10.9, 78.7], 7);
+
+      // Add OpenStreetMap tile layer for geographic context
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 14,
+        minZoom: 6,
+      }).addTo(map);
 
       const partyLabel = {
         "Pattali Makkal Katchi": "PMK",
@@ -129,10 +485,14 @@
         IND: "Independent",
       };
 
+      // Detect touch device
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
       fetch("/map/data/")
         .then((response) => response.json())
         .then((data) => {
           let activeParty = null;
+          let selectedLayer = null;
           const legendRows = [];
 
           const styleFeature = (feature) => {
@@ -148,18 +508,35 @@
             };
           };
 
+          const highlightStyle = (feature) => ({
+            weight: 3,
+            color: "#0f172a",
+            fillOpacity: feature.properties.unknown ? 0.1 : 0.95,
+          });
+
+          const clearSelection = () => {
+            if (selectedLayer) {
+              geoJsonLayer.resetStyle(selectedLayer);
+              selectedLayer.closeTooltip();
+              selectedLayer = null;
+            }
+          };
+
           const geoJsonLayer = L.geoJSON(data, {
             style: styleFeature,
             onEachFeature: (feature, layer) => {
               const { id, name, district } = feature.properties;
-              const tooltip = `<strong>${name}</strong><br /><span>${district}</span>`;
-              layer.bindTooltip(tooltip, {
+              const tooltip = `<strong>${name}</strong><br /><span>${district}</span><br /><small>{% if current_language == "ta" %}மீண்டும் தட்டவும்{% else %}Tap again to view{% endif %}</small>`;
+              const desktopTooltip = `<strong>${name}</strong><br /><span>${district}</span>`;
+              layer.bindTooltip(isTouchDevice ? tooltip : desktopTooltip, {
                 direction: "top",
-                sticky: true,
+                sticky: !isTouchDevice,
+                permanent: false,
                 className: "constituency-tooltip",
               });
               layer.on({
                 mouseover: (event) => {
+                  if (isTouchDevice) return; // Skip hover effects on touch devices
                   if (activeParty && feature.properties.party !== activeParty) {
                     return;
                   }
@@ -170,21 +547,48 @@
                   });
                 },
                 mouseout: (event) => {
+                  if (isTouchDevice) return; // Skip hover effects on touch devices
                   geoJsonLayer.resetStyle(event.target);
                 },
-                click: () => {
-                  window.location.href = `/constituency/${id}/`;
+                click: (event) => {
+                  if (isTouchDevice) {
+                    // Mobile: tap-to-preview, tap-again-to-navigate
+                    if (selectedLayer === layer) {
+                      // Second tap on same constituency - navigate
+                      window.location.href = `/constituency/${id}/`;
+                    } else {
+                      // First tap - select and show info
+                      clearSelection();
+                      selectedLayer = layer;
+                      layer.setStyle(highlightStyle(feature));
+                      layer.openTooltip();
+                      L.DomEvent.stopPropagation(event);
+                    }
+                  } else {
+                    // Desktop - navigate immediately
+                    window.location.href = `/constituency/${id}/`;
+                  }
                 },
               });
             },
           }).addTo(map);
+
+          // Clear selection when tapping on empty map area (mobile)
+          if (isTouchDevice) {
+            map.on('click', (e) => {
+              // Only clear if the click wasn't on a layer
+              if (!e.originalEvent.target.closest('.leaflet-interactive')) {
+                clearSelection();
+              }
+            });
+          }
+          // Fit to constituency bounds initially but keep expanded max bounds for navigation
           if (geoJsonLayer.getBounds().isValid()) {
             map.fitBounds(geoJsonLayer.getBounds(), { padding: [12, 12] });
-            map.setMaxBounds(geoJsonLayer.getBounds());
-            map.options.maxBoundsViscosity = 1.0;
           }
 
           const applyLegendFilter = () => {
+            clearSelection(); // Clear any selected constituency when filtering
             geoJsonLayer.eachLayer((layer) => {
               layer.setStyle(styleFeature(layer.feature));
             });
@@ -221,6 +625,480 @@
             };
             legendControl.addTo(map);
           }
+
+          // ========== Search Autocomplete ==========
+          const searchInput = document.getElementById('map-search-input');
+          const searchDropdown = document.getElementById('map-search-dropdown');
+          const searchClear = document.getElementById('map-search-clear');
+          let searchTimeout = null;
+          let highlightedIndex = -1;
+          let searchResults = [];
+          let searchHighlightedLayer = null;
+
+          const clearSearchHighlight = () => {
+            if (searchHighlightedLayer) {
+              geoJsonLayer.resetStyle(searchHighlightedLayer);
+              searchHighlightedLayer = null;
+            }
+          };
+
+          const highlightConstituencyOnMap = (constituencyId) => {
+            clearSearchHighlight();
+            if (!constituencyId) return; // District-level results have no single ID
+            geoJsonLayer.eachLayer((layer) => {
+              if (layer.feature.properties.id === constituencyId) {
+                searchHighlightedLayer = layer;
+                layer.setStyle({
+                  weight: 4,
+                  color: '#3b82f6',
+                  fillOpacity: 0.95,
+                });
+                layer.openTooltip();
+              }
+            });
+          };
+
+          const highlightDistrictOnMap = (districtName) => {
+            clearSearchHighlight();
+            if (!districtName) return;
+            const districtLower = districtName.toLowerCase();
+            geoJsonLayer.eachLayer((layer) => {
+              const layerDistrict = (layer.feature.properties.district || '').toLowerCase();
+              if (layerDistrict === districtLower) {
+                layer.setStyle({
+                  weight: 3,
+                  color: '#3b82f6',
+                  fillOpacity: 0.85,
+                });
+              }
+            });
+          };
+
+          const zoomToResult = (result) => {
+            if (result.bounds) {
+              const bounds = L.latLngBounds(result.bounds);
+              // Use different max zoom for district vs constituency
+              const maxZoom = result.match_type === 'district_group' ? 9 : 11;
+              map.fitBounds(bounds, { padding: [50, 50], maxZoom });
+            }
+            
+            // Highlight appropriately based on result type
+            if (result.match_type === 'district_group') {
+              highlightDistrictOnMap(result.district);
+            } else if (result.id) {
+              highlightConstituencyOnMap(result.id);
+            }
+            
+            hideDropdown();
+            searchInput.blur();
+          };
+
+          const showDropdown = () => {
+            searchDropdown.classList.add('active');
+          };
+
+          const hideDropdown = () => {
+            searchDropdown.classList.remove('active');
+            highlightedIndex = -1;
+          };
+
+          const renderDropdown = (results, loading = false) => {
+            searchResults = results;
+            highlightedIndex = -1;
+
+            if (loading) {
+              searchDropdown.innerHTML = `<div class="map-search-dropdown-loading">{% if current_language == "ta" %}தேடுகிறது...{% else %}Searching...{% endif %}</div>`;
+              showDropdown();
+              return;
+            }
+
+            if (results.length === 0) {
+              searchDropdown.innerHTML = `<div class="map-search-dropdown-empty">{% if current_language == "ta" %}முடிவுகள் இல்லை{% else %}No results found{% endif %}</div>`;
+              showDropdown();
+              return;
+            }
+
+            const currentLang = '{{ current_language }}';
+            searchDropdown.innerHTML = results.map((result, index) => {
+              const displayName = (currentLang === 'ta' && result.name_ta) ? result.name_ta : result.name;
+              const isDistrictGroup = result.match_type === 'district_group';
+              
+              let subtitle = '';
+              if (isDistrictGroup && result.constituency_count) {
+                subtitle = currentLang === 'ta' 
+                  ? `${result.constituency_count} தொகுதிகள்`
+                  : `${result.constituency_count} constituencies`;
+              } else {
+                const displayDistrict = (currentLang === 'ta' && result.district_ta) ? result.district_ta : result.district;
+                subtitle = displayDistrict || '';
+              }
+              
+              const itemClass = isDistrictGroup 
+                ? 'map-search-dropdown-item map-search-dropdown-item-district-group' 
+                : 'map-search-dropdown-item';
+              
+              return `
+                <div class="${itemClass}" data-index="${index}">
+                  <div class="map-search-dropdown-item-name">${displayName}</div>
+                  <div class="map-search-dropdown-item-district">${subtitle}</div>
+                </div>
+              `;
+            }).join('');
+
+            // Add click handlers
+            searchDropdown.querySelectorAll('.map-search-dropdown-item').forEach((item) => {
+              item.addEventListener('click', () => {
+                const index = parseInt(item.dataset.index, 10);
+                zoomToResult(searchResults[index]);
+              });
+              item.addEventListener('mouseenter', () => {
+                updateHighlight(parseInt(item.dataset.index, 10));
+              });
+            });
+
+            showDropdown();
+          };
+
+          const updateHighlight = (newIndex) => {
+            const items = searchDropdown.querySelectorAll('.map-search-dropdown-item');
+            items.forEach((item, i) => {
+              item.classList.toggle('highlighted', i === newIndex);
+            });
+            highlightedIndex = newIndex;
+
+            // Preview on map
+            if (newIndex >= 0 && newIndex < searchResults.length) {
+              const result = searchResults[newIndex];
+              if (result.match_type === 'district_group') {
+                highlightDistrictOnMap(result.district);
+              } else if (result.id) {
+                highlightConstituencyOnMap(result.id);
+              }
+            }
+          };
+
+          const performSearch = async (query) => {
+            if (query.length < 2) {
+              hideDropdown();
+              return;
+            }
+
+            renderDropdown([], true); // Show loading
+
+            try {
+              const response = await fetch(`/api/map-search/?q=${encodeURIComponent(query)}`);
+              const data = await response.json();
+              renderDropdown(data.results || []);
+            } catch (error) {
+              console.error('Search error:', error);
+              renderDropdown([]);
+            }
+          };
+
+          // Debounced search
+          searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            clearTimeout(searchTimeout);
+            
+            if (query.length < 2) {
+              hideDropdown();
+              clearSearchHighlight();
+              return;
+            }
+
+            searchTimeout = setTimeout(() => performSearch(query), 200);
+          });
+
+          // Keyboard navigation
+          searchInput.addEventListener('keydown', (e) => {
+            if (!searchDropdown.classList.contains('active')) return;
+
+            const items = searchDropdown.querySelectorAll('.map-search-dropdown-item');
+            
+            switch (e.key) {
+              case 'ArrowDown':
+                e.preventDefault();
+                updateHighlight(Math.min(highlightedIndex + 1, items.length - 1));
+                break;
+              case 'ArrowUp':
+                e.preventDefault();
+                updateHighlight(Math.max(highlightedIndex - 1, 0));
+                break;
+              case 'Enter':
+                e.preventDefault();
+                if (highlightedIndex >= 0 && highlightedIndex < searchResults.length) {
+                  zoomToResult(searchResults[highlightedIndex]);
+                }
+                break;
+              case 'Escape':
+                hideDropdown();
+                clearSearchHighlight();
+                searchInput.blur();
+                break;
+            }
+          });
+
+          // Clear button
+          searchClear.addEventListener('click', () => {
+            searchInput.value = '';
+            hideDropdown();
+            clearSearchHighlight();
+            searchInput.focus();
+          });
+
+          // Close dropdown when clicking outside
+          document.addEventListener('click', (e) => {
+            if (!e.target.closest('.map-search-input-wrapper')) {
+              hideDropdown();
+            }
+          });
+
+          // Focus handling
+          searchInput.addEventListener('focus', () => {
+            if (searchInput.value.trim().length >= 2 && searchResults.length > 0) {
+              showDropdown();
+            }
+          });
+
+          // Store geoJsonLayer reference for geolocation
+          window.mapGeoJsonLayer = geoJsonLayer;
+          window.mapHighlightConstituency = highlightConstituencyOnMap;
+          window.mapClearSearchHighlight = clearSearchHighlight;
+
+          // ========== Toast Notifications ==========
+          const toastEl = document.getElementById('map-toast');
+          let toastTimeout = null;
+
+          const showToast = (message, type = 'info', duration = 4000) => {
+            clearTimeout(toastTimeout);
+            toastEl.textContent = message;
+            toastEl.className = `map-toast ${type}`;
+            
+            // Trigger reflow for animation
+            void toastEl.offsetWidth;
+            toastEl.classList.add('visible');
+            
+            toastTimeout = setTimeout(() => {
+              toastEl.classList.remove('visible');
+            }, duration);
+          };
+
+          // ========== Geolocation ==========
+          const locateBtn = document.getElementById('locate-btn');
+          const locateBtnText = document.getElementById('locate-btn-text');
+          let locationMarker = null;
+
+          // Point-in-polygon using ray casting algorithm
+          const isPointInPolygon = (point, polygon) => {
+            const [x, y] = point; // [lng, lat]
+            let inside = false;
+            
+            for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+              const [xi, yi] = polygon[i];
+              const [xj, yj] = polygon[j];
+              
+              if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) {
+                inside = !inside;
+              }
+            }
+            return inside;
+          };
+
+          // Check if point is in any ring of a polygon/multipolygon
+          const isPointInGeometry = (latlng, geometry) => {
+            const point = [latlng.lng, latlng.lat];
+            
+            const checkPolygon = (coords) => {
+              // First ring is exterior, rest are holes
+              if (!isPointInPolygon(point, coords[0])) return false;
+              // Check if point is in any hole
+              for (let i = 1; i < coords.length; i++) {
+                if (isPointInPolygon(point, coords[i])) return false;
+              }
+              return true;
+            };
+
+            if (geometry.type === 'Polygon') {
+              return checkPolygon(geometry.coordinates);
+            } else if (geometry.type === 'MultiPolygon') {
+              return geometry.coordinates.some(poly => checkPolygon(poly));
+            }
+            return false;
+          };
+
+          const findConstituencyAtPoint = (latlng) => {
+            let foundLayer = null;
+            let foundFeature = null;
+            
+            geoJsonLayer.eachLayer((layer) => {
+              if (foundLayer) return;
+              const geom = layer.feature.geometry;
+              if (isPointInGeometry(latlng, geom)) {
+                foundLayer = layer;
+                foundFeature = layer.feature;
+              }
+            });
+            
+            return { layer: foundLayer, feature: foundFeature };
+          };
+
+          const setLocateButtonState = (state) => {
+            const btnTextEn = {
+              idle: 'My Location',
+              loading: 'Locating...',
+              error: 'Try Again',
+              outside: 'Outside TN',
+            };
+            const btnTextTa = {
+              idle: 'என் இருப்பிடம்',
+              loading: 'கண்டறிகிறது...',
+              error: 'மீண்டும் முயற்சிக்கவும்',
+              outside: 'தமிழ்நாட்டிற்கு வெளியே',
+            };
+            const texts = '{{ current_language }}' === 'ta' ? btnTextTa : btnTextEn;
+            
+            locateBtnText.textContent = texts[state] || texts.idle;
+            locateBtn.disabled = state === 'loading';
+            
+            // Update button icon for loading state
+            const svg = locateBtn.querySelector('svg');
+            const spinner = locateBtn.querySelector('.spinner');
+            
+            if (state === 'loading') {
+              if (svg) svg.style.display = 'none';
+              if (!spinner) {
+                const spinnerEl = document.createElement('div');
+                spinnerEl.className = 'spinner';
+                locateBtn.insertBefore(spinnerEl, locateBtnText);
+              }
+            } else {
+              if (svg) svg.style.display = '';
+              if (spinner) spinner.remove();
+            }
+          };
+
+          const handleLocationSuccess = (position) => {
+            const { latitude, longitude } = position.coords;
+            const latlng = L.latLng(latitude, longitude);
+            
+            // Check if within TN bounds
+            if (!tnBounds.contains(latlng)) {
+              setLocateButtonState('outside');
+              setTimeout(() => setLocateButtonState('idle'), 3000);
+              showToast(
+                '{{ current_language }}' === 'ta' 
+                  ? 'உங்கள் இருப்பிடம் தமிழ்நாட்டிற்கு வெளியே உள்ளது.' 
+                  : 'Your location is outside Tamil Nadu.',
+                'info'
+              );
+              return;
+            }
+
+            // Remove existing marker
+            if (locationMarker) {
+              map.removeLayer(locationMarker);
+            }
+
+            // Add location marker
+            locationMarker = L.circleMarker(latlng, {
+              radius: 10,
+              fillColor: '#3b82f6',
+              fillOpacity: 1,
+              color: '#ffffff',
+              weight: 3,
+            }).addTo(map);
+
+            // Add pulsing effect
+            const pulseMarker = L.circleMarker(latlng, {
+              radius: 20,
+              fillColor: '#3b82f6',
+              fillOpacity: 0.3,
+              color: '#3b82f6',
+              weight: 1,
+            }).addTo(map);
+
+            // Find constituency at this point
+            const { layer, feature } = findConstituencyAtPoint(latlng);
+            
+            if (layer && feature) {
+              // Zoom to constituency and highlight
+              const bounds = layer.getBounds();
+              map.fitBounds(bounds, { padding: [50, 50], maxZoom: 11 });
+              
+              clearSearchHighlight();
+              searchHighlightedLayer = layer;
+              layer.setStyle({
+                weight: 4,
+                color: '#3b82f6',
+                fillOpacity: 0.95,
+              });
+              layer.openTooltip();
+              
+              setLocateButtonState('idle');
+            } else {
+              // Just zoom to location
+              map.setView(latlng, 11);
+              setLocateButtonState('idle');
+            }
+
+            // Remove pulse after animation
+            setTimeout(() => {
+              if (pulseMarker) map.removeLayer(pulseMarker);
+            }, 2000);
+          };
+
+          const handleLocationError = (error) => {
+            setLocateButtonState('error');
+            setTimeout(() => setLocateButtonState('idle'), 3000);
+            
+            let message;
+            switch (error.code) {
+              case error.PERMISSION_DENIED:
+                message = '{{ current_language }}' === 'ta'
+                  ? 'இருப்பிட அனுமதி மறுக்கப்பட்டது. அமைப்புகளில் இருப்பிடத்தை இயக்கவும்.'
+                  : 'Location permission denied. Please enable location in your browser settings.';
+                break;
+              case error.POSITION_UNAVAILABLE:
+                message = '{{ current_language }}' === 'ta'
+                  ? 'இருப்பிடத் தகவல் கிடைக்கவில்லை.'
+                  : 'Location information unavailable.';
+                break;
+              case error.TIMEOUT:
+                message = '{{ current_language }}' === 'ta'
+                  ? 'இருப்பிடக் கோரிக்கை நேரம் முடிந்தது.'
+                  : 'Location request timed out.';
+                break;
+              default:
+                message = '{{ current_language }}' === 'ta'
+                  ? 'இருப்பிடத்தைப் பெற முடியவில்லை.'
+                  : 'Unable to get your location.';
+            }
+            showToast(message, 'error');
+          };
+
+          locateBtn.addEventListener('click', () => {
+            if (!navigator.geolocation) {
+              showToast(
+                '{{ current_language }}' === 'ta'
+                  ? 'உங்கள் உலாவி இருப்பிடத்தை ஆதரிக்கவில்லை.'
+                  : 'Geolocation is not supported by your browser.',
+                'error'
+              );
+              return;
+            }
+
+            setLocateButtonState('loading');
+            
+            navigator.geolocation.getCurrentPosition(
+              handleLocationSuccess,
+              handleLocationError,
+              {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 60000,
+              }
+            );
+          });
         });
     </script>
   </body>
