@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- DMK Rising Sun Symbol -->
+  <!-- Sun rays -->
+  <g fill="#e53935">
+    <polygon points="32,8 34,20 30,20"/>
+    <polygon points="32,8 38,18 34,20"/>
+    <polygon points="32,8 26,18 30,20"/>
+    <polygon points="44,12 40,22 36,19"/>
+    <polygon points="20,12 24,22 28,19"/>
+    <polygon points="52,20 44,26 42,22"/>
+    <polygon points="12,20 20,26 22,22"/>
+    <polygon points="56,32 46,32 44,28"/>
+    <polygon points="8,32 18,32 20,28"/>
+    <polygon points="54,44 46,38 46,34"/>
+    <polygon points="10,44 18,38 18,34"/>
+  </g>
+  <!-- Sun circle -->
+  <circle cx="32" cy="32" r="12" fill="#e53935"/>
+  <!-- Mountain/horizon -->
+  <path d="M4,56 L18,40 L28,48 L38,36 L52,48 L60,42 L60,56 Z" fill="#8d6e63"/>
+  <!-- Ground -->
+  <rect x="0" y="54" width="64" height="10" fill="#5d4037"/>
+</svg>

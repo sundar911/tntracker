@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- INC Hand Symbol -->
+  <!-- Palm -->
+  <path d="M22,58 L22,32 Q22,28 26,28 L38,28 Q42,28 42,32 L42,58" fill="#f5f5f5" stroke="#424242" stroke-width="1.5"/>
+  <!-- Thumb -->
+  <path d="M22,36 Q16,34 14,28 Q12,22 16,20 Q20,18 22,24" fill="#f5f5f5" stroke="#424242" stroke-width="1.5"/>
+  <!-- Index finger -->
+  <path d="M26,28 L26,10 Q26,6 29,6 Q32,6 32,10 L32,28" fill="#f5f5f5" stroke="#424242" stroke-width="1.5"/>
+  <!-- Middle finger -->
+  <path d="M32,28 L32,6 Q32,2 35,2 Q38,2 38,6 L38,28" fill="#f5f5f5" stroke="#424242" stroke-width="1.5"/>
+  <!-- Ring finger -->
+  <path d="M38,28 L38,10 Q38,6 41,6 Q44,6 44,10 L44,28 Q44,28 42,28" fill="#f5f5f5" stroke="#424242" stroke-width="1.5"/>
+  <!-- Pinky finger -->
+  <path d="M42,32 L46,32 Q50,32 50,28 L50,16 Q50,12 47,12 Q44,12 44,16 L44,28" fill="#f5f5f5" stroke="#424242" stroke-width="1.5"/>
+</svg>

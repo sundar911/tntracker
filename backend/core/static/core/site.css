@@ -961,13 +961,21 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .party-symbol {
-  width: 34px;
-  height: 34px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border: 3px solid #f59e0b;
   background: #ffffff;
   object-fit: contain;
-  padding: 4px;
+  padding: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+body.theme-dark .party-symbol {
+  background: #1e293b;
+  border-color: #d97706;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .party-cell {

@@ -248,23 +248,47 @@ PARTY_COLORS = {
 }
 
 LOCAL_PARTY_SYMBOLS = {
+    # DMK
+    "dmk": "dmk.svg",
+    "dravida munnetra kazhagam": "dmk.svg",
+    # AIADMK
     "aiadmk": "aiadmk.svg",
     "all india anna dravida munnetra kazhagam": "aiadmk.svg",
-    "bjp": "bjp.png",
-    "bharatiya janata party": "bjp.png",
-    "dmk": "Dravida_Munnetra_Kazhagam_logo.png",
-    "dravida munnetra kazhagam": "Dravida_Munnetra_Kazhagam_logo.png",
-    "inc": "inc.png",
-    "indian national congress": "inc.png",
-    "pmk": "Pmk_flag.jpg",
-    "pattali makkal katchi": "Pmk_flag.jpg",
-    "cpi": "cpi_election_symbol.svg.png",
-    "communist party of india": "cpi_election_symbol.svg.png",
-    "cpi(m)": "cpim.svg.png",
-    "cpi m": "cpim.svg.png",
-    "communist party of india (marxist)": "cpim.svg.png",
-    "vck": "vck_election_symbol.png",
-    "viduthalai chiruthaigal katchi": "vck_election_symbol.png",
+    # BJP
+    "bjp": "bjp.svg",
+    "bharatiya janata party": "bjp.svg",
+    # INC
+    "inc": "inc.svg",
+    "indian national congress": "inc.svg",
+    # NTK
+    "ntk": "ntk.svg",
+    "naam tamilar katchi": "ntk.svg",
+    # PMK
+    "pmk": "pmk.svg",
+    "pattali makkal katchi": "pmk.svg",
+    # CPI
+    "cpi": "cpi.svg",
+    "communist party of india": "cpi.svg",
+    # CPI(M)
+    "cpi(m)": "cpim.svg",
+    "cpi m": "cpim.svg",
+    "cpim": "cpim.svg",
+    "communist party of india (marxist)": "cpim.svg",
+    # VCK
+    "vck": "vck.svg",
+    "viduthalai chiruthaigal katchi": "vck.svg",
+    # MNM
+    "mnm": "mnm.svg",
+    "makkal needhi maiam": "mnm.svg",
+    # AMMK
+    "ammk": "ammk.svg",
+    "amma makkal munnettra kazagam": "ammk.svg",
+    # DMDK
+    "dmdk": "dmdk.svg",
+    "desiya murpokku dravida kazhagam": "dmdk.svg",
+    # Independent
+    "ind": "independent.svg",
+    "independent": "independent.svg",
 }
 
 
@@ -280,7 +304,7 @@ def _party_symbol_url(party_name: Optional[str]) -> Optional[str]:
     key = party_name.strip().lower()
     filename = LOCAL_PARTY_SYMBOLS.get(key)
     if filename:
-        return f"/static/party_symbols/{filename}"
+        return f"/static/core/party-symbols/{filename}"
     return None
 
 

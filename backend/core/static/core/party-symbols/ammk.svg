@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- AMMK Pressure Cooker Symbol -->
+  <!-- Cooker body -->
+  <ellipse cx="32" cy="44" rx="20" ry="12" fill="#bdbdbd" stroke="#757575" stroke-width="1"/>
+  <rect x="12" y="24" width="40" height="22" rx="4" fill="#e0e0e0" stroke="#9e9e9e" stroke-width="1"/>
+  <!-- Cooker lid -->
+  <path d="M14,24 Q14,16 32,16 Q50,16 50,24" fill="#bdbdbd" stroke="#9e9e9e" stroke-width="1"/>
+  <!-- Lid rim -->
+  <ellipse cx="32" cy="24" rx="18" ry="4" fill="#9e9e9e" stroke="#757575" stroke-width="0.5"/>
+  <!-- Whistle/weight -->
+  <rect x="29" y="8" width="6" height="8" rx="1" fill="#424242"/>
+  <ellipse cx="32" cy="8" rx="4" ry="2" fill="#616161"/>
+  <!-- Steam -->
+  <path d="M32,4 Q30,0 32,-2 Q34,0 32,4" fill="none" stroke="#90a4ae" stroke-width="1.5" opacity="0.7"/>
+  <path d="M28,6 Q26,2 28,0" fill="none" stroke="#90a4ae" stroke-width="1" opacity="0.5"/>
+  <path d="M36,6 Q38,2 36,0" fill="none" stroke="#90a4ae" stroke-width="1" opacity="0.5"/>
+  <!-- Handles -->
+  <ellipse cx="6" cy="34" rx="4" ry="6" fill="#424242" stroke="#212121" stroke-width="0.5"/>
+  <ellipse cx="58" cy="34" rx="4" ry="6" fill="#424242" stroke="#212121" stroke-width="0.5"/>
+</svg>

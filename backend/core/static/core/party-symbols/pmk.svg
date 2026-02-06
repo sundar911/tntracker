@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- PMK Mango Symbol -->
+  <!-- Mango fruit -->
+  <ellipse cx="32" cy="38" rx="16" ry="20" fill="#ff9800" stroke="#f57c00" stroke-width="1"/>
+  <!-- Mango gradient/shading -->
+  <ellipse cx="28" cy="34" rx="8" ry="12" fill="#ffb74d" opacity="0.6"/>
+  <!-- Stem -->
+  <path d="M32,18 Q32,12 36,8" fill="none" stroke="#5d4037" stroke-width="2" stroke-linecap="round"/>
+  <!-- Leaves -->
+  <path d="M36,8 Q44,4 48,8 Q44,12 36,10 Z" fill="#2e7d32" stroke="#1b5e20" stroke-width="0.5"/>
+  <path d="M36,10 Q40,14 38,20 Q34,14 36,10 Z" fill="#388e3c" stroke="#1b5e20" stroke-width="0.5"/>
+  <!-- Leaf veins -->
+  <path d="M38,8 L44,8" fill="none" stroke="#1b5e20" stroke-width="0.5"/>
+  <path d="M37,12 L37,18" fill="none" stroke="#1b5e20" stroke-width="0.5"/>
+</svg>

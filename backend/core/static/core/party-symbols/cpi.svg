@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- CPI Corn and Sickle Symbol -->
+  <!-- Sickle blade -->
+  <path d="M12,48 Q8,36 16,24 Q24,14 36,12 Q28,18 24,28 Q20,38 18,48 Z" fill="#fdd835" stroke="#f9a825" stroke-width="1"/>
+  <!-- Sickle handle -->
+  <rect x="10" y="46" width="12" height="6" rx="2" fill="#8d6e63" stroke="#5d4037" stroke-width="0.5"/>
+  <!-- Corn stalks -->
+  <g fill="#4caf50" stroke="#388e3c" stroke-width="0.5">
+    <!-- Stalk 1 -->
+    <path d="M36,56 L38,20"/>
+    <ellipse cx="38" cy="24" rx="3" ry="6" fill="#ffeb3b"/>
+    <path d="M35,22 L38,24 L35,26 M41,22 L38,24 L41,26"/>
+    <!-- Stalk 2 -->
+    <path d="M44,56 L46,16"/>
+    <ellipse cx="46" cy="20" rx="3" ry="7" fill="#ffeb3b"/>
+    <path d="M43,18 L46,20 L43,22 M49,18 L46,20 L49,22"/>
+    <!-- Stalk 3 -->
+    <path d="M52,56 L54,22"/>
+    <ellipse cx="54" cy="26" rx="3" ry="6" fill="#ffeb3b"/>
+    <path d="M51,24 L54,26 L51,28 M57,24 L54,26 L57,28"/>
+  </g>
+  <!-- Corn leaves -->
+  <path d="M36,40 Q30,38 28,42 Q34,42 36,40" fill="#66bb6a"/>
+  <path d="M46,36 Q52,34 54,38 Q48,38 46,36" fill="#66bb6a"/>
+</svg>

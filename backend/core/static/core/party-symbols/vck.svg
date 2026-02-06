@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- VCK Pot (Karagam) Symbol -->
+  <!-- Pot body -->
+  <ellipse cx="32" cy="44" rx="18" ry="14" fill="#8d6e63" stroke="#5d4037" stroke-width="1.5"/>
+  <!-- Pot neck -->
+  <path d="M24,32 Q24,28 28,26 L36,26 Q40,28 40,32 L40,36 L24,36 Z" fill="#a1887f" stroke="#5d4037" stroke-width="1"/>
+  <!-- Pot rim -->
+  <ellipse cx="32" cy="26" rx="10" ry="4" fill="#8d6e63" stroke="#5d4037" stroke-width="1"/>
+  <!-- Pot opening -->
+  <ellipse cx="32" cy="26" rx="6" ry="2" fill="#3e2723"/>
+  <!-- Decorative lines on pot -->
+  <path d="M18,44 Q32,38 46,44" fill="none" stroke="#5d4037" stroke-width="1"/>
+  <path d="M16,48 Q32,42 48,48" fill="none" stroke="#5d4037" stroke-width="1"/>
+  <!-- Base -->
+  <ellipse cx="32" cy="56" rx="8" ry="3" fill="#6d4c41"/>
+</svg>

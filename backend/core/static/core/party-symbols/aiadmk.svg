@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- AIADMK Two Leaves Symbol -->
+  <!-- Left leaf -->
+  <path d="M28,56 Q8,40 16,20 Q20,10 28,8 Q24,20 26,32 Q28,44 28,56" fill="#2e7d32" stroke="#1b5e20" stroke-width="1"/>
+  <!-- Right leaf -->
+  <path d="M36,56 Q56,40 48,20 Q44,10 36,8 Q40,20 38,32 Q36,44 36,56" fill="#2e7d32" stroke="#1b5e20" stroke-width="1"/>
+  <!-- Left leaf vein -->
+  <path d="M26,52 Q18,36 22,16" fill="none" stroke="#1b5e20" stroke-width="1.5"/>
+  <!-- Right leaf vein -->
+  <path d="M38,52 Q46,36 42,16" fill="none" stroke="#1b5e20" stroke-width="1.5"/>
+  <!-- Stem -->
+  <path d="M28,56 L32,60 L36,56" fill="none" stroke="#1b5e20" stroke-width="2"/>
+  <line x1="32" y1="60" x2="32" y2="64" stroke="#5d4037" stroke-width="3"/>
+</svg>
