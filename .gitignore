@@ -1,7 +1,9 @@
 .DS_Store
 .cursor/
 .env
-.env.*
+.env.local
+.env.*.local
+!.env.example
 .venv/
 __pycache__/
 *.pyc

@@ -4,6 +4,7 @@ django-filter>=23.5
 psycopg2-binary>=2.9
 gunicorn>=21.2
 whitenoise>=6.6
+dj-database-url>=2.1
 pypdf>=4.0
 beautifulsoup4>=4.12
 requests>=2.31
