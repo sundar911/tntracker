@@ -34,9 +34,6 @@
             <span>•</span>
             <a href="/set-lang/ta/?next={{ request.get_full_path|urlencode }}">தமிழ்</a>
           </div>
-          <button class="theme-toggle" type="button" data-theme-toggle>
-            {% if current_language == "ta" %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}
-          </button>
           <a class="button small" href="/party-dashboard/">
             {% if current_language == "ta" %}தொடங்கு{% else %}Get Started{% endif %}
           </a>
@@ -72,14 +69,14 @@
                 <div class="feature-icon"><img src="/static/core/map-icon.png" alt="Tamil Nadu Map" /></div>
                 <div class="feature-content">
                   <div class="feature-title">{% if current_language == "ta" %}வரைபடங்கள்{% else %}Maps{% endif %}</div>
-                  <p class="feature-body">{% if current_language == "ta" %}அந்த பகுதியின் எல்லைகள் மற்றும் வரலாறு பார்க்கவும்.{% else %}Explore boundaries and local context quickly.{% endif %}</p>
+                  <p class="feature-body">{% if current_language == "ta" %}அந்த பகுதியின் எல்லைகள் மற்றும் வரலாறு பார்க்கவும். தமிழ்நாடுக்கு 234 பகுதிகள். வரைபடத்தைப் பயன்படுத்தவும் -> ஒரு பகுதியைத் தேடவும் -> 2021 வேட்பாளர்களுக்கான தரவைப் பார்க்கவும்.{% else %}Explore 234 constituencies across TN. View map -> find constituency -> view data about all 2021 candidates.{% endif %}</p>
                 </div>
               </a>
               <a class="feature-card feature-candidates" href="/party-dashboard/">
                 <div class="feature-icon"><img src="/static/core/candidates-icon.png" alt="Candidates" /></div>
                 <div class="feature-content">
                   <div class="feature-title">{% if current_language == "ta" %}வேட்பாளர்களை அறியவும்{% else %}Know your Candidates{% endif %}</div>
-                  <p class="feature-body">{% if current_language == "ta" %}கட்சி நிலவரம், வயது, சொத்து விவரங்கள் பார்க்கவும்.{% else %}View party trends, age, and asset details.{% endif %}</p>
+                  <p class="feature-body">{% if current_language == "ta" %}கட்சி நிலவரம், வயது, சொத்து விவரங்கள் பார்க்கவும். வேட்பாளர்கள் பற்றிய தரவு பார்க்கவும்.{% else %}View party-level and candidate-level data about educational background, wealth and legal history. View data about candidates.{% endif %}</p>
                 </div>
               </a>
             </div>
@@ -114,26 +111,5 @@
         </div>
       </section>
     </main>
-    <script>
-      const themeToggles = document.querySelectorAll("[data-theme-toggle]");
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const storedTheme = localStorage.getItem("theme");
-      const isDark = storedTheme ? storedTheme === "dark" : prefersDark;
-
-      const applyTheme = (dark) => {
-        document.body.classList.toggle("theme-dark", dark);
-        localStorage.setItem("theme", dark ? "dark" : "light");
-        themeToggles.forEach((btn) => {
-          btn.textContent = dark
-            ? "{% if current_language == 'ta' %}ஒளி தோற்றம்{% else %}Light mode{% endif %}"
-            : "{% if current_language == 'ta' %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}";
-        });
-      };
-
-      applyTheme(isDark);
-      themeToggles.forEach((btn) => {
-        btn.addEventListener("click", () => applyTheme(!document.body.classList.contains("theme-dark")));
-      });
-    </script>
   </body>
 </html>

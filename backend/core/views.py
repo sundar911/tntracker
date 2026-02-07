@@ -1215,22 +1215,30 @@ def party_dashboard(request):
             district_set.add(district_name)
             if constituency_name:
                 district_map[district_name].add(constituency_name)
-        if cases_filter_active and cases_value is not None:
+        if cases_filter_active:
+            if cases_value is None:
+                continue
             if min_cases is not None and cases_value < min_cases:
                 continue
             if max_cases is not None and cases_value > max_cases:
                 continue
-        if age_filter_active and age_value is not None:
+        if age_filter_active:
+            if age_value is None:
+                continue
             if min_age is not None and age_value < min_age:
                 continue
             if max_age is not None and age_value > max_age:
                 continue
-        if assets_filter_active and assets_value is not None:
+        if assets_filter_active:
+            if assets_value is None:
+                continue
             if min_assets is not None and assets_value < min_assets:
                 continue
             if max_assets is not None and assets_value > max_assets:
                 continue
-        if liabilities_filter_active and liabilities_value is not None:
+        if liabilities_filter_active:
+            if liabilities_value is None:
+                continue
             if min_liabilities is not None and liabilities_value < min_liabilities:
                 continue
             if max_liabilities is not None and liabilities_value > max_liabilities:
@@ -1347,26 +1355,13 @@ def party_dashboard(request):
 
     party_stats.sort(key=_sort_value, reverse=reverse_sort)
 
-    total_candidates = sum(item["candidate_count"] for item in party_stats)
-    total_parties = len(party_stats)
-    overall_avg_cases = None
-    overall_avg_age = None
-    overall_avg_assets = None
-    overall_avg_liabilities = None
-    cases_values = [item["avg_cases"] for item in party_stats if item["avg_cases"] is not None]
-    age_values = [item["avg_age"] for item in party_stats if item["avg_age"] is not None]
-    assets_values = [item["avg_assets"] for item in party_stats if item["avg_assets"] is not None]
-    liabilities_values = [
-        item["avg_liabilities"] for item in party_stats if item["avg_liabilities"] is not None
-    ]
-    if cases_values:
-        overall_avg_cases = round(sum(cases_values) / len(cases_values), 2)
-    if age_values:
-        overall_avg_age = round(sum(age_values) / len(age_values), 1)
-    if assets_values:
-        overall_avg_assets = round(sum(assets_values) / len(assets_values), 0)
-    if liabilities_values:
-        overall_avg_liabilities = round(sum(liabilities_values) / len(liabilities_values), 0)
+    overview = _compute_overview_stats(filtered_rows)
+    total_candidates = overview["total_candidates"]
+    total_parties = overview["total_parties"]
+    overall_avg_cases = overview["overall_avg_cases"]
+    overall_avg_age = overview["overall_avg_age"]
+    overall_avg_assets = overview["overall_avg_assets"]
+    overall_avg_liabilities = overview["overall_avg_liabilities"]
 
     available_constituencies = sorted(district_map.get(district_filter, set())) if district_filter else sorted(
         {const for consts in district_map.values() for const in consts}
@@ -1535,22 +1530,30 @@ def party_detail(request, party_name: str):
         district_name = _row_value(row, district_key)
         constituency_name = _row_value(row, constituency_key)
 
-        if cases_filter_active and cases_value is not None:
+        if cases_filter_active:
+            if cases_value is None:
+                continue
             if min_cases is not None and cases_value < min_cases:
                 continue
             if max_cases is not None and cases_value > max_cases:
                 continue
-        if age_filter_active and age_value is not None:
+        if age_filter_active:
+            if age_value is None:
+                continue
             if min_age is not None and age_value < min_age:
                 continue
             if max_age is not None and age_value > max_age:
                 continue
-        if assets_filter_active and assets_value is not None:
+        if assets_filter_active:
+            if assets_value is None:
+                continue
             if min_assets is not None and assets_value < min_assets:
                 continue
             if max_assets is not None and assets_value > max_assets:
                 continue
-        if liabilities_filter_active and liabilities_value is not None:
+        if liabilities_filter_active:
+            if liabilities_value is None:
+                continue
             if min_liabilities is not None and liabilities_value < min_liabilities:
                 continue
             if max_liabilities is not None and liabilities_value > max_liabilities:
