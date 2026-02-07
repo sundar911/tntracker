@@ -17,6 +17,10 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
+        if Constituency.objects.filter(boundary_geojson__isnull=False).exists():
+            self.stdout.write("Constituency boundaries already loaded, skipping.")
+            return
+
         geojson_path = options["geojson_path"]
         source = SourceDocument.objects.create(
             title=options["source_title"],

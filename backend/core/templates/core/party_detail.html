@@ -28,11 +28,6 @@
           <a class="nav-link nav-link-active" href="/party-dashboard/">{% if current_language == "ta" %}வேட்பாளர்களை அறியவும்{% else %}Know your Candidates{% endif %}</a>
           <a class="nav-link" href="/resources/">{% if current_language == "ta" %}வளங்கள்{% else %}Resources{% endif %}</a>
         </div>
-        <div class="nav-actions">
-          <button class="theme-toggle" type="button" data-theme-toggle>
-            {% if current_language == "ta" %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}
-          </button>
-        </div>
       </div>
     </header>
     <main class="container">
@@ -309,26 +304,6 @@
         if (!event.target.closest(".info-button") && !event.target.closest(".info-popup")) {
           document.querySelectorAll(".info-popup").forEach((item) => item.setAttribute("hidden", ""));
         }
-      });
-
-      const themeToggles = document.querySelectorAll("[data-theme-toggle]");
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const storedTheme = localStorage.getItem("theme");
-      const isDark = storedTheme ? storedTheme === "dark" : prefersDark;
-
-      const applyTheme = (dark) => {
-        document.body.classList.toggle("theme-dark", dark);
-        localStorage.setItem("theme", dark ? "dark" : "light");
-        themeToggles.forEach((btn) => {
-          btn.textContent = dark
-            ? "{% if current_language == 'ta' %}ஒளி தோற்றம்{% else %}Light mode{% endif %}"
-            : "{% if current_language == 'ta' %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}";
-        });
-      };
-
-      applyTheme(isDark);
-      themeToggles.forEach((btn) => {
-        btn.addEventListener("click", () => applyTheme(!document.body.classList.contains("theme-dark")));
       });
 
       document.querySelectorAll(".range-wrap").forEach((wrap) => {

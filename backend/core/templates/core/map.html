@@ -168,13 +168,7 @@
       .map-search-dropdown-item-district-group.highlighted {
         background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
       }
-      .theme-dark .map-search-dropdown-item-district-group {
-        background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%);
-      }
-      .theme-dark .map-search-dropdown-item-district-group:hover,
-      .theme-dark .map-search-dropdown-item-district-group.highlighted {
-        background: linear-gradient(135deg, #1e4976 0%, #334155 100%);
-      }
+
       .locate-btn {
         display: flex;
         align-items: center;
@@ -219,43 +213,6 @@
         to { transform: rotate(360deg); }
       }
 
-      /* Dark mode adjustments */
-      .theme-dark .map-search-input {
-        background: #1e293b;
-        border-color: #334155;
-        color: #f1f5f9;
-      }
-      .theme-dark .map-search-input:focus {
-        border-color: #3b82f6;
-      }
-      .theme-dark .map-search-dropdown {
-        background: #1e293b;
-        border-color: #334155;
-      }
-      .theme-dark .map-search-dropdown-item {
-        border-color: #334155;
-      }
-      .theme-dark .map-search-dropdown-item:hover,
-      .theme-dark .map-search-dropdown-item.highlighted {
-        background: #334155;
-      }
-      .theme-dark .map-search-dropdown-item-name {
-        color: #f1f5f9;
-      }
-      .theme-dark .map-search-clear {
-        background: #334155;
-        color: #94a3b8;
-      }
-      .theme-dark .map-search-clear:hover {
-        background: #475569;
-        color: #e2e8f0;
-      }
-      .theme-dark .map-legend {
-        background: #1e293b;
-      }
-      .theme-dark .map-legend h3 {
-        color: #94a3b8;
-      }
 
       /* Mobile responsiveness */
       @media (max-width: 640px) {
@@ -348,12 +305,7 @@
       .map-toast.info {
         background: #3b82f6;
       }
-      .theme-dark .map-toast {
-        background: #334155;
-      }
-      .theme-dark .map-toast.error {
-        background: #b91c1c;
-      }
+
     </style>
   </head>
   <body>
@@ -376,11 +328,6 @@
           <a class="nav-link nav-link-active" href="/map/">{% if current_language == "ta" %}வரைபடம்{% else %}Maps{% endif %}</a>
           <a class="nav-link" href="/party-dashboard/">{% if current_language == "ta" %}வேட்பாளர்களை அறியவும்{% else %}Know your Candidates{% endif %}</a>
           <a class="nav-link" href="/resources/">{% if current_language == "ta" %}வளங்கள்{% else %}Resources{% endif %}</a>
-        </div>
-        <div class="nav-actions">
-          <button class="theme-toggle" type="button" data-theme-toggle>
-            {% if current_language == "ta" %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}
-          </button>
         </div>
       </div>
     </header>
@@ -433,27 +380,6 @@
       <div id="map-toast" class="map-toast"></div>
     </main>
 
-    <script>
-      const themeToggles = document.querySelectorAll("[data-theme-toggle]");
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const storedTheme = localStorage.getItem("theme");
-      const isDark = storedTheme ? storedTheme === "dark" : prefersDark;
-
-      const applyTheme = (dark) => {
-        document.body.classList.toggle("theme-dark", dark);
-        localStorage.setItem("theme", dark ? "dark" : "light");
-        themeToggles.forEach((btn) => {
-          btn.textContent = dark
-            ? "{% if current_language == 'ta' %}ஒளி தோற்றம்{% else %}Light mode{% endif %}"
-            : "{% if current_language == 'ta' %}இருண்ட தோற்றம்{% else %}Dark mode{% endif %}";
-        });
-      };
-
-      applyTheme(isDark);
-      themeToggles.forEach((btn) => {
-        btn.addEventListener("click", () => applyTheme(!document.body.classList.contains("theme-dark")));
-      });
-    </script>
     <script
       src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
