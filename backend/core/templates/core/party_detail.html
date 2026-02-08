@@ -61,9 +61,18 @@
         {% endif %}
       </p>
 
-      <section class="card">
+      <!-- Mobile filter trigger (hidden on desktop via CSS) -->
+      <button class="filter-trigger" type="button" id="filter-trigger">
+        {% if current_language == "ta" %}வடிகட்டிகள்{% else %}Filters{% endif %}
+        <span class="filter-badge" id="filter-badge"></span>
+      </button>
+
+      <!-- Filter backdrop -->
+      <div class="filter-backdrop" id="filter-backdrop"></div>
+
+      <section class="card filter-section" id="filter-section">
         <h2>{% if current_language == "ta" %}வடிகட்டிகள்{% else %}Filters{% endif %}</h2>
-        <form class="filters" method="get">
+        <form class="filters" method="get" id="filter-form">
           <label>
             {% if current_language == "ta" %}ஆண்டு{% else %}Year{% endif %}
             <select name="year">
@@ -128,7 +137,7 @@
             </div>
           </label>
           <label>
-            {% if current_language == "ta" %}சொத்துகள் (₹){% else %}Assets (₹){% endif %}
+            {% if current_language == "ta" %}சொத்துகள் (₹){% else %}Assets (₹){% endif %}
             <div class="range-wrap">
               <div class="range-pair">
                 <input
@@ -222,11 +231,50 @@
           <button type="submit" class="button">
             {% if current_language == "ta" %}பயன் காட்ட{% else %}Apply{% endif %}
           </button>
+          <div class="filter-actions-mobile">
+            <button type="submit" class="button">
+              {% if current_language == "ta" %}பயன் காட்ட{% else %}Apply{% endif %}
+            </button>
+            <button type="button" class="filter-close-btn" id="filter-close">
+              {% if current_language == "ta" %}மூடு{% else %}Close{% endif %}
+            </button>
+          </div>
         </form>
       </section>
 
       <section class="card">
         {% if rows %}
+
+        <!-- View toggle toolbar -->
+        <div class="view-toolbar">
+          <div class="view-toggle">
+            <button class="view-btn active" data-view="table" type="button">
+              {% if current_language == "ta" %}அட்டவணை{% else %}Table{% endif %}
+            </button>
+            <button class="view-btn" data-view="cards" type="button">
+              {% if current_language == "ta" %}அட்டைகள்{% else %}Cards{% endif %}
+            </button>
+          </div>
+          <div class="card-sort" id="card-sort" style="display:none">
+            <label>
+              {% if current_language == "ta" %}வரிசைப்படுத்து{% else %}Sort by{% endif %}
+              <select id="card-sort-select">
+                {% for column in columns %}
+                  {% if column.is_number or column.is_currency %}
+                    <option value="{{ column.key }}" data-dir="desc">{{ column.label }} (high-low)</option>
+                    <option value="{{ column.key }}" data-dir="asc">{{ column.label }} (low-high)</option>
+                  {% else %}
+                    <option value="{{ column.key }}" data-dir="asc">{{ column.label }} (A-Z)</option>
+                    <option value="{{ column.key }}" data-dir="desc">{{ column.label }} (Z-A)</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <!-- Table view -->
+        <div id="table-view">
         <table class="table">
           <thead>
             <tr>
@@ -277,6 +325,47 @@
             {% endfor %}
           </tbody>
         </table>
+        </div>
+
+        <!-- Card view (hidden by default, shown on mobile or via toggle) -->
+        <div class="card-grid" id="card-view" style="display:none">
+          {% for row in rows %}
+          <div class="data-card{% if row.is_2016 %} is-2016{% endif %}"
+               {% for column in columns %}data-{{ column.key }}="{{ row|get_item:column.key|default:"" }}" {% endfor %}>
+            <div class="data-card-header">
+              {% with cand_name=row|get_item:"candidate" %}
+                <span>{{ cand_name|default:"—" }}</span>
+              {% endwith %}
+              {% if row.is_2016 %}
+                <span class="tag" style="font-size:11px; padding:2px 8px;">2016</span>
+              {% endif %}
+            </div>
+            <dl class="data-card-body">
+              {% for column in columns %}
+                {% if column.key != "candidate" %}
+                {% with cell=row|get_item:column.key %}
+                <div class="data-card-row">
+                  <dt>{{ column.label }}</dt>
+                  <dd>
+                    {% if column.key == myneta_key and cell %}
+                      <a class="link" href="{{ cell }}" target="_blank" rel="noopener">Link</a>
+                    {% elif column.is_currency %}
+                      {% if cell %}₹ {{ cell|indian }}{% else %}—{% endif %}
+                    {% elif column.is_number %}
+                      {% if cell %}{{ cell|indian }}{% else %}—{% endif %}
+                    {% else %}
+                      {{ cell|default:"—" }}
+                    {% endif %}
+                  </dd>
+                </div>
+                {% endwith %}
+                {% endif %}
+              {% endfor %}
+            </dl>
+          </div>
+          {% endfor %}
+        </div>
+
         {% else %}
         <p class="muted">
           {% if current_language == "ta" %}
@@ -289,6 +378,7 @@
       </section>
     </main>
     <script>
+      /* ---- Info popup toggle ---- */
       document.querySelectorAll("[data-info-toggle]").forEach((btn) => {
         btn.addEventListener("click", () => {
           const popup = btn.nextElementSibling;
@@ -306,6 +396,7 @@
         }
       });
 
+      /* ---- Range slider sync ---- */
       document.querySelectorAll(".range-wrap").forEach((wrap) => {
         const [minInput, maxInput] = wrap.querySelectorAll("input[type='range']");
         const minOutput = wrap.querySelector(".min-value");
@@ -325,6 +416,94 @@
         maxInput.addEventListener("input", sync);
         sync();
       });
+
+      /* ---- View toggle (Table / Cards) ---- */
+      (function () {
+        const tableView = document.getElementById("table-view");
+        const cardView = document.getElementById("card-view");
+        const cardSort = document.getElementById("card-sort");
+        const btns = document.querySelectorAll(".view-btn");
+        if (!tableView || !cardView) return;
+
+        function setView(mode) {
+          btns.forEach((b) => b.classList.toggle("active", b.dataset.view === mode));
+          tableView.style.display = mode === "table" ? "" : "none";
+          cardView.style.display = mode === "cards" ? "grid" : "none";
+          if (cardSort) cardSort.style.display = mode === "cards" ? "" : "none";
+        }
+
+        btns.forEach((btn) => {
+          btn.addEventListener("click", () => setView(btn.dataset.view));
+        });
+
+        /* Default to cards on mobile */
+        if (window.matchMedia("(max-width: 768px)").matches) {
+          setView("cards");
+        }
+      })();
+
+      /* ---- Card sort ---- */
+      (function () {
+        const select = document.getElementById("card-sort-select");
+        const container = document.getElementById("card-view");
+        if (!select || !container) return;
+
+        select.addEventListener("change", function () {
+          const opt = this.selectedOptions[0];
+          const key = opt.value;
+          const dir = opt.dataset.dir === "asc" ? 1 : -1;
+          const cards = [...container.querySelectorAll(".data-card")];
+
+          cards.sort((a, b) => {
+            let va = a.dataset[key] || "";
+            let vb = b.dataset[key] || "";
+            const na = parseFloat(va);
+            const nb = parseFloat(vb);
+            if (!isNaN(na) && !isNaN(nb)) return (na - nb) * dir;
+            return va.localeCompare(vb, undefined, { sensitivity: "base" }) * dir;
+          });
+
+          cards.forEach((c) => container.appendChild(c));
+        });
+      })();
+
+      /* ---- Mobile filter drawer ---- */
+      (function () {
+        const trigger = document.getElementById("filter-trigger");
+        const section = document.getElementById("filter-section");
+        const backdrop = document.getElementById("filter-backdrop");
+        const closeBtn = document.getElementById("filter-close");
+
+        function openFilters() {
+          section.classList.add("open");
+          backdrop.classList.add("open");
+          document.body.style.overflow = "hidden";
+        }
+        function closeFilters() {
+          section.classList.remove("open");
+          backdrop.classList.remove("open");
+          document.body.style.overflow = "";
+        }
+
+        if (trigger) trigger.addEventListener("click", openFilters);
+        if (closeBtn) closeBtn.addEventListener("click", closeFilters);
+        if (backdrop) backdrop.addEventListener("click", closeFilters);
+
+        /* Count active filters for badge */
+        let count = 0;
+        document.querySelectorAll("#filter-form select").forEach((s) => {
+          if (s.selectedIndex > 0) count++;
+        });
+        document.querySelectorAll("#filter-form .range-wrap").forEach((w) => {
+          const inputs = w.querySelectorAll("input[type='range']");
+          if (inputs.length === 2) {
+            const [mn, mx] = inputs;
+            if (mn.value !== mn.min || mx.value !== mx.max) count++;
+          }
+        });
+        const badge = document.getElementById("filter-badge");
+        if (badge) badge.textContent = count || "";
+      })();
     </script>
     {% include "core/_consent_dialog.html" %}
     {% include "core/_feedback_widget.html" %}
