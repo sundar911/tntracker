@@ -5,6 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ constituency.name }} - Candidates</title>
+    <meta property="og:title" content="Tamil Nadu Assembly Elections 2026" />
+    <meta property="og:description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/core/logo.png" />
+    <meta property="og:type" content="website" />
+    <meta name="description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
     <link rel="stylesheet" href="/static/core/site.css" />
   </head>
   <body>
@@ -38,10 +43,12 @@
           <a class="link" href="/set-lang/ta/?next={{ request.get_full_path|urlencode }}">தமிழ்</a>
         </div>
       </div>
-      {% if data_vintage_label %}
-      <div class="banner">{{ data_vintage_label }}</div>
-      {% endif %}
-      <a class="link" href="/map/">← {% if current_language == "ta" %}வரைபடம்{% else %}Back to map{% endif %}</a>
+      <div class="nav-row">
+        <a class="link" href="/map/">← {% if current_language == "ta" %}வரைபடம்{% else %}Back to map{% endif %}</a>
+        {% if data_vintage_label %}
+        <div class="banner">{{ data_vintage_label }}</div>
+        {% endif %}
+      </div>
       <h1>
         {% if current_language == "ta" and constituency.name_ta %}{{ constituency.name_ta }}{% else %}{{ constituency.name }}{% endif %}
       </h1>
@@ -63,9 +70,19 @@
 
       <section class="card">
         <h2>{% if current_language == "ta" %}வேட்பாளர்கள்{% else %}Candidates{% endif %}</h2>
+        <div class="sort-bar">
+          <span class="sort-label">{% if current_language == "ta" %}வரிசைப்படுத்து{% else %}Sort by{% endif %}:</span>
+          <button class="sort-btn" data-sort="age">{% if current_language == "ta" %}வயது{% else %}Age{% endif %}</button>
+          <button class="sort-btn" data-sort="cases">{% if current_language == "ta" %}வழக்குகள்{% else %}Cases{% endif %}</button>
+          <button class="sort-btn" data-sort="assets">{% if current_language == "ta" %}சொத்துகள்{% else %}Assets{% endif %}</button>
+        </div>
         <div class="candidate-grid">
           {% for candidate in candidate_cards %}
-          <div class="candidate-card {% if candidate.is_2016 %}is-2016{% endif %}">
+          <div class="candidate-card {% if candidate.is_2016 %}is-2016{% endif %}"
+               data-age="{{ candidate.age|default:'0' }}"
+               data-cases="{{ candidate.criminal_cases|default:'0' }}"
+               data-assets="{{ candidate.assets|default:'0' }}"
+               data-sitting="{{ candidate.sitting|yesno:'1,0' }}">
             <div class="candidate-header">
               <div>
                 <div class="candidate-name">{{ candidate.name }}</div>
@@ -105,6 +122,11 @@
               <span>{% if current_language == "ta" %}சொத்துகள்{% else %}Assets{% endif %}: {% if candidate.assets %}<span title="₹ {{ candidate.assets|indian }}">₹ {{ candidate.assets|short_indian }}</span>{% else %}N/A{% endif %}</span>
               <span>{% if current_language == "ta" %}பாக்கிகள்{% else %}Liabilities{% endif %}: {% if candidate.liabilities %}<span title="₹ {{ candidate.liabilities|indian }}">₹ {{ candidate.liabilities|short_indian }}</span>{% else %}N/A{% endif %}</span>
             </div>
+            {% if candidate.myneta_url %}
+              <a class="link myneta-link" href="{{ candidate.myneta_url }}" target="_blank" rel="noopener">
+                MyNeta Profile &rarr;
+              </a>
+            {% endif %}
             {% if candidate.key_promises %}
               <div class="promise-tags" aria-label="Key manifesto promises">
                 {% for promise in candidate.key_promises %}
@@ -175,6 +197,46 @@
           document.querySelectorAll(".info-popup").forEach((item) => item.setAttribute("hidden", ""));
         }
       });
+
+      /* Candidate card sorting */
+      (function () {
+        const grid = document.querySelector(".candidate-grid");
+        if (!grid) return;
+        const buttons = document.querySelectorAll(".sort-btn[data-sort]");
+        let currentField = null;
+        let ascending = true;
+
+        function sortCards(field) {
+          if (currentField === field) {
+            ascending = !ascending;
+          } else {
+            currentField = field;
+            ascending = field === "age";  // age: ascending first; cases/assets: descending first
+          }
+          buttons.forEach((b) => {
+            b.classList.toggle("active", b.dataset.sort === field);
+            if (b.dataset.sort === field) {
+              b.textContent = b.textContent.replace(/ [▲▼]$/, "") + (ascending ? " ▲" : " ▼");
+            } else {
+              b.textContent = b.textContent.replace(/ [▲▼]$/, "");
+            }
+          });
+          const cards = Array.from(grid.children).filter((el) => el.classList.contains("candidate-card"));
+          cards.sort((a, b) => {
+            const aSitting = a.dataset.sitting === "1";
+            const bSitting = b.dataset.sitting === "1";
+            if (aSitting !== bSitting) return aSitting ? -1 : 1;
+            const aVal = parseFloat(a.dataset[field]) || 0;
+            const bVal = parseFloat(b.dataset[field]) || 0;
+            return ascending ? aVal - bVal : bVal - aVal;
+          });
+          cards.forEach((card) => grid.appendChild(card));
+        }
+
+        buttons.forEach((btn) => {
+          btn.addEventListener("click", () => sortCards(btn.dataset.sort));
+        });
+      })();
     </script>
     {% include "core/_consent_dialog.html" %}
     {% include "core/_feedback_widget.html" %}

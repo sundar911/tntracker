@@ -5,6 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Party Details</title>
+    <meta property="og:title" content="Tamil Nadu Assembly Elections 2026" />
+    <meta property="og:description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/core/logo.png" />
+    <meta property="og:type" content="website" />
+    <meta name="description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
     <link rel="stylesheet" href="/static/core/site.css" />
   </head>
   <body>
@@ -38,10 +43,12 @@
           <a class="link" href="/set-lang/ta/?next={{ request.get_full_path|urlencode }}">தமிழ்</a>
         </div>
       </div>
-      {% if data_vintage_label %}
-      <div class="banner">{{ data_vintage_label }}</div>
-      {% endif %}
-      <a class="link" id="back-to-dashboard" href="/party-dashboard/">← {% if current_language == "ta" %}கட்சி காட்சிப்பலகை{% else %}Party Dashboard{% endif %}</a>
+      <div class="nav-row">
+        <a class="link" id="back-to-dashboard" href="/party-dashboard/">← {% if current_language == "ta" %}கட்சி காட்சிப்பலகை{% else %}Party Dashboard{% endif %}</a>
+        {% if data_vintage_label %}
+        <div class="banner">{{ data_vintage_label }}</div>
+        {% endif %}
+      </div>
       <div class="party-header">
         <h1>{{ party_display_name }}</h1>
         {% if party_symbol %}

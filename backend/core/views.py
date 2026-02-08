@@ -947,6 +947,7 @@ def constituency_detail(request, constituency_id: int):
                 "assets": assets_value,
                 "liabilities": liabilities_value,
                 "sitting": str(row.get("sitting_MLA", "")).strip() == "1",
+                "myneta_url": (row.get("myneta_url") or "").strip(),
                 "key_promises": key_promises,
                 "state_delivery": state_delivery,
                 "constituency_delivery": constituency_delivery,

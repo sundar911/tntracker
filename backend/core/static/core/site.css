@@ -116,6 +116,18 @@ video {
   text-decoration: none;
 }
 
+.nav-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.nav-row .banner {
+  margin-top: 0;
+}
+
 .banner {
   margin-top: 12px;
   padding: 10px 12px;
@@ -280,6 +292,11 @@ video {
 .lang-switch a {
   color: #374151;
   text-decoration: none;
+}
+
+body.home .lang-switch {
+  border: 2px solid var(--brand);
+  box-shadow: 0 0 8px rgba(249, 205, 5, 0.5);
 }
 
 .brand {
@@ -1016,6 +1033,46 @@ input[type="range"]::-moz-range-thumb {
   margin-top: 12px;
   font-size: 13px;
   color: #475569;
+}
+
+.myneta-link {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.sort-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.sort-label {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.sort-btn {
+  padding: 5px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+  font-size: 13px;
+  color: #334155;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.sort-btn:hover {
+  background: #e2e8f0;
+}
+
+.sort-btn.active {
+  background: #334155;
+  color: #fff;
+  border-color: #334155;
 }
 
 .promise-tags {
