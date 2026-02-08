@@ -49,6 +49,44 @@ def indian(value) -> str:
     return _format_indian_number(value)
 
 
+@register.filter(name="short_indian")
+def short_indian(value) -> str:
+    """Compact rupee display: >= 1 Cr shows 'X.XX Cr', >= 1 L shows 'X.X L'."""
+    if value is None:
+        return ""
+    if isinstance(value, bool):
+        return str(value)
+    if isinstance(value, (int, float, Decimal)):
+        number = value
+    else:
+        raw = str(value).strip()
+        if raw == "":
+            return ""
+        try:
+            number = Decimal(raw.replace(",", ""))
+        except (InvalidOperation, ValueError):
+            return raw
+
+    is_negative = number < 0
+    number = abs(number)
+
+    CRORE = 10_000_000
+    LAKH = 100_000
+
+    if number >= CRORE:
+        shortened = float(number) / CRORE
+        text = f"{shortened:.2f}".rstrip("0").rstrip(".")
+        result = f"{text} Cr"
+    elif number >= LAKH:
+        shortened = float(number) / LAKH
+        text = f"{shortened:.1f}".rstrip("0").rstrip(".")
+        result = f"{text} L"
+    else:
+        return _format_indian_number(value)
+
+    return f"-{result}" if is_negative else result
+
+
 @register.filter(name="get_item")
 def get_item(mapping, key):
     if mapping is None:

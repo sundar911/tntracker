@@ -99,11 +99,11 @@
                 <div class="home-stat-label">{% if current_language == "ta" %}சராசரி வயது{% else %}Avg. age{% endif %}</div>
               </div>
               <div class="home-stat-card">
-                <div class="home-stat-value">{% if overall_avg_assets is not None %}₹ {{ overall_avg_assets|indian }}{% else %}—{% endif %}</div>
+                <div class="home-stat-value">{% if overall_avg_assets is not None %}<span title="₹ {{ overall_avg_assets|indian }}">₹ {{ overall_avg_assets|short_indian }}</span>{% else %}—{% endif %}</div>
                 <div class="home-stat-label">{% if current_language == "ta" %}சராசரி சொத்து{% else %}Avg. assets{% endif %}</div>
               </div>
               <div class="home-stat-card">
-                <div class="home-stat-value">{% if overall_avg_liabilities is not None %}₹ {{ overall_avg_liabilities|indian }}{% else %}—{% endif %}</div>
+                <div class="home-stat-value">{% if overall_avg_liabilities is not None %}<span title="₹ {{ overall_avg_liabilities|indian }}">₹ {{ overall_avg_liabilities|short_indian }}</span>{% else %}—{% endif %}</div>
                 <div class="home-stat-label">{% if current_language == "ta" %}சராசரி கடன்கள்{% else %}Avg. liabilities{% endif %}</div>
               </div>
             </div>

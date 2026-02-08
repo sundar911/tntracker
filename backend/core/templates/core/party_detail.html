@@ -41,7 +41,7 @@
       {% if data_vintage_label %}
       <div class="banner">{{ data_vintage_label }}</div>
       {% endif %}
-      <a class="link" href="/party-dashboard/?year={{ year }}">← {% if current_language == "ta" %}கட்சி காட்சிப்பலகை{% else %}Party Dashboard{% endif %}</a>
+      <a class="link" id="back-to-dashboard" href="/party-dashboard/">← {% if current_language == "ta" %}கட்சி காட்சிப்பலகை{% else %}Party Dashboard{% endif %}</a>
       <div class="party-header">
         <h1>{{ party_display_name }}</h1>
         {% if party_symbol %}
@@ -77,120 +77,37 @@
             {% if current_language == "ta" %}ஆண்டு{% else %}Year{% endif %}
             <select name="year">
               <option value="2021" {% if year == "2021" %}selected{% endif %}>2021</option>
-              <option value="2026" {% if year == "2026" %}selected{% endif %}>2026</option>
+              <option value="2026" disabled style="color: #94a3b8;">2026 ({% if current_language == "ta" %}விரைவில்{% else %}coming soon{% endif %})</option>
             </select>
           </label>
           <label>
             {% if current_language == "ta" %}குற்ற வழக்குகள்{% else %}Criminal cases{% endif %}
-            <div class="range-wrap">
-              <div class="range-pair">
-                <input
-                  type="range"
-                  name="min_cases"
-                  min="{{ cases_bounds.0 }}"
-                  max="{{ cases_bounds.1 }}"
-                  value="{{ min_cases }}"
-                  step="1"
-                />
-                <input
-                  type="range"
-                  name="max_cases"
-                  min="{{ cases_bounds.0 }}"
-                  max="{{ cases_bounds.1 }}"
-                  value="{{ max_cases|default:cases_bounds.1 }}"
-                  step="1"
-                />
-              </div>
-              <div class="range-values">
-                <output class="min-value">{{ min_cases|indian }}</output>
-                <span>–</span>
-                <output class="max-value">{{ max_cases|default:cases_bounds.1|indian }}</output>
-              </div>
-            </div>
+            <select name="cases">
+              <option value="" {% if not selected_cases %}selected{% endif %}>{% if current_language == "ta" %}அனைத்தும்{% else %}All{% endif %}</option>
+              <option value="0" {% if selected_cases == "0" %}selected{% endif %}>{% if current_language == "ta" %}இல்லை (0){% else %}None (0){% endif %}</option>
+              <option value="1-5" {% if selected_cases == "1-5" %}selected{% endif %}>1 – 5</option>
+              <option value="6+" {% if selected_cases == "6+" %}selected{% endif %}>6+</option>
+            </select>
           </label>
           <label>
             {% if current_language == "ta" %}வயது{% else %}Age{% endif %}
-            <div class="range-wrap">
-              <div class="range-pair">
-                <input
-                  type="range"
-                  name="min_age"
-                  min="{{ age_bounds.0 }}"
-                  max="{{ age_bounds.1 }}"
-                  value="{{ min_age }}"
-                  step="1"
-                />
-                <input
-                  type="range"
-                  name="max_age"
-                  min="{{ age_bounds.0 }}"
-                  max="{{ age_bounds.1 }}"
-                  value="{{ max_age }}"
-                  step="1"
-                />
-              </div>
-              <div class="range-values">
-                <output class="min-value">{{ min_age|indian }}</output>
-                <span>–</span>
-                <output class="max-value">{{ max_age|indian }}</output>
-              </div>
-            </div>
+            <select name="age_group">
+              <option value="" {% if not selected_age_group %}selected{% endif %}>{% if current_language == "ta" %}அனைத்தும்{% else %}All{% endif %}</option>
+              <option value="under35" {% if selected_age_group == "under35" %}selected{% endif %}>{% if current_language == "ta" %}35க்கு கீழ்{% else %}Under 35{% endif %}</option>
+              <option value="35-44" {% if selected_age_group == "35-44" %}selected{% endif %}>35 – 44</option>
+              <option value="45-54" {% if selected_age_group == "45-54" %}selected{% endif %}>45 – 54</option>
+              <option value="55+" {% if selected_age_group == "55+" %}selected{% endif %}>55+</option>
+            </select>
           </label>
           <label>
             {% if current_language == "ta" %}சொத்துகள் (₹){% else %}Assets (₹){% endif %}
-            <div class="range-wrap">
-              <div class="range-pair">
-                <input
-                  type="range"
-                  name="min_assets"
-                  min="{{ assets_bounds.0 }}"
-                  max="{{ assets_bounds.1 }}"
-                  value="{{ min_assets }}"
-                  step="1"
-                />
-                <input
-                  type="range"
-                  name="max_assets"
-                  min="{{ assets_bounds.0 }}"
-                  max="{{ assets_bounds.1 }}"
-                  value="{{ max_assets }}"
-                  step="1"
-                />
-              </div>
-              <div class="range-values">
-                <output class="min-value">{{ min_assets|indian }}</output>
-                <span>–</span>
-                <output class="max-value">{{ max_assets|indian }}</output>
-              </div>
-            </div>
-          </label>
-          <label>
-            {% if current_language == "ta" %}பாக்கிகள் (₹){% else %}Liabilities (₹){% endif %}
-            <div class="range-wrap">
-              <div class="range-pair">
-                <input
-                  type="range"
-                  name="min_liabilities"
-                  min="{{ liabilities_bounds.0 }}"
-                  max="{{ liabilities_bounds.1 }}"
-                  value="{{ min_liabilities }}"
-                  step="1"
-                />
-                <input
-                  type="range"
-                  name="max_liabilities"
-                  min="{{ liabilities_bounds.0 }}"
-                  max="{{ liabilities_bounds.1 }}"
-                  value="{{ max_liabilities }}"
-                  step="1"
-                />
-              </div>
-              <div class="range-values">
-                <output class="min-value">{{ min_liabilities|indian }}</output>
-                <span>–</span>
-                <output class="max-value">{{ max_liabilities|indian }}</output>
-              </div>
-            </div>
+            <select name="assets_range">
+              <option value="" {% if not selected_assets_range %}selected{% endif %}>{% if current_language == "ta" %}அனைத்தும்{% else %}All{% endif %}</option>
+              <option value="under10l" {% if selected_assets_range == "under10l" %}selected{% endif %}>{% if current_language == "ta" %}₹10 லட்சத்திற்கு கீழ்{% else %}Under ₹10 L{% endif %}</option>
+              <option value="10l-1cr" {% if selected_assets_range == "10l-1cr" %}selected{% endif %}>₹10 L – ₹1 Cr</option>
+              <option value="1cr-10cr" {% if selected_assets_range == "1cr-10cr" %}selected{% endif %}>₹1 Cr – ₹10 Cr</option>
+              <option value="10cr+" {% if selected_assets_range == "10cr+" %}selected{% endif %}>₹10 Cr+</option>
+            </select>
           </label>
           <label>
             {% if current_language == "ta" %}தற்போதைய எம்.எல்.ஏ{% else %}Sitting MLA{% endif %}
@@ -231,9 +148,15 @@
           <button type="submit" class="button">
             {% if current_language == "ta" %}பயன் காட்ட{% else %}Apply{% endif %}
           </button>
+          <button type="button" class="btn-clear-filters" id="clear-filters">
+            {% if current_language == "ta" %}அனைத்தையும் அழி{% else %}Clear all filters{% endif %}
+          </button>
           <div class="filter-actions-mobile">
             <button type="submit" class="button">
               {% if current_language == "ta" %}பயன் காட்ட{% else %}Apply{% endif %}
+            </button>
+            <button type="button" class="btn-clear-filters" id="clear-filters-mobile">
+              {% if current_language == "ta" %}அழி{% else %}Clear{% endif %}
             </button>
             <button type="button" class="filter-close-btn" id="filter-close">
               {% if current_language == "ta" %}மூடு{% else %}Close{% endif %}
@@ -260,16 +183,11 @@
               {% if current_language == "ta" %}வரிசைப்படுத்து{% else %}Sort by{% endif %}
               <select id="card-sort-select">
                 {% for column in columns %}
-                  {% if column.is_number or column.is_currency %}
-                    <option value="{{ column.key }}" data-dir="desc">{{ column.label }} (high-low)</option>
-                    <option value="{{ column.key }}" data-dir="asc">{{ column.label }} (low-high)</option>
-                  {% else %}
-                    <option value="{{ column.key }}" data-dir="asc">{{ column.label }} (A-Z)</option>
-                    <option value="{{ column.key }}" data-dir="desc">{{ column.label }} (Z-A)</option>
-                  {% endif %}
+                  <option value="{{ column.key }}">{{ column.label }}</option>
                 {% endfor %}
               </select>
             </label>
+            <button type="button" class="sort-dir-btn" id="sort-dir-btn" data-dir="desc" title="Toggle sort direction">&#9660;</button>
           </div>
         </div>
 
@@ -305,7 +223,7 @@
                   <a class="link" href="{{ cell }}" target="_blank" rel="noopener">Link</a>
                 {% elif column.is_currency %}
                   {% if cell %}
-                    ₹ {{ cell|indian }}
+                    <span title="₹ {{ cell|indian }}">₹ {{ cell|short_indian }}</span>
                   {% else %}
                     —
                   {% endif %}
@@ -350,7 +268,7 @@
                     {% if column.key == myneta_key and cell %}
                       <a class="link" href="{{ cell }}" target="_blank" rel="noopener">Link</a>
                     {% elif column.is_currency %}
-                      {% if cell %}₹ {{ cell|indian }}{% else %}—{% endif %}
+                      {% if cell %}<span title="₹ {{ cell|indian }}">₹ {{ cell|short_indian }}</span>{% else %}—{% endif %}
                     {% elif column.is_number %}
                       {% if cell %}{{ cell|indian }}{% else %}—{% endif %}
                     {% else %}
@@ -378,6 +296,78 @@
       </section>
     </main>
     <script>
+      /* ---- Filter persistence (sessionStorage) ---- */
+      (function () {
+        var STORAGE_KEY = 'tntracker_filters_' + window.location.pathname;
+        var navEntry = performance.getEntriesByType('navigation')[0];
+        var isReload = navEntry && navEntry.type === 'reload';
+
+        /* On reload, clear saved filters so page shows defaults */
+        if (isReload) {
+          sessionStorage.removeItem(STORAGE_KEY);
+        }
+
+        /* On normal navigation, if URL has no filter params, restore from storage */
+        if (!isReload) {
+          var params = new URLSearchParams(window.location.search);
+          var hasExplicitFilters = false;
+          var filterKeys = ['cases','age_group','assets_range','sitting_mla','district','constituency'];
+          filterKeys.forEach(function(k) {
+            if (params.get(k)) hasExplicitFilters = true;
+          });
+
+          if (!hasExplicitFilters) {
+            var saved = sessionStorage.getItem(STORAGE_KEY);
+            if (saved) {
+              window.location.replace(window.location.pathname + '?' + saved);
+              return;
+            }
+          }
+        }
+
+        /* Save filters on form submit */
+        var form = document.getElementById('filter-form');
+        if (form) {
+          form.addEventListener('submit', function () {
+            var fd = new FormData(form);
+            var qs = new URLSearchParams(fd).toString();
+            sessionStorage.setItem(STORAGE_KEY, qs);
+          });
+        }
+
+        /* Save current URL params if they contain filters */
+        if (window.location.search) {
+          var currentParams = new URLSearchParams(window.location.search);
+          var hasFilters = false;
+          ['cases','age_group','assets_range','sitting_mla','district','constituency'].forEach(function(k) {
+            if (currentParams.get(k)) hasFilters = true;
+          });
+          if (hasFilters || currentParams.get('year')) {
+            sessionStorage.setItem(STORAGE_KEY, window.location.search.substring(1));
+          }
+        }
+
+        /* Clear all filters button */
+        function clearAllFilters() {
+          sessionStorage.removeItem(STORAGE_KEY);
+          window.location.href = window.location.pathname + '?year=2021';
+        }
+        var clearBtn = document.getElementById('clear-filters');
+        var clearBtnMobile = document.getElementById('clear-filters-mobile');
+        if (clearBtn) clearBtn.addEventListener('click', clearAllFilters);
+        if (clearBtnMobile) clearBtnMobile.addEventListener('click', clearAllFilters);
+
+        /* Update back-to-dashboard link to use saved dashboard filters */
+        var backLink = document.getElementById('back-to-dashboard');
+        if (backLink) {
+          var dashKey = 'tntracker_filters_/party-dashboard/';
+          var dashSaved = sessionStorage.getItem(dashKey);
+          if (dashSaved) {
+            backLink.href = '/party-dashboard/?' + dashSaved;
+          }
+        }
+      })();
+
       /* ---- Info popup toggle ---- */
       document.querySelectorAll("[data-info-toggle]").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -394,27 +384,6 @@
         if (!event.target.closest(".info-button") && !event.target.closest(".info-popup")) {
           document.querySelectorAll(".info-popup").forEach((item) => item.setAttribute("hidden", ""));
         }
-      });
-
-      /* ---- Range slider sync ---- */
-      document.querySelectorAll(".range-wrap").forEach((wrap) => {
-        const [minInput, maxInput] = wrap.querySelectorAll("input[type='range']");
-        const minOutput = wrap.querySelector(".min-value");
-        const maxOutput = wrap.querySelector(".max-value");
-
-        const format = (value) => Number(value).toLocaleString("en-IN");
-        const sync = () => {
-          const minValue = Math.min(Number(minInput.value), Number(maxInput.value));
-          const maxValue = Math.max(Number(minInput.value), Number(maxInput.value));
-          minInput.value = minValue;
-          maxInput.value = maxValue;
-          minOutput.textContent = format(minValue);
-          maxOutput.textContent = format(maxValue);
-        };
-
-        minInput.addEventListener("input", sync);
-        maxInput.addEventListener("input", sync);
-        sync();
       });
 
       /* ---- View toggle (Table / Cards) ---- */
@@ -446,12 +415,12 @@
       (function () {
         const select = document.getElementById("card-sort-select");
         const container = document.getElementById("card-view");
-        if (!select || !container) return;
+        const dirBtn = document.getElementById("sort-dir-btn");
+        if (!select || !container || !dirBtn) return;
 
-        select.addEventListener("change", function () {
-          const opt = this.selectedOptions[0];
-          const key = opt.value;
-          const dir = opt.dataset.dir === "asc" ? 1 : -1;
+        function sortCards() {
+          const key = select.value;
+          const dir = dirBtn.dataset.dir === "asc" ? 1 : -1;
           const cards = [...container.querySelectorAll(".data-card")];
 
           cards.sort((a, b) => {
@@ -464,6 +433,15 @@
           });
 
           cards.forEach((c) => container.appendChild(c));
+        }
+
+        select.addEventListener("change", sortCards);
+        dirBtn.addEventListener("click", function () {
+          const isDesc = this.dataset.dir === "desc";
+          this.dataset.dir = isDesc ? "asc" : "desc";
+          this.innerHTML = isDesc ? "&#9650;" : "&#9660;";
+          this.title = isDesc ? "Sorted ascending" : "Sorted descending";
+          sortCards();
         });
       })();
 
@@ -493,13 +471,6 @@
         let count = 0;
         document.querySelectorAll("#filter-form select").forEach((s) => {
           if (s.selectedIndex > 0) count++;
-        });
-        document.querySelectorAll("#filter-form .range-wrap").forEach((w) => {
-          const inputs = w.querySelectorAll("input[type='range']");
-          if (inputs.length === 2) {
-            const [mn, mx] = inputs;
-            if (mn.value !== mn.min || mx.value !== mx.max) count++;
-          }
         });
         const badge = document.getElementById("filter-badge");
         if (badge) badge.textContent = count || "";

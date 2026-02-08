@@ -1142,77 +1142,58 @@ def _compute_overview_stats(rows: list[dict]) -> dict:
     }
 
 
+# ---------- Categorical bucket definitions ----------
+CASES_BUCKETS = {"0": (0, 0), "1-5": (1, 5), "6+": (6, None)}
+AGE_BUCKETS = {"under35": (None, 34), "35-44": (35, 44), "45-54": (45, 54), "55+": (55, None)}
+ASSETS_BUCKETS = {
+    "under10l": (None, 999999),
+    "10l-1cr": (1000000, 9999999),
+    "1cr-10cr": (10000000, 99999999),
+    "10cr+": (100000000, None),
+}
+
+
+def _bucket_range(bucket_value: str, buckets: dict) -> tuple:
+    """Return (min_val, max_val) for a categorical bucket value, or (None, None) if not found."""
+    return buckets.get(bucket_value, (None, None))
+
+
+def _passes_bucket_filter(value, bucket_min, bucket_max) -> bool:
+    """Check if a numeric value passes a bucket filter range."""
+    if value is None:
+        return False
+    if bucket_min is not None and value < bucket_min:
+        return False
+    if bucket_max is not None and value > bucket_max:
+        return False
+    return True
+
+
 def party_dashboard(request):
     year = request.GET.get("year", "2021").strip()
     if year not in {"2021", "2026"}:
         year = "2021"
-    min_cases_raw = request.GET.get("min_cases", "").strip()
-    max_cases_raw = request.GET.get("max_cases", "").strip()
-    min_age_raw = request.GET.get("min_age", "").strip()
-    max_age_raw = request.GET.get("max_age", "").strip()
-    min_assets_raw = request.GET.get("min_assets", "").strip()
-    max_assets_raw = request.GET.get("max_assets", "").strip()
-    min_liabilities_raw = request.GET.get("min_liabilities", "").strip()
-    max_liabilities_raw = request.GET.get("max_liabilities", "").strip()
+    cases_filter = request.GET.get("cases", "").strip()
+    age_group_filter = request.GET.get("age_group", "").strip()
+    assets_range_filter = request.GET.get("assets_range", "").strip()
     sitting_filter = request.GET.get("sitting_mla", "").strip()
     district_filter = request.GET.get("district", "").strip()
     constituency_filter = request.GET.get("constituency", "").strip()
-    min_cases = _parse_int(min_cases_raw)
-    max_cases = _parse_int(max_cases_raw)
-    min_age = _parse_int(min_age_raw)
-    max_age = _parse_int(max_age_raw)
-    min_assets = _parse_int(min_assets_raw)
-    max_assets = _parse_int(max_assets_raw)
-    min_liabilities = _parse_int(min_liabilities_raw)
-    max_liabilities = _parse_int(max_liabilities_raw)
     selected_party = request.GET.get("party", "").strip()
     sort_key = request.GET.get("sort", "candidate_count")
     sort_order = request.GET.get("order", "desc")
+
+    cases_min, cases_max = _bucket_range(cases_filter, CASES_BUCKETS)
+    age_min, age_max = _bucket_range(age_group_filter, AGE_BUCKETS)
+    assets_min, assets_max = _bucket_range(assets_range_filter, ASSETS_BUCKETS)
+    cases_filter_active = cases_filter in CASES_BUCKETS
+    age_filter_active = age_group_filter in AGE_BUCKETS
+    assets_filter_active = assets_range_filter in ASSETS_BUCKETS
 
     data_dir = settings.BASE_DIR.parent / "data"
     csv_path = data_dir / ("tn_2026_candidates.csv" if year == "2026" else "fct_candidates_21.csv")
     rows = _load_party_rows(csv_path)
     has_sitting = bool(rows and "sitting_MLA" in rows[0])
-    cases_bounds = _numeric_bounds(rows, "criminal_cases")
-    age_bounds = _numeric_bounds(rows, "age")
-    assets_bounds = _numeric_bounds(rows, "total_assets_rs")
-    liabilities_bounds = _numeric_bounds(rows, "liabilities_rs")
-
-    cases_filter_active = False
-    if min_cases is not None and min_cases > cases_bounds[0]:
-        cases_filter_active = True
-    if max_cases is not None and max_cases < cases_bounds[1]:
-        cases_filter_active = True
-    if not cases_filter_active:
-        min_cases = None
-        max_cases = None
-
-    age_filter_active = False
-    if min_age is not None and min_age > age_bounds[0]:
-        age_filter_active = True
-    if max_age is not None and max_age < age_bounds[1]:
-        age_filter_active = True
-    if not age_filter_active:
-        min_age = None
-        max_age = None
-
-    assets_filter_active = False
-    if min_assets is not None and min_assets > assets_bounds[0]:
-        assets_filter_active = True
-    if max_assets is not None and max_assets < assets_bounds[1]:
-        assets_filter_active = True
-    if not assets_filter_active:
-        min_assets = None
-        max_assets = None
-
-    liabilities_filter_active = False
-    if min_liabilities is not None and min_liabilities > liabilities_bounds[0]:
-        liabilities_filter_active = True
-    if max_liabilities is not None and max_liabilities < liabilities_bounds[1]:
-        liabilities_filter_active = True
-    if not liabilities_filter_active:
-        min_liabilities = None
-        max_liabilities = None
 
     filtered_rows: list[dict] = []
     party_set = set()
@@ -1224,7 +1205,6 @@ def party_dashboard(request):
         cases_value = _parse_int(row.get("criminal_cases"))
         age_value = _parse_int(row.get("age"))
         assets_value = _parse_int(row.get("total_assets_rs"))
-        liabilities_value = _parse_int(row.get("liabilities_rs"))
         sitting_value = _parse_int(row.get("sitting_MLA"))
         party_name = (row.get("party") or "").strip() or "Independent / Unknown"
         district_name = _row_value(row, district_key)
@@ -1234,34 +1214,12 @@ def party_dashboard(request):
             district_set.add(district_name)
             if constituency_name:
                 district_map[district_name].add(constituency_name)
-        if cases_filter_active:
-            if cases_value is None:
-                continue
-            if min_cases is not None and cases_value < min_cases:
-                continue
-            if max_cases is not None and cases_value > max_cases:
-                continue
-        if age_filter_active:
-            if age_value is None:
-                continue
-            if min_age is not None and age_value < min_age:
-                continue
-            if max_age is not None and age_value > max_age:
-                continue
-        if assets_filter_active:
-            if assets_value is None:
-                continue
-            if min_assets is not None and assets_value < min_assets:
-                continue
-            if max_assets is not None and assets_value > max_assets:
-                continue
-        if liabilities_filter_active:
-            if liabilities_value is None:
-                continue
-            if min_liabilities is not None and liabilities_value < min_liabilities:
-                continue
-            if max_liabilities is not None and liabilities_value > max_liabilities:
-                continue
+        if cases_filter_active and not _passes_bucket_filter(cases_value, cases_min, cases_max):
+            continue
+        if age_filter_active and not _passes_bucket_filter(age_value, age_min, age_max):
+            continue
+        if assets_filter_active and not _passes_bucket_filter(assets_value, assets_min, assets_max):
+            continue
         if has_sitting and sitting_filter in {"0", "1"}:
             if sitting_value is None or str(sitting_value) != sitting_filter:
                 continue
@@ -1282,8 +1240,6 @@ def party_dashboard(request):
         "age_count": 0,
         "assets_total": 0,
         "assets_count": 0,
-        "liabilities_total": 0,
-        "liabilities_count": 0,
         "sitting_total": 0,
         "education_counts": Counter(),
     })
@@ -1294,7 +1250,6 @@ def party_dashboard(request):
         age_value = _parse_int(row.get("age"))
         education_value = (row.get("education") or "").strip()
         assets_value = _parse_int(row.get("total_assets_rs"))
-        liabilities_value = _parse_int(row.get("liabilities_rs"))
         sitting_value = _parse_int(row.get("sitting_MLA"))
 
         bucket = party_data[party]
@@ -1310,9 +1265,6 @@ def party_dashboard(request):
         if assets_value is not None:
             bucket["assets_total"] += assets_value
             bucket["assets_count"] += 1
-        if liabilities_value is not None:
-            bucket["liabilities_total"] += liabilities_value
-            bucket["liabilities_count"] += 1
         if sitting_value is not None and sitting_value > 0:
             bucket["sitting_total"] += 1
         if education_value:
@@ -1331,11 +1283,6 @@ def party_dashboard(request):
             if stats["assets_count"]
             else None
         )
-        avg_liabilities = (
-            round(stats["liabilities_total"] / stats["liabilities_count"], 0)
-            if stats["liabilities_count"]
-            else None
-        )
         cases_pct = round((stats["cases_positive"] / stats["count"]) * 100, 1) if stats["count"] else 0.0
         top_education = stats["education_counts"].most_common(1)
         party_stats.append(
@@ -1347,7 +1294,6 @@ def party_dashboard(request):
                 "avg_cases": avg_cases,
                 "avg_age": avg_age,
                 "avg_assets": avg_assets,
-                "avg_liabilities": avg_liabilities,
                 "cases_pct": cases_pct,
                 "top_education": top_education[0][0] if top_education else "",
             }
@@ -1360,7 +1306,6 @@ def party_dashboard(request):
         "cases_pct": "cases_pct",
         "avg_age": "avg_age",
         "avg_assets": "avg_assets",
-        "avg_liabilities": "avg_liabilities",
         "top_education": "top_education",
     }
     sort_field = sort_map.get(sort_key, "candidate_count")
@@ -1386,20 +1331,11 @@ def party_dashboard(request):
         {const for consts in district_map.values() for const in consts}
     )
 
-    def _coerce_slider(raw_value: str, bounds: tuple[int, int], default: int) -> int:
-        parsed = _parse_int(raw_value)
-        return parsed if parsed is not None else default
-
     base_query = {
         "year": year,
-        "min_cases": min_cases_raw,
-        "max_cases": max_cases_raw,
-        "min_age": min_age_raw,
-        "max_age": max_age_raw,
-        "min_assets": min_assets_raw,
-        "max_assets": max_assets_raw,
-        "min_liabilities": min_liabilities_raw,
-        "max_liabilities": max_liabilities_raw,
+        "cases": cases_filter,
+        "age_group": age_group_filter,
+        "assets_range": assets_range_filter,
         "sitting_mla": sitting_filter,
         "party": selected_party,
         "district": district_filter,
@@ -1424,18 +1360,9 @@ def party_dashboard(request):
             "overall_avg_assets": overall_avg_assets,
             "overall_avg_liabilities": overall_avg_liabilities,
             "party_stats": party_stats,
-            "min_cases": _coerce_slider(min_cases_raw, cases_bounds, cases_bounds[0]),
-            "max_cases": _coerce_slider(max_cases_raw, cases_bounds, cases_bounds[1]),
-            "min_age": _coerce_slider(min_age_raw, age_bounds, age_bounds[0]),
-            "max_age": _coerce_slider(max_age_raw, age_bounds, age_bounds[1]),
-            "min_assets": _coerce_slider(min_assets_raw, assets_bounds, assets_bounds[0]),
-            "max_assets": _coerce_slider(max_assets_raw, assets_bounds, assets_bounds[1]),
-            "min_liabilities": _coerce_slider(min_liabilities_raw, liabilities_bounds, liabilities_bounds[0]),
-            "max_liabilities": _coerce_slider(max_liabilities_raw, liabilities_bounds, liabilities_bounds[1]),
-            "cases_bounds": cases_bounds,
-            "age_bounds": age_bounds,
-            "assets_bounds": assets_bounds,
-            "liabilities_bounds": liabilities_bounds,
+            "selected_cases": cases_filter,
+            "selected_age_group": age_group_filter,
+            "selected_assets_range": assets_range_filter,
             "sitting_mla": sitting_filter if has_sitting else "",
             "rows_count": len(filtered_rows),
             "party_options": party_options,
@@ -1458,25 +1385,20 @@ def party_detail(request, party_name: str):
         year = "2021"
     party_display_name = _display_party_name(party_name)
     party_symbol = _party_symbol_url(party_name)
-    min_cases_raw = request.GET.get("min_cases", "").strip()
-    max_cases_raw = request.GET.get("max_cases", "").strip()
-    min_age_raw = request.GET.get("min_age", "").strip()
-    max_age_raw = request.GET.get("max_age", "").strip()
-    min_assets_raw = request.GET.get("min_assets", "").strip()
-    max_assets_raw = request.GET.get("max_assets", "").strip()
-    min_liabilities_raw = request.GET.get("min_liabilities", "").strip()
-    max_liabilities_raw = request.GET.get("max_liabilities", "").strip()
+    cases_filter = request.GET.get("cases", "").strip()
+    age_group_filter = request.GET.get("age_group", "").strip()
+    assets_range_filter = request.GET.get("assets_range", "").strip()
     sitting_filter = request.GET.get("sitting_mla", "").strip()
     district_filter = request.GET.get("district", "").strip()
     constituency_filter = request.GET.get("constituency", "").strip()
-    min_cases = _parse_int(min_cases_raw)
-    max_cases = _parse_int(max_cases_raw)
-    min_age = _parse_int(min_age_raw)
-    max_age = _parse_int(max_age_raw)
-    min_assets = _parse_int(min_assets_raw)
-    max_assets = _parse_int(max_assets_raw)
-    min_liabilities = _parse_int(min_liabilities_raw)
-    max_liabilities = _parse_int(max_liabilities_raw)
+
+    cases_min, cases_max = _bucket_range(cases_filter, CASES_BUCKETS)
+    age_min, age_max = _bucket_range(age_group_filter, AGE_BUCKETS)
+    assets_min, assets_max = _bucket_range(assets_range_filter, ASSETS_BUCKETS)
+    cases_filter_active = cases_filter in CASES_BUCKETS
+    age_filter_active = age_group_filter in AGE_BUCKETS
+    assets_filter_active = assets_range_filter in ASSETS_BUCKETS
+
     data_dir = settings.BASE_DIR.parent / "data"
     csv_path = data_dir / ("tn_2026_candidates.csv" if year == "2026" else "fct_candidates_21.csv")
     rows = _load_party_rows(csv_path)
@@ -1499,84 +1421,21 @@ def party_detail(request, party_name: str):
             if constituency_name:
                 district_map[district_name].add(constituency_name)
 
-    cases_bounds = _numeric_bounds(all_party_rows, "criminal_cases")
-    age_bounds = _numeric_bounds(all_party_rows, "age")
-    assets_bounds = _numeric_bounds(all_party_rows, "total_assets_rs")
-    liabilities_bounds = _numeric_bounds(all_party_rows, "liabilities_rs")
-    cases_filter_active = False
-    if min_cases is not None and min_cases > cases_bounds[0]:
-        cases_filter_active = True
-    if max_cases is not None and max_cases < cases_bounds[1]:
-        cases_filter_active = True
-    if not cases_filter_active:
-        min_cases = None
-        max_cases = None
-
-    age_filter_active = False
-    if min_age is not None and min_age > age_bounds[0]:
-        age_filter_active = True
-    if max_age is not None and max_age < age_bounds[1]:
-        age_filter_active = True
-    if not age_filter_active:
-        min_age = None
-        max_age = None
-
-    assets_filter_active = False
-    if min_assets is not None and min_assets > assets_bounds[0]:
-        assets_filter_active = True
-    if max_assets is not None and max_assets < assets_bounds[1]:
-        assets_filter_active = True
-    if not assets_filter_active:
-        min_assets = None
-        max_assets = None
-
-    liabilities_filter_active = False
-    if min_liabilities is not None and min_liabilities > liabilities_bounds[0]:
-        liabilities_filter_active = True
-    if max_liabilities is not None and max_liabilities < liabilities_bounds[1]:
-        liabilities_filter_active = True
-    if not liabilities_filter_active:
-        min_liabilities = None
-        max_liabilities = None
-
     party_rows = []
     for row in all_party_rows:
         cases_value = _parse_int(row.get("criminal_cases"))
         age_value = _parse_int(row.get("age"))
         assets_value = _parse_int(row.get("total_assets_rs"))
-        liabilities_value = _parse_int(row.get("liabilities_rs"))
         sitting_value = _parse_int(row.get("sitting_MLA"))
         district_name = _row_value(row, district_key)
         constituency_name = _row_value(row, constituency_key)
 
-        if cases_filter_active:
-            if cases_value is None:
-                continue
-            if min_cases is not None and cases_value < min_cases:
-                continue
-            if max_cases is not None and cases_value > max_cases:
-                continue
-        if age_filter_active:
-            if age_value is None:
-                continue
-            if min_age is not None and age_value < min_age:
-                continue
-            if max_age is not None and age_value > max_age:
-                continue
-        if assets_filter_active:
-            if assets_value is None:
-                continue
-            if min_assets is not None and assets_value < min_assets:
-                continue
-            if max_assets is not None and assets_value > max_assets:
-                continue
-        if liabilities_filter_active:
-            if liabilities_value is None:
-                continue
-            if min_liabilities is not None and liabilities_value < min_liabilities:
-                continue
-            if max_liabilities is not None and liabilities_value > max_liabilities:
-                continue
+        if cases_filter_active and not _passes_bucket_filter(cases_value, cases_min, cases_max):
+            continue
+        if age_filter_active and not _passes_bucket_filter(age_value, age_min, age_max):
+            continue
+        if assets_filter_active and not _passes_bucket_filter(assets_value, assets_min, assets_max):
+            continue
         if has_sitting and sitting_filter in {"0", "1"}:
             if sitting_value is None or str(sitting_value) != sitting_filter:
                 continue
@@ -1627,10 +1486,6 @@ def party_detail(request, party_name: str):
         {const for consts in district_map.values() for const in consts}
     )
 
-    def _coerce_slider(raw_value: str, bounds: tuple[int, int], default: int) -> int:
-        parsed = _parse_int(raw_value)
-        return parsed if parsed is not None else default
-
     return render(
         request,
         "core/party_detail.html",
@@ -1643,18 +1498,9 @@ def party_detail(request, party_name: str):
             "columns": columns,
             "myneta_key": myneta_key,
             "row_count": len(party_rows),
-            "min_cases": _coerce_slider(min_cases_raw, cases_bounds, cases_bounds[0]),
-            "max_cases": _coerce_slider(max_cases_raw, cases_bounds, cases_bounds[1]),
-            "min_age": _coerce_slider(min_age_raw, age_bounds, age_bounds[0]),
-            "max_age": _coerce_slider(max_age_raw, age_bounds, age_bounds[1]),
-            "min_assets": _coerce_slider(min_assets_raw, assets_bounds, assets_bounds[0]),
-            "max_assets": _coerce_slider(max_assets_raw, assets_bounds, assets_bounds[1]),
-            "min_liabilities": _coerce_slider(min_liabilities_raw, liabilities_bounds, liabilities_bounds[0]),
-            "max_liabilities": _coerce_slider(max_liabilities_raw, liabilities_bounds, liabilities_bounds[1]),
-            "cases_bounds": cases_bounds,
-            "age_bounds": age_bounds,
-            "assets_bounds": assets_bounds,
-            "liabilities_bounds": liabilities_bounds,
+            "selected_cases": cases_filter,
+            "selected_age_group": age_group_filter,
+            "selected_assets_range": assets_range_filter,
             "sitting_mla": sitting_filter if has_sitting else "",
             "districts": sorted(district_set),
             "selected_district": district_filter,

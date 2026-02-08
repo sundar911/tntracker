@@ -143,9 +143,13 @@ video {
 .card {
   background: #ffffff;
   border-radius: 12px;
-  padding: 20px;
-  margin: 24px 0;
+  padding: 16px;
+  margin: 16px 0;
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+.card h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
 }
 
 .list {
@@ -1113,6 +1117,60 @@ input[type="range"]::-moz-range-thumb {
   color: var(--secondary);
 }
 
+/* ========== Overview Tiles ========== */
+
+.overview-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+}
+
+.overview-tiles > div {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 14px 12px;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.overview-tiles dt {
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.overview-tiles dd {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 6px 0 0;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .overview-tiles {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .overview-tiles > div {
+    padding: 12px 10px;
+  }
+
+  .overview-tiles dd {
+    font-size: 17px;
+  }
+
+  .overview-tiles dt {
+    font-size: 11px;
+  }
+}
+
 /* ========== View Toggle & Card Grid ========== */
 
 .view-toolbar {
@@ -1173,6 +1231,19 @@ input[type="range"]::-moz-range-thumb {
   font-size: 14px;
   background: #ffffff;
 }
+
+.sort-dir-btn {
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+  color: var(--secondary);
+  transition: background 0.15s;
+}
+.sort-dir-btn:hover { background: #e2e8f0; }
 
 .card-grid {
   display: grid;
@@ -1266,6 +1337,20 @@ input[type="range"]::-moz-range-thumb {
   display: none;
 }
 
+.btn-clear-filters {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+
 @media (max-width: 768px) {
   .card-grid {
     grid-template-columns: 1fr;
@@ -1314,7 +1399,7 @@ input[type="range"]::-moz-range-thumb {
     top: 0;
     left: 0;
     right: 0;
-    max-height: 55vh;
+    max-height: 80vh;
     overflow-y: auto;
     z-index: 1001;
     border-radius: 0 0 18px 18px;

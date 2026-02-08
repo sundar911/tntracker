@@ -170,13 +170,13 @@
             {% endif %}
             • <strong>{% if current_language == "ta" %}சொத்துகள்{% else %}Assets{% endif %}:</strong>
             {% if affidavit.assets_total %}
-              ₹ {{ affidavit.assets_total|indian }}
+              <span title="₹ {{ affidavit.assets_total|indian }}">₹ {{ affidavit.assets_total|short_indian }}</span>
             {% else %}
               -
             {% endif %}
             • <strong>{% if current_language == "ta" %}பாக்கிகள்{% else %}Liabilities{% endif %}:</strong>
             {% if affidavit.liabilities_total %}
-              ₹ {{ affidavit.liabilities_total|indian }}
+              <span title="₹ {{ affidavit.liabilities_total|indian }}">₹ {{ affidavit.liabilities_total|short_indian }}</span>
             {% else %}
               -
             {% endif %}
