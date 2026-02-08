@@ -22,5 +22,6 @@ urlpatterns = [
     path("set-lang/<str:language>/", views.set_language, name="set-language"),
     path("constituency/<int:constituency_id>/", views.constituency_detail, name="constituency-detail"),
     path("candidate/<int:candidate_id>/", views.candidate_detail, name="candidate-detail"),
+    path("feedback/", views.submit_feedback, name="feedback"),
     path("", include(router.urls)),
 ]

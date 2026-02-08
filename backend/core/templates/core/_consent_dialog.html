@@ -1,0 +1,193 @@
+<!-- DPDPA-compliant consent dialog — shown on first visit -->
+<div id="consent-overlay" class="consent-overlay" style="display:none;">
+  <div class="consent-card">
+    <div class="consent-header">
+      <span class="consent-icon">&#9888;&#65039;</span>
+      <div>
+        <strong class="consent-title">
+          {% if current_language == "ta" %}
+            முக்கியமான சட்டப்பூர்வ அறிவிப்பு<br>&amp; பயன்பாட்டு விதிமுறைகள்
+          {% else %}
+            Important Legal Disclaimer<br>&amp; Terms of Use
+          {% endif %}
+        </strong>
+      </div>
+    </div>
+
+    <p class="consent-intro">
+      {% if current_language == "ta" %}
+        தொடர்வதற்கு முன் கவனமாகப் படிக்கவும்:
+      {% else %}
+        Please read carefully before proceeding:
+      {% endif %}
+    </p>
+
+    <ul class="consent-list">
+      <li>
+        {% if current_language == "ta" %}
+          <strong>தன்னார்வ முன்முயற்சி:</strong> இது பொதுவில் கிடைக்கும் தேர்தல் தொடர்பான தகவல்களை
+          மிகவும் அணுகக்கூடிய வகையில் வழங்குவதற்கான ஒரு தன்னார்வ திட்டமாகும்.
+          இது <b>சுதந்திரமானது, அரசு இணையதளம் அல்ல</b>.
+        {% else %}
+          <strong>Voluntary Initiative:</strong> This is a voluntary project to present publicly
+          available election related information in a more accessible way. It is <b>independent and not a government website</b>.
+        {% endif %}
+      </li>
+      <li>
+        {% if current_language == "ta" %}
+          <strong>தரவு வெளிப்படைத்தன்மை:</strong> வேட்பாளர்களை நன்கு அறிந்துகொள்ள உதவும்
+          வகையில் myneta.info-லிருந்து பொது ஆவணங்களை எடுத்துள்ளோம்.
+          துல்லியத்திற்கு முயற்சிக்கிறோம் என்றாலும், தரவு கைமுறையாக சரிபார்க்கப்பட்டது,
+          பிழைகள் இருக்கலாம். எந்தவொரு துல்லியமின்மை அல்லது விடுபடலுக்கும் உருவாக்குநர்கள்
+          <strong>எந்தப் பொறுப்பும் ஏற்க மாட்டார்கள்</strong>.
+        {% else %}
+          <strong>Data Transparency:</strong> We have scraped manually digitized public records from myneta.info to
+          help you know your candidates better. While we strive for accuracy, data is
+          manually verified and may contain errors. The developers accept
+          <strong>NO LIABILITY</strong> for any inaccuracies or omissions.
+        {% endif %}
+      </li>
+      <li>
+        {% if current_language == "ta" %}
+          <strong>விவரங்களை சரிபார்க்கவும்:</strong> மிகவும் துல்லியமான மற்றும் சட்டப்பூர்வமான
+          தகவலுக்கு, ஒவ்வொரு வேட்பாளர் பக்கத்திலும் நேரடியாக இணைக்கப்பட்டுள்ள
+          <strong>அசல் வாக்குமூலங்களை</strong> சரிபார்க்கவும்.
+        {% else %}
+          <strong>Verify Details:</strong> For the most accurate and legally binding
+          information, we encourage you to check the <strong>original affidavits</strong>
+          which are linked directly on every candidate's profile.
+        {% endif %}
+      </li>
+    </ul>
+
+    <div class="consent-recording-section">
+      <p class="consent-recording-title">
+        <strong>
+          {% if current_language == "ta" %}இந்த இணையதளத்தை மேம்படுத்த எங்களுக்கு உதவுங்கள்{% else %}Help us improve this website{% endif %}
+        </strong>
+      </p>
+      <p class="consent-recording-body">
+        {% if current_language == "ta" %}
+          நீங்கள் இந்த இணையதளத்தை எவ்வாறு பயன்படுத்துகிறீர்கள் என்பதை பதிவு செய்ய விரும்புகிறோம்
+          &mdash; எந்தெந்த பக்கங்களை பார்வையிடுகிறீர்கள், எங்கே கிளிக் செய்கிறீர்கள்,
+          எவ்வளவு தூரம் ஸ்க்ரோல் செய்கிறீர்கள் போன்றவை. எது நன்றாக வேலை செய்கிறது,
+          எது குழப்பமாக உள்ளது என்பதை புரிந்துகொள்ள இது எங்களுக்கு உதவுகிறது.
+        {% else %}
+          We would like to record how you browse this website &mdash; things like which
+          pages you visit, where you click, and how far you scroll. This helps us
+          understand what&rsquo;s working and what&rsquo;s confusing, so we can make the
+          site better for everyone.
+        {% endif %}
+      </p>
+      <ul class="consent-recording-details">
+        <li>
+          {% if current_language == "ta" %}
+            உங்கள் பெயர், மின்னஞ்சல், தொலைபேசி எண் அல்லது எந்த தனிப்பட்ட தகவலையும் நாங்கள் சேகரிக்க <strong>மாட்டோம்</strong>.
+          {% else %}
+            We do <strong>NOT</strong> collect your name, email, phone number, or any personal information.
+          {% endif %}
+        </li>
+        <li>
+          {% if current_language == "ta" %}
+            பதிவுகள் இந்த இணையதளத்தை மேம்படுத்த மட்டுமே பயன்படுத்தப்படும்.
+          {% else %}
+            Recordings are only used to improve this website.
+          {% endif %}
+        </li>
+        <li>
+          {% if current_language == "ta" %}
+            எந்த பக்கத்திலும் கீழே உள்ள <em>&ldquo;தனியுரிமை நிர்வாகம்&rdquo;</em> பொத்தான் மூலம் இந்த தேர்வை எப்போது வேண்டுமானாலும் மாற்றலாம்.
+          {% else %}
+            You can change this choice anytime via the <em>&ldquo;Manage Privacy&rdquo;</em> button at the bottom of any page.
+          {% endif %}
+        </li>
+      </ul>
+      <label class="consent-checkbox-label">
+        <input type="checkbox" id="consent-recording-checkbox" />
+        <span>
+          {% if current_language == "ta" %}
+            அநாமதேய உலாவல் அமர்வு பதிவுக்கு நான் ஒப்புக்கொள்கிறேன் <em>(விருப்பத்திற்குரியது)</em>
+          {% else %}
+            I agree to anonymous browsing session recording <em>(optional)</em>
+          {% endif %}
+        </span>
+      </label>
+    </div>
+
+    <button id="consent-accept-btn" class="consent-accept-btn" type="button">
+      {% if current_language == "ta" %}
+        நான் புரிந்துகொண்டேன், தொடர விரும்புகிறேன் &#10004;&#65039;
+      {% else %}
+        I Understand &amp; Wish to Proceed &#10004;&#65039;
+      {% endif %}
+    </button>
+    <button id="consent-cancel-btn" class="consent-cancel-btn" type="button">
+      {% if current_language == "ta" %}ரத்து செய்{% else %}Cancel{% endif %}
+    </button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var CONSENT_KEY = "tn_consent";
+  var RECORDING_KEY = "tn_recording_consent";
+  var overlay = document.getElementById("consent-overlay");
+  var acceptBtn = document.getElementById("consent-accept-btn");
+  var cancelBtn = document.getElementById("consent-cancel-btn");
+  var checkbox = document.getElementById("consent-recording-checkbox");
+
+  function loadClarity() {
+    if (document.getElementById("clarity-script")) return;
+    /* Replace YOUR_PROJECT_ID with your real Microsoft Clarity project ID */
+    var s = document.createElement("script");
+    s.id = "clarity-script";
+    s.textContent =
+      '(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};' +
+      't=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;' +
+      'y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);' +
+      '})(window,document,"clarity","script","YOUR_PROJECT_ID");';
+    document.head.appendChild(s);
+  }
+
+  function showDialog() {
+    overlay.style.display = "flex";
+    document.body.style.overflow = "hidden";
+    /* Restore previous checkbox state if re-opening */
+    checkbox.checked = localStorage.getItem(RECORDING_KEY) === "yes";
+  }
+
+  function hideDialog() {
+    overlay.style.display = "none";
+    document.body.style.overflow = "";
+  }
+
+  /* First visit — no consent stored yet */
+  if (!localStorage.getItem(CONSENT_KEY)) {
+    showDialog();
+  } else {
+    /* Returning visit — load Clarity if they previously opted in */
+    if (localStorage.getItem(RECORDING_KEY) === "yes") {
+      loadClarity();
+    }
+  }
+
+  acceptBtn.addEventListener("click", function () {
+    localStorage.setItem(CONSENT_KEY, "accepted");
+    if (checkbox.checked) {
+      localStorage.setItem(RECORDING_KEY, "yes");
+      loadClarity();
+    } else {
+      localStorage.setItem(RECORDING_KEY, "no");
+    }
+    hideDialog();
+  });
+
+  cancelBtn.addEventListener("click", function () {
+    /* Cancel = close without storing consent — dialog will reappear next visit */
+    hideDialog();
+  });
+
+  /* Public function so the Manage Privacy button can reopen this */
+  window.__reopenConsentDialog = showDialog;
+})();
+</script>

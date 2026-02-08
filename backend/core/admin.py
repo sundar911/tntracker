@@ -8,6 +8,7 @@ from .models import (
     CoalitionMembership,
     Constituency,
     Election,
+    Feedback,
     LegalCase,
     Manifesto,
     ManifestoDocument,
@@ -135,3 +136,10 @@ class PartyFulfilmentClaimAdmin(admin.ModelAdmin):
     list_display = ("party", "election", "claimed_percent", "claimed_by", "as_of", "last_updated")
     list_filter = ("election", "as_of")
     search_fields = ("party__name", "claimed_by", "snippet", "source_document__title")
+
+
+@admin.register(Feedback)
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = ("pk", "ease_of_use", "helps_inform", "would_return", "page_url", "created_at")
+    list_filter = ("ease_of_use", "helps_inform", "would_return")
+    readonly_fields = ("ease_of_use", "helps_inform", "would_return", "suggestion", "page_url", "created_at")

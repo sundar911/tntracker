@@ -33,8 +33,17 @@ class Command(BaseCommand):
                 continue
             constituency, _ = Constituency.objects.get_or_create(name=feature["name"])
             constituency.number = feature["number"] or constituency.number
+            constituency.district = feature.get("district") or constituency.district
             constituency.boundary_geojson = feature["geometry"]
             constituency.save()
             updated += 1
+
+        # Propagate district to matching uppercase Constituency records
+        # (created by CSV imports) that lack district info.
+        for c in Constituency.objects.filter(boundary_geojson__isnull=False).exclude(district=""):
+            Constituency.objects.filter(
+                name__iexact=c.name,
+                district="",
+            ).exclude(pk=c.pk).update(district=c.district, number=c.number)
 
         self.stdout.write(self.style.SUCCESS(f"Imported {updated} constituency boundaries."))

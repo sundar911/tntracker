@@ -29,9 +29,11 @@ def iter_constituency_features(geojson: dict):
             "constituency_no",
             "CONSTITUENCY_NO",
         )
+        district = _prop_value(props, "DIST_NAME", "dist_name", "district", "DISTRICT")
         yield {
             "name": name.strip() if isinstance(name, str) else name,
             "number": int(number) if number not in (None, "") else None,
+            "district": district.strip() if isinstance(district, str) else None,
             "properties": props,
             "geometry": feature.get("geometry"),
         }

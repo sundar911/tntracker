@@ -342,3 +342,18 @@ class UpdateLog(models.Model):
 
     def __str__(self) -> str:
         return f"{self.entity_type} {self.entity_id} update"
+
+
+class Feedback(models.Model):
+    ease_of_use = models.PositiveSmallIntegerField(null=True, blank=True)  # 1-5
+    helps_inform = models.CharField(max_length=20, blank=True)  # yes / somewhat / no
+    would_return = models.CharField(max_length=20, blank=True)  # definitely / probably / not_sure / no
+    suggestion = models.TextField(blank=True)
+    page_url = models.CharField(max_length=500, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"Feedback #{self.pk} ({self.created_at:%Y-%m-%d %H:%M})"

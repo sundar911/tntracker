@@ -17,16 +17,22 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        if Constituency.objects.filter(boundary_geojson__isnull=False).exists():
+        needs_import = (
+            not Constituency.objects.filter(boundary_geojson__isnull=False).exists()
+            or Constituency.objects.filter(boundary_geojson__isnull=False, district="").exists()
+        )
+        if not needs_import:
             self.stdout.write("Constituency boundaries already loaded, skipping.")
             return
 
         geojson_path = options["geojson_path"]
-        source = SourceDocument.objects.create(
-            title=options["source_title"],
-            url=options["source_url"],
-            source_type=SourceDocument.SourceType.OFFICIAL,
-        )
+        first_import = not Constituency.objects.filter(boundary_geojson__isnull=False).exists()
+        if first_import:
+            SourceDocument.objects.create(
+                title=options["source_title"],
+                url=options["source_url"],
+                source_type=SourceDocument.SourceType.OFFICIAL,
+            )
         geojson = load_geojson(geojson_path)
         updated = 0
         for feature in iter_constituency_features(geojson):
@@ -34,8 +40,17 @@ class Command(BaseCommand):
                 continue
             constituency, _ = Constituency.objects.get_or_create(name=feature["name"])
             constituency.number = feature["number"] or constituency.number
+            constituency.district = feature.get("district") or constituency.district
             constituency.boundary_geojson = feature["geometry"]
             constituency.save()
             updated += 1
+
+        # Propagate district to matching uppercase Constituency records
+        # (created by CSV imports) that lack district info.
+        for c in Constituency.objects.filter(boundary_geojson__isnull=False).exclude(district=""):
+            Constituency.objects.filter(
+                name__iexact=c.name,
+                district="",
+            ).exclude(pk=c.pk).update(district=c.district, number=c.number)
 
         self.stdout.write(self.style.SUCCESS(f"Imported {updated} constituency boundaries."))

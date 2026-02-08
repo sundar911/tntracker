@@ -15,12 +15,16 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from rest_framework import viewsets, filters
 
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+
 from .models import (
     Candidate,
     CandidateResult,
     CoalitionMembership,
     Constituency,
     Election,
+    Feedback,
     Manifesto,
     ManifestoPromise,
     Party,
@@ -45,6 +49,22 @@ def home(request):
         "overall_avg_assets": stats["overall_avg_assets"],
         "overall_avg_liabilities": stats["overall_avg_liabilities"],
     })
+
+
+@csrf_exempt
+@require_POST
+def submit_feedback(request):
+    """Accept anonymous feedback from the floating widget."""
+    ease_raw = request.POST.get("ease_of_use")
+    ease_of_use = int(ease_raw) if ease_raw and ease_raw.isdigit() and 1 <= int(ease_raw) <= 5 else None
+    Feedback.objects.create(
+        ease_of_use=ease_of_use,
+        helps_inform=request.POST.get("helps_inform", "")[:20],
+        would_return=request.POST.get("would_return", "")[:20],
+        suggestion=request.POST.get("suggestion", "")[:2000],
+        page_url=request.POST.get("page_url", "")[:500],
+    )
+    return JsonResponse({"ok": True})
 
 
 def resources(request):
@@ -118,7 +138,9 @@ def _load_smla_rows() -> list[dict]:
 
 
 def _normalize_constituency_name(name: Optional[str]) -> str:
-    normalized = re.sub(r"[^A-Z0-9]+", " ", (name or "").strip().upper())
+    raw = (name or "").strip().upper()
+    raw = re.sub(r"\s*:\s*BYE ELECTION.*$", "", raw)
+    normalized = re.sub(r"[^A-Z0-9]+", " ", raw)
     return re.sub(r"\s+", " ", normalized).strip()
 
 
@@ -356,10 +378,6 @@ def map_data(request):
     for district_key, mapping in explicit_district_aliases.items():
         for raw, mapped in mapping.items():
             alias_by_district[district_key].setdefault(raw, mapped)
-
-    # Force correct global alias for Tirupathur (overrides any auto-generated alias)
-    # GeoJSON has "Tiruppattur" -> normalized "TIRUPPATTUR", CSV has "TIRUPATTUR"
-    alias_by_district[""]["TIRUPPATTUR"] = "TIRUPATTUR"
 
     features = []
     for constituency in Constituency.objects.exclude(boundary_geojson__isnull=True):
@@ -934,6 +952,7 @@ def constituency_detail(request, constituency_id: int):
                 "constituency_delivery": constituency_delivery,
             }
         )
+    candidate_cards.sort(key=lambda c: (not c["sitting"],))
     return render(
         request,
         "core/constituency_detail.html",

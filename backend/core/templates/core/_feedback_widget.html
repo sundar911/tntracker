@@ -1,0 +1,147 @@
+{% load static %}
+<!-- Floating feedback widget -->
+
+<!-- Floating feedback trigger button (bottom-right) -->
+<button id="fb-trigger" class="fb-trigger" type="button" title="{% if current_language == 'ta' %}கருத்தைப் பகிரவும்{% else %}Share feedback{% endif %}">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  <span class="fb-trigger-label">{% if current_language == "ta" %}கருத்து{% else %}Feedback{% endif %}</span>
+</button>
+
+<!-- Standalone Manage Privacy button (bottom-left) -->
+<button id="privacy-trigger" class="privacy-trigger" type="button"
+        title="{% if current_language == 'ta' %}தனியுரிமை நிர்வாகம்{% else %}Manage Privacy{% endif %}"
+        onclick="window.__reopenConsentDialog && window.__reopenConsentDialog();">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+  <span class="privacy-trigger-label">{% if current_language == "ta" %}தனியுரிமை நிர்வாகம்{% else %}Manage Privacy{% endif %}</span>
+</button>
+
+<!-- Slide-out feedback panel -->
+<div id="fb-panel" class="fb-panel" style="display:none;">
+  <div class="fb-panel-header">
+    <strong>{% if current_language == "ta" %}உங்கள் கருத்தைப் பகிரவும்{% else %}Share Your Feedback{% endif %}</strong>
+    <button id="fb-close" class="fb-close" type="button">&times;</button>
+  </div>
+
+  <form id="fb-form" class="fb-form">
+    <!-- Q1 — Ease of use (star rating) -->
+    <fieldset class="fb-field">
+      <legend class="fb-label">{% if current_language == "ta" %}இந்த தளத்தை பயன்படுத்துவது எவ்வளவு எளிதாக இருந்தது?{% else %}How easy was it to navigate this site?{% endif %}</legend>
+      <div class="fb-stars" id="fb-stars">
+        <button type="button" class="fb-star" data-value="1" title="{% if current_language == 'ta' %}மிகவும் கடினம்{% else %}Very difficult{% endif %}">&#9733;</button>
+        <button type="button" class="fb-star" data-value="2" title="{% if current_language == 'ta' %}கடினம்{% else %}Difficult{% endif %}">&#9733;</button>
+        <button type="button" class="fb-star" data-value="3" title="{% if current_language == 'ta' %}சரி{% else %}Neutral{% endif %}">&#9733;</button>
+        <button type="button" class="fb-star" data-value="4" title="{% if current_language == 'ta' %}எளிது{% else %}Easy{% endif %}">&#9733;</button>
+        <button type="button" class="fb-star" data-value="5" title="{% if current_language == 'ta' %}மிகவும் எளிது{% else %}Very easy{% endif %}">&#9733;</button>
+      </div>
+      <input type="hidden" name="ease_of_use" id="fb-ease" value="" />
+    </fieldset>
+
+    <!-- Q2 — Helpfulness -->
+    <fieldset class="fb-field">
+      <legend class="fb-label">{% if current_language == "ta" %}இது வேட்பாளர்களைப் பற்றி அறிய உதவியதா?{% else %}Did this help you learn about candidates?{% endif %}</legend>
+      <div class="fb-options">
+        <label class="fb-option"><input type="radio" name="helps_inform" value="yes" /> {% if current_language == "ta" %}ஆம்{% else %}Yes{% endif %}</label>
+        <label class="fb-option"><input type="radio" name="helps_inform" value="somewhat" /> {% if current_language == "ta" %}ஓரளவு{% else %}Somewhat{% endif %}</label>
+        <label class="fb-option"><input type="radio" name="helps_inform" value="no" /> {% if current_language == "ta" %}இல்லை{% else %}No{% endif %}</label>
+      </div>
+    </fieldset>
+
+    <!-- Q3 — Return intent -->
+    <fieldset class="fb-field">
+      <legend class="fb-label">{% if current_language == "ta" %}2026 தேர்தல் தரவு கிடைக்கும்போது இந்த தளத்தைப் பயன்படுத்துவீர்களா?{% else %}Would you use this when 2026 data is available?{% endif %}</legend>
+      <div class="fb-options">
+        <label class="fb-option"><input type="radio" name="would_return" value="definitely" /> {% if current_language == "ta" %}நிச்சயமாக{% else %}Definitely{% endif %}</label>
+        <label class="fb-option"><input type="radio" name="would_return" value="probably" /> {% if current_language == "ta" %}ஒருவேளை{% else %}Probably{% endif %}</label>
+        <label class="fb-option"><input type="radio" name="would_return" value="not_sure" /> {% if current_language == "ta" %}தெரியவில்லை{% else %}Not sure{% endif %}</label>
+        <label class="fb-option"><input type="radio" name="would_return" value="no" /> {% if current_language == "ta" %}இல்லை{% else %}No{% endif %}</label>
+      </div>
+    </fieldset>
+
+    <!-- Q4 — Suggestion -->
+    <fieldset class="fb-field">
+      <legend class="fb-label">{% if current_language == "ta" %}நீங்கள் என்ன மேம்படுத்துவீர்கள்?{% else %}What would you improve?{% endif %}</legend>
+      <textarea name="suggestion" class="fb-textarea" rows="3" maxlength="2000" placeholder="{% if current_language == 'ta' %}உங்கள் எண்ணங்கள்…{% else %}Your thoughts…{% endif %}"></textarea>
+    </fieldset>
+
+    <!-- Email note (inside form, before submit) -->
+    <p class="fb-email-note">
+      {% if current_language == "ta" %}
+        விரிவான கருத்து தெரிவிக்க அல்லது பங்களிக்க விரும்புகிறீர்களா?<br>
+        எங்களுக்கு மின்னஞ்சல் அனுப்புங்கள்: <a href="mailto:sundarr.nitt@gmail.com">sundarr.nitt@gmail.com</a>
+      {% else %}
+        Want to share detailed feedback or contribute?<br>
+        Email us at <a href="mailto:sundarr.nitt@gmail.com">sundarr.nitt@gmail.com</a>
+      {% endif %}
+    </p>
+
+    <input type="hidden" name="page_url" id="fb-page-url" value="" />
+
+    <button type="submit" class="fb-submit">{% if current_language == "ta" %}கருத்தை சமர்ப்பிக்கவும்{% else %}Submit Feedback{% endif %}</button>
+  </form>
+
+  <!-- Success state (hidden by default) -->
+  <div id="fb-success" class="fb-success" style="display:none;">
+    <p>
+      {% if current_language == "ta" %}
+        <strong>நன்றி!</strong> உங்கள் கருத்து எங்களை மேம்படுத்த உதவுகிறது.
+      {% else %}
+        <strong>Thank you!</strong> Your feedback helps us improve.
+      {% endif %}
+    </p>
+  </div>
+</div>
+
+<script>
+(function () {
+  var trigger = document.getElementById("fb-trigger");
+  var panel = document.getElementById("fb-panel");
+  var closeBtn = document.getElementById("fb-close");
+  var form = document.getElementById("fb-form");
+  var success = document.getElementById("fb-success");
+  var stars = document.querySelectorAll(".fb-star");
+  var easeInput = document.getElementById("fb-ease");
+  var pageUrlInput = document.getElementById("fb-page-url");
+
+  pageUrlInput.value = window.location.pathname;
+
+  /* Toggle panel */
+  trigger.addEventListener("click", function () {
+    var visible = panel.style.display !== "none";
+    panel.style.display = visible ? "none" : "flex";
+  });
+  closeBtn.addEventListener("click", function () {
+    panel.style.display = "none";
+  });
+
+  /* Star rating */
+  stars.forEach(function (star) {
+    star.addEventListener("click", function () {
+      var val = parseInt(this.getAttribute("data-value"), 10);
+      easeInput.value = val;
+      stars.forEach(function (s) {
+        s.classList.toggle("fb-star-active", parseInt(s.getAttribute("data-value"), 10) <= val);
+      });
+    });
+  });
+
+  /* Submit */
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var data = new FormData(form);
+    fetch("{% url 'feedback' %}", {
+      method: "POST",
+      body: data,
+    })
+      .then(function (res) { return res.json(); })
+      .then(function () {
+        form.style.display = "none";
+        success.style.display = "block";
+      })
+      .catch(function () {
+        /* Silently fail — feedback is best-effort */
+        form.style.display = "none";
+        success.style.display = "block";
+      });
+  });
+})();
+</script>
