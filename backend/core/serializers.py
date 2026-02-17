@@ -6,7 +6,13 @@ from .models import Candidate, Constituency, Manifesto, Party
 class PartySerializer(serializers.ModelSerializer):
     class Meta:
         model = Party
-        fields = ("id", "name", "name_ta", "abbreviation", "abbreviation_ta", "symbol_url", "website")
+        fields = (
+            "id", "name", "name_ta", "abbreviation", "abbreviation_ta",
+            "symbol_url", "website",
+            "founded_year", "founder", "current_leader", "headquarters",
+            "political_ideology", "political_position", "eci_recognition",
+            "governance_record_note",
+        )
 
 
 class ConstituencySerializer(serializers.ModelSerializer):
@@ -22,6 +28,36 @@ class ConstituencySerializer(serializers.ModelSerializer):
             "reservation_category",
             "reservation_category_ta",
             "boundary_geojson",
+            "parliamentary_constituency",
+            "region",
+            "urbanization_type",
+            "population",
+            "area_sq_km",
+            "infant_mortality_rate",
+            "under5_mortality_rate",
+            "institutional_delivery_pct",
+            "child_stunting_pct",
+            "child_wasting_pct",
+            "full_immunization_pct",
+            "anaemia_women_pct",
+            "literacy_rate_pct",
+            "male_literacy_rate_pct",
+            "female_literacy_rate_pct",
+            "literacy_gender_gap_pct",
+            "secondary_education_pct",
+            "graduate_and_above_pct",
+            "per_capita_income_inr",
+            "bpl_households_pct",
+            "unemployment_rate_pct",
+            "agricultural_workers_pct",
+            "banking_access_pct",
+            "crime_rate_per_lakh",
+            "crimes_against_women_per_lakh",
+            "crimes_against_sc_st_per_lakh",
+            "pucca_housing_pct",
+            "tap_water_pct",
+            "electricity_pct",
+            "sanitation_pct",
         )
 
 

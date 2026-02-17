@@ -701,6 +701,17 @@ def constituency_detail(request, constituency_id: int):
     district_name = (candidates[0].get("2021_district") if candidates else None) or constituency.district
     current_language = request.session.get("language", "en")
 
+    REGION_TA = {
+        "Northern TN": "வடக்கு தமிழ்நாடு",
+        "Southern TN": "தெற்கு தமிழ்நாடு",
+        "Western TN": "மேற்கு தமிழ்நாடு",
+        "Central TN": "மத்திய தமிழ்நாடு",
+        "Chennai": "சென்னை",
+        "Delta": "டெல்டா",
+    }
+    region_raw = constituency.region or ""
+    region_display = REGION_TA.get(region_raw, region_raw) if current_language == "ta" else region_raw
+
     # Attach key promises for each party/coalition (best-effort; missing data is OK).
     party_lookup: dict[str, Party] = {}
     for party in Party.objects.all().only("id", "name", "abbreviation"):
@@ -828,18 +839,19 @@ def constituency_detail(request, constituency_id: int):
     avg_liabilities = (sum(liabilities_values) / len(liabilities_values)) if liabilities_values else None
     cases_pct = round((cases_positive / candidate_count) * 100, 1) if candidate_count else 0
 
+    _ta = current_language == "ta"
     summary_cards = [
-        {"label": "Candidates", "value": _format_indian_number(candidate_count)},
-        {"label": "Parties", "value": _format_indian_number(party_count)},
-        {"label": "Avg cases", "value": _format_indian_number(round(avg_cases, 2) if avg_cases is not None else None)},
-        {"label": "Cases %", "value": f"{_format_indian_number(cases_pct)}%"},
-        {"label": "Avg age", "value": _format_indian_number(round(avg_age, 1) if avg_age is not None else None)},
+        {"label": "வேட்பாளர்கள்" if _ta else "Candidates", "value": _format_indian_number(candidate_count)},
+        {"label": "கட்சிகள்" if _ta else "Parties", "value": _format_indian_number(party_count)},
+        {"label": "சராசரி வழக்குகள்" if _ta else "Avg cases", "value": _format_indian_number(round(avg_cases, 2) if avg_cases is not None else None)},
+        {"label": "வழக்குகள் %" if _ta else "Cases %", "value": f"{_format_indian_number(cases_pct)}%"},
+        {"label": "சராசரி வயது" if _ta else "Avg age", "value": _format_indian_number(round(avg_age, 1) if avg_age is not None else None)},
         {
-            "label": "Avg assets",
+            "label": "சராசரி சொத்துகள்" if _ta else "Avg assets",
             "value": f"₹ {_format_indian_number(round(avg_assets, 0) if avg_assets is not None else None)}",
         },
         {
-            "label": "Avg liabilities",
+            "label": "சராசரி கடன்கள்" if _ta else "Avg liabilities",
             "value": f"₹ {_format_indian_number(round(avg_liabilities, 0) if avg_liabilities is not None else None)}",
         },
     ]
@@ -962,6 +974,7 @@ def constituency_detail(request, constituency_id: int):
             "district_name": district_name,
             "summary_cards": summary_cards,
             "candidate_cards": candidate_cards,
+            "region_display": region_display,
         },
     )
 
@@ -1487,6 +1500,8 @@ def party_detail(request, party_name: str):
         {const for consts in district_map.values() for const in consts}
     )
 
+    party_obj = Party.objects.filter(name=party_name).first() or Party.objects.filter(abbreviation=party_name).first()
+
     return render(
         request,
         "core/party_detail.html",
@@ -1494,6 +1509,7 @@ def party_detail(request, party_name: str):
             "party_name": party_name,
             "party_display_name": party_display_name,
             "party_symbol": party_symbol,
+            "party_obj": party_obj,
             "year": year,
             "rows": rows_table,
             "columns": columns,

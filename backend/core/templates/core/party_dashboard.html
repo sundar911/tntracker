@@ -33,20 +33,26 @@
           <a class="nav-link nav-link-active" href="/party-dashboard/">{% if current_language == "ta" %}வேட்பாளர்களை அறியவும்{% else %}Know your Candidates{% endif %}</a>
           <a class="nav-link" href="/resources/">{% if current_language == "ta" %}வளங்கள்{% else %}Resources{% endif %}</a>
         </div>
+        <div class="nav-actions">
+          <div class="lang-switch">
+            <a class="{% if current_language == 'en' %}lang-active{% endif %}" href="/set-lang/en/?next={{ request.get_full_path|urlencode }}">English</a>
+            <span class="lang-sep">•</span>
+            <a class="{% if current_language == 'ta' %}lang-active{% endif %}" href="/set-lang/ta/?next={{ request.get_full_path|urlencode }}">தமிழ்</a>
+          </div>
+        </div>
       </div>
     </header>
     <main class="container">
-      <div class="topbar">
-        <div class="lang">
-          <a class="link" href="/set-lang/en/?next={{ request.get_full_path|urlencode }}">English</a>
-          <span> | </span>
-          <a class="link" href="/set-lang/ta/?next={{ request.get_full_path|urlencode }}">தமிழ்</a>
-        </div>
-      </div>
       <div class="nav-row">
         <a class="link" href="/">← {% if current_language == "ta" %}முகப்பு{% else %}Back to home{% endif %}</a>
         {% if data_vintage_label %}
-        <div class="banner">{{ data_vintage_label }}</div>
+        <div class="banner">
+          {% if current_language == "ta" %}
+            காட்டப்படும் தரவு அதிகாரப்பூர்வ தமிழ்நாடு சட்டமன்றத் தேர்தல் முடிவுகள் (2021). 2026 வேட்புமனு இன்னும் வெளியிடப்படவில்லை.
+          {% else %}
+            {{ data_vintage_label }}
+          {% endif %}
+        </div>
         {% endif %}
       </div>
       <h1>{% if current_language == "ta" %}கட்சி காட்சிப்பலகை{% else %}Party Dashboard{% endif %}</h1>
@@ -444,7 +450,7 @@
 
           if (!hasExplicitFilters) {
             var saved = sessionStorage.getItem(STORAGE_KEY);
-            if (saved) {
+            if (saved && saved !== window.location.search.substring(1)) {
               window.location.replace(window.location.pathname + '?' + saved);
               return; /* stop further execution while redirecting */
             }

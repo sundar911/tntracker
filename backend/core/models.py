@@ -46,6 +46,48 @@ class Constituency(models.Model):
     boundary_geojson = models.JSONField(null=True, blank=True)
     last_updated = models.DateTimeField(auto_now=True)
 
+    # Geography
+    parliamentary_constituency = models.CharField(max_length=255, blank=True)
+    region = models.CharField(max_length=100, blank=True)
+    urbanization_type = models.CharField(max_length=50, blank=True)
+
+    # Demographics
+    population = models.PositiveIntegerField(null=True, blank=True)
+    area_sq_km = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
+    # Health indicators (district-level, NFHS-5)
+    infant_mortality_rate = models.DecimalField(max_digits=6, decimal_places=1, null=True, blank=True)
+    under5_mortality_rate = models.DecimalField(max_digits=6, decimal_places=1, null=True, blank=True)
+    institutional_delivery_pct = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+    child_stunting_pct = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+    child_wasting_pct = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+    full_immunization_pct = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+    anaemia_women_pct = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+
+    # Education indicators (district-level, Census 2011)
+    literacy_rate_pct = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    male_literacy_rate_pct = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    female_literacy_rate_pct = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    literacy_gender_gap_pct = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    secondary_education_pct = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+    graduate_and_above_pct = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+
+    # Economic indicators (district-level)
+    per_capita_income_inr = models.PositiveIntegerField(null=True, blank=True)
+    bpl_households_pct = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+    unemployment_rate_pct = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+    agricultural_workers_pct = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+    banking_access_pct = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+
+    # Safety and infrastructure (district-level)
+    crime_rate_per_lakh = models.DecimalField(max_digits=7, decimal_places=1, null=True, blank=True)
+    crimes_against_women_per_lakh = models.DecimalField(max_digits=7, decimal_places=1, null=True, blank=True)
+    crimes_against_sc_st_per_lakh = models.DecimalField(max_digits=7, decimal_places=1, null=True, blank=True)
+    pucca_housing_pct = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+    tap_water_pct = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+    electricity_pct = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+    sanitation_pct = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+
     class Meta:
         ordering = ["name"]
 
@@ -60,6 +102,20 @@ class Party(models.Model):
     abbreviation_ta = models.CharField(max_length=50, blank=True)
     symbol_url = models.URLField(max_length=500, blank=True)
     website = models.URLField(max_length=500, blank=True)
+
+    # Party profile
+    founded_year = models.PositiveIntegerField(null=True, blank=True)
+    founder = models.CharField(max_length=255, blank=True)
+    current_leader = models.CharField(max_length=255, blank=True)
+    headquarters = models.CharField(max_length=255, blank=True)
+
+    # Political positioning
+    political_ideology = models.CharField(max_length=500, blank=True)
+    political_position = models.CharField(max_length=50, blank=True)
+    eci_recognition = models.CharField(max_length=100, blank=True)
+
+    # Governance
+    governance_record_note = models.TextField(blank=True)
 
     class Meta:
         ordering = ["name"]

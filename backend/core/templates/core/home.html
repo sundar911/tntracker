@@ -35,9 +35,9 @@
         </div>
         <div class="nav-actions">
           <div class="lang-switch">
-            <a href="/set-lang/en/?next={{ request.get_full_path|urlencode }}">English</a>
-            <span>•</span>
-            <a href="/set-lang/ta/?next={{ request.get_full_path|urlencode }}">தமிழ்</a>
+            <a class="{% if current_language == 'en' %}lang-active{% endif %}" href="/set-lang/en/?next={{ request.get_full_path|urlencode }}">English</a>
+            <span class="lang-sep">•</span>
+            <a class="{% if current_language == 'ta' %}lang-active{% endif %}" href="/set-lang/ta/?next={{ request.get_full_path|urlencode }}">தமிழ்</a>
           </div>
 
         </div>
@@ -45,7 +45,13 @@
     </header>
     {% if data_vintage_label %}
     <div class="notice-bar">
-      <div class="container">{{ data_vintage_label }}</div>
+      <div class="container">
+        {% if current_language == "ta" %}
+          காட்டப்படும் தரவு அதிகாரப்பூர்வ தமிழ்நாடு சட்டமன்றத் தேர்தல் முடிவுகள் (2021). 2026 வேட்புமனு இன்னும் வெளியிடப்படவில்லை.
+        {% else %}
+          {{ data_vintage_label }}
+        {% endif %}
+      </div>
     </div>
     {% endif %}
 

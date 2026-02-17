@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gummidipoondi - Candidates</title>
+    <meta property="og:title" content="Tamil Nadu Assembly Elections 2026" />
+    <meta property="og:description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
+    <meta property="og:image" content="http://127.0.0.1:8000/static/core/logo.png" />
+    <meta property="og:type" content="website" />
+    <meta name="description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
+    <link rel="stylesheet" href="/static/core/site.css" />
+  </head>
+  <body>
+    <header class="site-header compact">
+      <div class="container nav">
+        <a class="brand-link" href="/">
+          <div class="brand">
+            <img class="brand-logo" src="/static/core/logo.png" alt="Tamil Nadu Election Tracker" />
+            <div class="brand-text">
+              <div class="brand-title">
+                தமிழ்நாடு தேர்தல் கண்காணிப்பான்
+              </div>
+              <div class="brand-subtitle">
+                2026 சட்டமன்றத் தேர்தல்
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="nav-links">
+          <a class="nav-link" href="/map/">வரைபடம்</a>
+          <a class="nav-link" href="/party-dashboard/">வேட்பாளர்களை அறியவும்</a>
+          <a class="nav-link" href="/resources/">வளங்கள்</a>
+        </div>
+        <div class="nav-actions">
+          <div class="lang-switch">
+            <a class="" href="/set-lang/en/?next=/constituency/4/">English</a>
+            <span class="lang-sep">•</span>
+            <a class="lang-active" href="/set-lang/ta/?next=/constituency/4/">தமிழ்</a>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="container">
+      <div class="nav-row">
+        <a class="link" href="/map/">← வரைபடம்</a>
+        
+        <div class="banner">
+          
+            காட்டப்படும் தரவு அதிகாரப்பூர்வ தமிழ்நாடு சட்டமன்றத் தேர்தல் முடிவுகள் (2021). 2026 வேட்புமனு இன்னும் வெளியிடப்படவில்லை.
+          
+        </div>
+        
+      </div>
+      <h1>
+        Gummidipoondi
+      </h1>
+      <p class="muted">
+        THIRUVALLUR
+      </p>
+      
+      <div class="constituency-subtitle">
+        
+          <span>TIRUVALLUR</span>
+        
+        
+          <span class="sep">|</span>
+        
+        
+          <span>வடக்கு தமிழ்நாடு</span>
+        
+        
+          <span class="sep">|</span>
+        
+        
+          <span>General</span>
+        
+      </div>
+      
+
+      <section class="card">
+        <h2>சுருக்கம்</h2>
+        <div class="stat-grid">
+          
+          <div class="stat-card">
+            <div class="stat-value">12</div>
+            <div class="stat-label">வேட்பாளர்கள்</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-value">8</div>
+            <div class="stat-label">கட்சிகள்</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-value">0.08</div>
+            <div class="stat-label">சராசரி வழக்குகள்</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-value">8.3%</div>
+            <div class="stat-label">வழக்குகள் %</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-value">41.3</div>
+            <div class="stat-label">சராசரி வயது</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-value">₹ 27,17,277</div>
+            <div class="stat-label">சராசரி சொத்துகள்</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-value">₹ 12,97,903</div>
+            <div class="stat-label">சராசரி கடன்கள்</div>
+          </div>
+          
+        </div>
+      </section>
+
+      
+      <section class="card">
+        <h2 class="collapsible-header" id="socioeconomic-toggle">
+          சமூக-பொருளாதார குறிகாட்டிகள்
+          <span class="collapsible-toggle">&#9654;</span>
+        </h2>
+        <div class="collapsible-content" id="socioeconomic-content">
+        <p class="muted" style="margin-bottom: 1rem;">
+          
+            மாவட்ட அளவிலான தரவு (THIRUVALLUR)
+          
+        </p>
+        <div class="indicator-sections">
+
+          <div class="indicator-group">
+            <h3>சுகாதாரம்</h3>
+            <div class="indicator-grid">
+              
+              <div class="indicator-item">
+                <span class="indicator-value">16.0</span>
+                <span class="indicator-label">குழந்தை இறப்பு விகிதம்</span>
+                <span class="indicator-unit">1,000 பிறப்புகளுக்கு</span>
+              </div>
+              
+              
+              <div class="indicator-item">
+                <span class="indicator-value">16.5%</span>
+                <span class="indicator-label">குழந்தை வளர்ச்சிக் குறைபாடு</span>
+              </div>
+              
+              
+              <div class="indicator-item">
+                <span class="indicator-value">14.8%</span>
+                <span class="indicator-label">குழந்தை சிதைவு</span>
+              </div>
+              
+              
+              <div class="indicator-item">
+                <span class="indicator-value">83.5%</span>
+                <span class="indicator-label">முழு நோய்த்தடுப்பு</span>
+              </div>
+              
+              
+              <div class="indicator-item">
+                <span class="indicator-value">48.2%</span>
+                <span class="indicator-label">பெண்களுக்கு இரத்தசோகை</span>
+              </div>
+              
+              
+              <div class="indicator-item">
+                <span class="indicator-value">99.5%</span>
+                <span class="indicator-label">நிறுவன பிரசவம்</span>
+              </div>
+              
+            </div>
+          </div>
+
+          <div class="indicator-group">
+            <h3>கல்வி</h3>
+            <div class="indicator-grid">
+              
+              <div class="indicator-item">
+                <span class="indicator-value">82.88%</span>
+                <span class="indicator-label">எழுத்தறிவு விகிதம்</span>
+              </div>
+              
+              
+              <div class="indicator-item">
+                <span class="indicator-value">76.52%</span>
+                <span class="indicator-label">பெண் எழுத்தறிவு</span>
+              </div>
+              
+              
+              <div class="indicator-item">
+                <span class="indicator-value">12.60%</span>
+                <span class="indicator-label">எழுத்தறிவு பாலின இடைவெளி</span>
+              </div>
+              
+              
+              <div class="indicator-item">
+                <span class="indicator-value">14.2%</span>
+                <span class="indicator-label">பட்டதாரிகள் & மேல்</span>
+              </div>
+              
+            </div>
+          </div>
+
+          <div class="indicator-group">
+            <h3>பொருளாதாரம்</h3>
+            <div class="indicator-grid">
+              
+              <div class="indicator-item">
+                <span class="indicator-value">₹ 1,95,234</span>
+                <span class="indicator-label">தனிநபர் வருமானம்</span>
+              </div>
+              
+              
+              <div class="indicator-item">
+                <span class="indicator-value">18.2%</span>
+                <span class="indicator-label">வறுமைக் கோட்டிற்கு கீழ்</span>
+              </div>
+              
+              
+              <div class="indicator-item">
+                <span class="indicator-value">15.8%</span>
+                <span class="indicator-label">விவசாய தொழிலாளர்கள்</span>
+              </div>
+              
+              
+              <div class="indicator-item">
+                <span class="indicator-value">72.5%</span>
+                <span class="indicator-label">வங்கி அணுகல்</span>
+              </div>
+              
+            </div>
+          </div>
+
+          <div class="indicator-group">
+            <h3>பாதுகாப்பு & உள்கட்டமைப்பு</h3>
+            <div class="indicator-grid">
+              
+              <div class="indicator-item">
+                <span class="indicator-value">258.5</span>
+                <span class="indicator-label">குற்ற விகிதம்</span>
+                <span class="indicator-unit">லட்சத்திற்கு</span>
+              </div>
+              
+              
+              <div class="indicator-item">
+                <span class="indicator-value">22.8</span>
+                <span class="indicator-label">பெண்களுக்கு எதிரான குற்றங்கள்</span>
+                <span class="indicator-unit">லட்சத்திற்கு</span>
+              </div>
+              
+              
+              <div class="indicator-item">
+                <span class="indicator-value">52.5%</span>
+                <span class="indicator-label">குழாய் நீர் அணுகல்</span>
+              </div>
+              
+              
+              <div class="indicator-item">
+                <span class="indicator-value">62.5%</span>
+                <span class="indicator-label">சுகாதார வசதி</span>
+              </div>
+              
+              
+              <div class="indicator-item">
+                <span class="indicator-value">98.2%</span>
+                <span class="indicator-label">மின்சார இணைப்பு</span>
+              </div>
+              
+              
+              <div class="indicator-item">
+                <span class="indicator-value">78.2%</span>
+                <span class="indicator-label">பக்கா வீடுகள்</span>
+              </div>
+              
+            </div>
+          </div>
+
+        </div>
+        </div>
+      </section>
+      
+
+      <section class="card">
+        <h2>வேட்பாளர்கள்</h2>
+        <div class="sort-bar">
+          <span class="sort-label">வரிசைப்படுத்து:</span>
+          <button class="sort-btn" data-sort="age">வயது</button>
+          <button class="sort-btn" data-sort="cases">வழக்குகள்</button>
+          <button class="sort-btn" data-sort="assets">சொத்துகள்</button>
+        </div>
+        <div class="candidate-grid">
+          
+          <div class="candidate-card "
+               data-age="60"
+               data-cases="0"
+               data-assets="0"
+               data-sitting="1">
+            <div class="candidate-header">
+              <div>
+                <div class="candidate-name">Govindarajan T.J</div>
+                <div class="muted">DMK</div>
+              </div>
+              <div class="candidate-badges">
+                
+                  <img
+                    class="party-symbol"
+                    src="/static/core/party-symbols/dmk.svg"
+                    alt="DMK symbol"
+                    loading="lazy"
+                    onerror="this.style.display='none'"
+                  />
+                
+                
+                
+                  <span class="tag">தற்போதைய எம்.எல்.ஏ</span>
+                
+              </div>
+            </div>
+            <div class="candidate-meta">
+              <span>கல்வி: 10th Pass</span>
+              <span>வயது: 60</span>
+              <span>வழக்குகள்: 0</span>
+              <span>சொத்துகள்: N/A</span>
+              <span>பாக்கிகள்: N/A</span>
+            </div>
+            
+              <a class="link myneta-link" href="https://www.myneta.info/TamilNadu2021/candidate.php?candidate_id=1089" target="_blank" rel="noopener">
+                MyNeta Profile &rarr;
+              </a>
+            
+            
+            
+          </div>
+          
+          <div class="candidate-card "
+               data-age="26"
+               data-cases="0"
+               data-assets="10000"
+               data-sitting="0">
+            <div class="candidate-header">
+              <div>
+                <div class="candidate-name">Devanathan R</div>
+                <div class="muted">IND</div>
+              </div>
+              <div class="candidate-badges">
+                
+                  <img
+                    class="party-symbol"
+                    src="/static/core/party-symbols/independent.svg"
+                    alt="IND symbol"
+                    loading="lazy"
+                    onerror="this.style.display='none'"
+                  />
+                
+                
+                
+              </div>
+            </div>
+            <div class="candidate-meta">
+              <span>கல்வி: Graduate Professional</span>
+              <span>வயது: 26</span>
+              <span>வழக்குகள்: 0</span>
+              <span>சொத்துகள்: <span title="₹ 10,000">₹ 10,000</span></span>
+              <span>பாக்கிகள்: N/A</span>
+            </div>
+            
+              <a class="link myneta-link" href="https://www.myneta.info/TamilNadu2021/candidate.php?candidate_id=420" target="_blank" rel="noopener">
+                MyNeta Profile &rarr;
+              </a>
+            
+            
+            
+          </div>
+          
+          <div class="candidate-card "
+               data-age="45"
+               data-cases="0"
+               data-assets="11869562"
+               data-sitting="0">
+            <div class="candidate-header">
+              <div>
+                <div class="candidate-name">Dilliy K.M</div>
+                <div class="muted">DMDK</div>
+              </div>
+              <div class="candidate-badges">
+                
+                  <img
+                    class="party-symbol"
+                    src="/static/core/party-symbols/dmdk.svg"
+                    alt="DMDK symbol"
+                    loading="lazy"
+                    onerror="this.style.display='none'"
+                  />
+                
+                
+                
+              </div>
+            </div>
+            <div class="candidate-meta">
+              <span>கல்வி: 8th Pass</span>
+              <span>வயது: 45</span>
+              <span>வழக்குகள்: 0</span>
+              <span>சொத்துகள்: <span title="₹ 1,18,69,562">₹ 1.19 Cr</span></span>
+              <span>பாக்கிகள்: <span title="₹ 98,83,224">₹ 98.8 L</span></span>
+            </div>
+            
+              <a class="link myneta-link" href="https://www.myneta.info/TamilNadu2021/candidate.php?candidate_id=1091" target="_blank" rel="noopener">
+                MyNeta Profile &rarr;
+              </a>
+            
+            
+            
+          </div>
+          
+          <div class="candidate-card "
+               data-age="26"
+               data-cases="0"
+               data-assets="365000"
+               data-sitting="0">
+            <div class="candidate-header">
+              <div>
+                <div class="candidate-name">Gowtham J</div>
+                <div class="muted">Anaithu Makkal Arasiyal Katchi</div>
+              </div>
+              <div class="candidate-badges">
+                
+                
+                
+              </div>
+            </div>
+            <div class="candidate-meta">
+              <span>கல்வி: Graduate Professional</span>
+              <span>வயது: 26</span>
+              <span>வழக்குகள்: 0</span>
+              <span>சொத்துகள்: <span title="₹ 3,65,000">₹ 3.6 L</span></span>
+              <span>பாக்கிகள்: <span title="₹ 3,00,000">₹ 3 L</span></span>
+            </div>
+            
+              <a class="link myneta-link" href="https://www.myneta.info/TamilNadu2021/candidate.php?candidate_id=1086" target="_blank" rel="noopener">
+                MyNeta Profile &rarr;
+              </a>
+            
+            
+            
+          </div>
+          
+          <div class="candidate-card "
+               data-age="52"
+               data-cases="0"
+               data-assets="145000"
+               data-sitting="0">
+            <div class="candidate-header">
+              <div>
+                <div class="candidate-name">Lakshmi R</div>
+                <div class="muted">IND</div>
+              </div>
+              <div class="candidate-badges">
+                
+                  <img
+                    class="party-symbol"
+                    src="/static/core/party-symbols/independent.svg"
+                    alt="IND symbol"
+                    loading="lazy"
+                    onerror="this.style.display='none'"
+                  />
+                
+                
+                
+              </div>
+            </div>
+            <div class="candidate-meta">
+              <span>கல்வி: 10th Pass</span>
+              <span>வயது: 52</span>
+              <span>வழக்குகள்: 0</span>
+              <span>சொத்துகள்: <span title="₹ 1,45,000">₹ 1.4 L</span></span>
+              <span>பாக்கிகள்: N/A</span>
+            </div>
+            
+              <a class="link myneta-link" href="https://www.myneta.info/TamilNadu2021/candidate.php?candidate_id=419" target="_blank" rel="noopener">
+                MyNeta Profile &rarr;
+              </a>
+            
+            
+            
+          </div>
+          
+          <div class="candidate-card "
+               data-age="28"
+               data-cases="0"
+               data-assets="0"
+               data-sitting="0">
+            <div class="candidate-header">
+              <div>
+                <div class="candidate-name">Nagaraj S</div>
+                <div class="muted">BSP</div>
+              </div>
+              <div class="candidate-badges">
+                
+                
+                
+              </div>
+            </div>
+            <div class="candidate-meta">
+              <span>கல்வி: Graduate Professional</span>
+              <span>வயது: 28</span>
+              <span>வழக்குகள்: 0</span>
+              <span>சொத்துகள்: N/A</span>
+              <span>பாக்கிகள்: N/A</span>
+            </div>
+            
+              <a class="link myneta-link" href="https://www.myneta.info/TamilNadu2021/candidate.php?candidate_id=421" target="_blank" rel="noopener">
+                MyNeta Profile &rarr;
+              </a>
+            
+            
+            
+          </div>
+          
+          <div class="candidate-card "
+               data-age="49"
+               data-cases="0"
+               data-assets="647000"
+               data-sitting="0">
+            <div class="candidate-header">
+              <div>
+                <div class="candidate-name">Prakash K</div>
+                <div class="muted">IND</div>
+              </div>
+              <div class="candidate-badges">
+                
+                  <img
+                    class="party-symbol"
+                    src="/static/core/party-symbols/independent.svg"
+                    alt="IND symbol"
+                    loading="lazy"
+                    onerror="this.style.display='none'"
+                  />
+                
+                
+                
+              </div>
+            </div>
+            <div class="candidate-meta">
+              <span>கல்வி: Graduate</span>
+              <span>வயது: 49</span>
+              <span>வழக்குகள்: 0</span>
+              <span>சொத்துகள்: <span title="₹ 6,47,000">₹ 6.5 L</span></span>
+              <span>பாக்கிகள்: N/A</span>
+            </div>
+            
+              <a class="link myneta-link" href="https://www.myneta.info/TamilNadu2021/candidate.php?candidate_id=3494" target="_blank" rel="noopener">
+                MyNeta Profile &rarr;
+              </a>
+            
+            
+            
+          </div>
+          
+          <div class="candidate-card "
+               data-age="52"
+               data-cases="0"
+               data-assets="8307653"
+               data-sitting="0">
+            <div class="candidate-header">
+              <div>
+                <div class="candidate-name">Prakash M</div>
+                <div class="muted">IND</div>
+              </div>
+              <div class="candidate-badges">
+                
+                  <img
+                    class="party-symbol"
+                    src="/static/core/party-symbols/independent.svg"
+                    alt="IND symbol"
+                    loading="lazy"
+                    onerror="this.style.display='none'"
+                  />
+                
+                
+                
+              </div>
+            </div>
+            <div class="candidate-meta">
+              <span>கல்வி: Graduate</span>
+              <span>வயது: 52</span>
+              <span>வழக்குகள்: 0</span>
+              <span>சொத்துகள்: <span title="₹ 83,07,653">₹ 83.1 L</span></span>
+              <span>பாக்கிகள்: <span title="₹ 2,00,000">₹ 2 L</span></span>
+            </div>
+            
+              <a class="link myneta-link" href="https://www.myneta.info/TamilNadu2021/candidate.php?candidate_id=1088" target="_blank" rel="noopener">
+                MyNeta Profile &rarr;
+              </a>
+            
+            
+            
+          </div>
+          
+          <div class="candidate-card "
+               data-age="50"
+               data-cases="1"
+               data-assets="0"
+               data-sitting="0">
+            <div class="candidate-header">
+              <div>
+                <div class="candidate-name">Prakash M</div>
+                <div class="muted">Pattali Makkal Katchi</div>
+              </div>
+              <div class="candidate-badges">
+                
+                  <img
+                    class="party-symbol"
+                    src="/static/core/party-symbols/pmk.svg"
+                    alt="Pattali Makkal Katchi symbol"
+                    loading="lazy"
+                    onerror="this.style.display='none'"
+                  />
+                
+                
+                
+              </div>
+            </div>
+            <div class="candidate-meta">
+              <span>கல்வி: 10th Pass</span>
+              <span>வயது: 50</span>
+              <span>வழக்குகள்: 1</span>
+              <span>சொத்துகள்: N/A</span>
+              <span>பாக்கிகள்: N/A</span>
+            </div>
+            
+              <a class="link myneta-link" href="https://www.myneta.info/TamilNadu2021/candidate.php?candidate_id=3493" target="_blank" rel="noopener">
+                MyNeta Profile &rarr;
+              </a>
+            
+            
+            
+          </div>
+          
+          <div class="candidate-card "
+               data-age="44"
+               data-cases="0"
+               data-assets="273000"
+               data-sitting="0">
+            <div class="candidate-header">
+              <div>
+                <div class="candidate-name">Saravanan E</div>
+                <div class="muted">IND</div>
+              </div>
+              <div class="candidate-badges">
+                
+                  <img
+                    class="party-symbol"
+                    src="/static/core/party-symbols/independent.svg"
+                    alt="IND symbol"
+                    loading="lazy"
+                    onerror="this.style.display='none'"
+                  />
+                
+                
+                
+              </div>
+            </div>
+            <div class="candidate-meta">
+              <span>கல்வி: 10th Pass</span>
+              <span>வயது: 44</span>
+              <span>வழக்குகள்: 0</span>
+              <span>சொத்துகள்: <span title="₹ 2,73,000">₹ 2.7 L</span></span>
+              <span>பாக்கிகள்: N/A</span>
+            </div>
+            
+              <a class="link myneta-link" href="https://www.myneta.info/TamilNadu2021/candidate.php?candidate_id=1087" target="_blank" rel="noopener">
+                MyNeta Profile &rarr;
+              </a>
+            
+            
+            
+          </div>
+          
+          <div class="candidate-card "
+               data-age="33"
+               data-cases="0"
+               data-assets="121000"
+               data-sitting="0">
+            <div class="candidate-header">
+              <div>
+                <div class="candidate-name">Saravanan V</div>
+                <div class="muted">Indiya Jananayaka Katchi</div>
+              </div>
+              <div class="candidate-badges">
+                
+                
+                
+              </div>
+            </div>
+            <div class="candidate-meta">
+              <span>கல்வி: Others</span>
+              <span>வயது: 33</span>
+              <span>வழக்குகள்: 0</span>
+              <span>சொத்துகள்: <span title="₹ 1,21,000">₹ 1.2 L</span></span>
+              <span>பாக்கிகள்: N/A</span>
+            </div>
+            
+              <a class="link myneta-link" href="https://www.myneta.info/TamilNadu2021/candidate.php?candidate_id=1085" target="_blank" rel="noopener">
+                MyNeta Profile &rarr;
+              </a>
+            
+            
+            
+          </div>
+          
+          <div class="candidate-card "
+               data-age="31"
+               data-cases="0"
+               data-assets="0"
+               data-sitting="0">
+            <div class="candidate-header">
+              <div>
+                <div class="candidate-name">Usha</div>
+                <div class="muted">Naam Tamilar Katchi</div>
+              </div>
+              <div class="candidate-badges">
+                
+                  <img
+                    class="party-symbol"
+                    src="/static/core/party-symbols/ntk.svg"
+                    alt="Naam Tamilar Katchi symbol"
+                    loading="lazy"
+                    onerror="this.style.display='none'"
+                  />
+                
+                
+                
+              </div>
+            </div>
+            <div class="candidate-meta">
+              <span>கல்வி: 8th Pass</span>
+              <span>வயது: 31</span>
+              <span>வழக்குகள்: 0</span>
+              <span>சொத்துகள்: N/A</span>
+              <span>பாக்கிகள்: N/A</span>
+            </div>
+            
+              <a class="link myneta-link" href="https://www.myneta.info/TamilNadu2021/candidate.php?candidate_id=1084" target="_blank" rel="noopener">
+                MyNeta Profile &rarr;
+              </a>
+            
+            
+            
+          </div>
+          
+        </div>
+      </section>
+    </main>
+    <script>
+      /* ---- Collapsible sections ---- */
+      document.querySelectorAll('.collapsible-header').forEach(function(header) {
+        header.addEventListener('click', function() {
+          var toggle = header.querySelector('.collapsible-toggle');
+          var content = header.nextElementSibling;
+          if (toggle) toggle.classList.toggle('expanded');
+          if (content) content.classList.toggle('expanded');
+        });
+      });
+
+      document.querySelectorAll("[data-info-toggle]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const popup = btn.nextElementSibling;
+          if (!popup) return;
+          const isHidden = popup.hasAttribute("hidden");
+          document.querySelectorAll(".info-popup").forEach((item) => item.setAttribute("hidden", ""));
+          if (isHidden) {
+            popup.removeAttribute("hidden");
+          }
+        });
+      });
+      document.addEventListener("click", (event) => {
+        if (!event.target.closest(".info-button") && !event.target.closest(".info-popup")) {
+          document.querySelectorAll(".info-popup").forEach((item) => item.setAttribute("hidden", ""));
+        }
+      });
+
+      /* Candidate card sorting */
+      (function () {
+        const grid = document.querySelector(".candidate-grid");
+        if (!grid) return;
+        const buttons = document.querySelectorAll(".sort-btn[data-sort]");
+        let currentField = null;
+        let ascending = true;
+
+        function sortCards(field) {
+          if (currentField === field) {
+            ascending = !ascending;
+          } else {
+            currentField = field;
+            ascending = field === "age";  // age: ascending first; cases/assets: descending first
+          }
+          buttons.forEach((b) => {
+            b.classList.toggle("active", b.dataset.sort === field);
+            if (b.dataset.sort === field) {
+              b.textContent = b.textContent.replace(/ [▲▼]$/, "") + (ascending ? " ▲" : " ▼");
+            } else {
+              b.textContent = b.textContent.replace(/ [▲▼]$/, "");
+            }
+          });
+          const cards = Array.from(grid.children).filter((el) => el.classList.contains("candidate-card"));
+          cards.sort((a, b) => {
+            const aSitting = a.dataset.sitting === "1";
+            const bSitting = b.dataset.sitting === "1";
+            if (aSitting !== bSitting) return aSitting ? -1 : 1;
+            const aVal = parseFloat(a.dataset[field]) || 0;
+            const bVal = parseFloat(b.dataset[field]) || 0;
+            return ascending ? aVal - bVal : bVal - aVal;
+          });
+          cards.forEach((card) => grid.appendChild(card));
+        }
+
+        buttons.forEach((btn) => {
+          btn.addEventListener("click", () => sortCards(btn.dataset.sort));
+        });
+      })();
+    </script>
+    <!-- DPDPA-compliant consent dialog — shown on first visit -->
+<div id="consent-overlay" class="consent-overlay" style="display:none;">
+  <div class="consent-card">
+    <div class="consent-header">
+      <span class="consent-icon">&#9888;&#65039;</span>
+      <div>
+        <strong class="consent-title">
+          
+            முக்கியமான சட்டப்பூர்வ அறிவிப்பு<br>&amp; பயன்பாட்டு விதிமுறைகள்
+          
+        </strong>
+      </div>
+    </div>
+
+    <p class="consent-intro">
+      
+        தொடர்வதற்கு முன் கவனமாகப் படிக்கவும்:
+      
+    </p>
+
+    <ul class="consent-list">
+      <li>
+        
+          <strong>தன்னார்வ முன்முயற்சி:</strong> இது பொதுவில் கிடைக்கும் தேர்தல் தொடர்பான தகவல்களை
+          மிகவும் அணுகக்கூடிய வகையில் வழங்குவதற்கான ஒரு தன்னார்வ திட்டமாகும்.
+          இது <b>சுதந்திரமானது, அரசு இணையதளம் அல்ல</b>.
+        
+      </li>
+      <li>
+        
+          <strong>தரவு வெளிப்படைத்தன்மை:</strong> வேட்பாளர்களை நன்கு அறிந்துகொள்ள உதவும்
+          வகையில் myneta.info-லிருந்து பொது ஆவணங்களை எடுத்துள்ளோம்.
+          துல்லியத்திற்கு முயற்சிக்கிறோம் என்றாலும், தரவு கைமுறையாக சரிபார்க்கப்பட்டது,
+          பிழைகள் இருக்கலாம். எந்தவொரு துல்லியமின்மை அல்லது விடுபடலுக்கும் உருவாக்குநர்கள்
+          <strong>எந்தப் பொறுப்பும் ஏற்க மாட்டார்கள்</strong>.
+        
+      </li>
+      <li>
+        
+          <strong>விவரங்களை சரிபார்க்கவும்:</strong> மிகவும் துல்லியமான மற்றும் சட்டப்பூர்வமான
+          தகவலுக்கு, ஒவ்வொரு வேட்பாளர் பக்கத்திலும் நேரடியாக இணைக்கப்பட்டுள்ள
+          <strong>அசல் வாக்குமூலங்களை</strong> சரிபார்க்கவும்.
+        
+      </li>
+    </ul>
+
+    <div class="consent-recording-section">
+      <p class="consent-recording-title">
+        <strong>
+          இந்த இணையதளத்தை மேம்படுத்த எங்களுக்கு உதவுங்கள்
+        </strong>
+      </p>
+      <p class="consent-recording-body">
+        
+          நீங்கள் இந்த இணையதளத்தை எவ்வாறு பயன்படுத்துகிறீர்கள் என்பதை பதிவு செய்ய விரும்புகிறோம்
+          &mdash; எந்தெந்த பக்கங்களை பார்வையிடுகிறீர்கள், எங்கே கிளிக் செய்கிறீர்கள்,
+          எவ்வளவு தூரம் ஸ்க்ரோல் செய்கிறீர்கள் போன்றவை. எது நன்றாக வேலை செய்கிறது,
+          எது குழப்பமாக உள்ளது என்பதை புரிந்துகொள்ள இது எங்களுக்கு உதவுகிறது.
+        
+      </p>
+      <ul class="consent-recording-details">
+        <li>
+          
+            உங்கள் பெயர், மின்னஞ்சல், தொலைபேசி எண் அல்லது எந்த தனிப்பட்ட தகவலையும் நாங்கள் சேகரிக்க <strong>மாட்டோம்</strong>.
+          
+        </li>
+        <li>
+          
+            பதிவுகள் இந்த இணையதளத்தை மேம்படுத்த மட்டுமே பயன்படுத்தப்படும்.
+          
+        </li>
+        <li>
+          
+            எந்த பக்கத்திலும் கீழே உள்ள <em>&ldquo;தனியுரிமை நிர்வாகம்&rdquo;</em> பொத்தான் மூலம் இந்த தேர்வை எப்போது வேண்டுமானாலும் மாற்றலாம்.
+          
+        </li>
+      </ul>
+      <label class="consent-checkbox-label">
+        <input type="checkbox" id="consent-recording-checkbox" />
+        <span>
+          
+            அநாமதேய உலாவல் அமர்வு பதிவுக்கு நான் ஒப்புக்கொள்கிறேன் <em>(விருப்பத்திற்குரியது)</em>
+          
+        </span>
+      </label>
+    </div>
+
+    <button id="consent-accept-btn" class="consent-accept-btn" type="button">
+      
+        நான் புரிந்துகொண்டேன், தொடர விரும்புகிறேன் &#10004;&#65039;
+      
+    </button>
+    <button id="consent-cancel-btn" class="consent-cancel-btn" type="button">
+      ரத்து செய்
+    </button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var CONSENT_KEY = "tn_consent";
+  var RECORDING_KEY = "tn_recording_consent";
+  var overlay = document.getElementById("consent-overlay");
+  var acceptBtn = document.getElementById("consent-accept-btn");
+  var cancelBtn = document.getElementById("consent-cancel-btn");
+  var checkbox = document.getElementById("consent-recording-checkbox");
+
+  function loadClarity() {
+    if (document.getElementById("clarity-script")) return;
+    /* Replace YOUR_PROJECT_ID with your real Microsoft Clarity project ID */
+    var s = document.createElement("script");
+    s.id = "clarity-script";
+    s.textContent =
+      '(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};' +
+      't=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;' +
+      'y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);' +
+      '})(window,document,"clarity","script","YOUR_PROJECT_ID");';
+    document.head.appendChild(s);
+  }
+
+  function showDialog() {
+    overlay.style.display = "flex";
+    document.body.style.overflow = "hidden";
+    /* Restore previous checkbox state if re-opening */
+    checkbox.checked = localStorage.getItem(RECORDING_KEY) === "yes";
+  }
+
+  function hideDialog() {
+    overlay.style.display = "none";
+    document.body.style.overflow = "";
+  }
+
+  /* First visit — no consent stored yet */
+  if (!localStorage.getItem(CONSENT_KEY)) {
+    showDialog();
+  } else {
+    /* Returning visit — load Clarity if they previously opted in */
+    if (localStorage.getItem(RECORDING_KEY) === "yes") {
+      loadClarity();
+    }
+  }
+
+  acceptBtn.addEventListener("click", function () {
+    localStorage.setItem(CONSENT_KEY, "accepted");
+    if (checkbox.checked) {
+      localStorage.setItem(RECORDING_KEY, "yes");
+      loadClarity();
+    } else {
+      localStorage.setItem(RECORDING_KEY, "no");
+    }
+    hideDialog();
+  });
+
+  cancelBtn.addEventListener("click", function () {
+    /* Cancel = close without storing consent — dialog will reappear next visit */
+    hideDialog();
+  });
+
+  /* Public function so the Manage Privacy button can reopen this */
+  window.__reopenConsentDialog = showDialog;
+})();
+</script>
+
+    
+<!-- Floating feedback widget -->
+
+<!-- Floating feedback trigger button (bottom-right) -->
+<button id="fb-trigger" class="fb-trigger" type="button" title="கருத்தைப் பகிரவும்">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  <span class="fb-trigger-label">கருத்து</span>
+</button>
+
+<!-- Standalone Manage Privacy button (bottom-left) -->
+<button id="privacy-trigger" class="privacy-trigger" type="button"
+        title="தனியுரிமை நிர்வாகம்"
+        onclick="window.__reopenConsentDialog && window.__reopenConsentDialog();">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+  <span class="privacy-trigger-label">தனியுரிமை நிர்வாகம்</span>
+</button>
+
+<!-- Slide-out feedback panel -->
+<div id="fb-panel" class="fb-panel" style="display:none;">
+  <div class="fb-panel-header">
+    <strong>உங்கள் கருத்தைப் பகிரவும்</strong>
+    <button id="fb-close" class="fb-close" type="button">&times;</button>
+  </div>
+
+  <form id="fb-form" class="fb-form">
+    <!-- Q1 — Ease of use (star rating) -->
+    <fieldset class="fb-field">
+      <legend class="fb-label">இந்த தளத்தை பயன்படுத்துவது எவ்வளவு எளிதாக இருந்தது?</legend>
+      <div class="fb-stars" id="fb-stars">
+        <button type="button" class="fb-star" data-value="1" title="மிகவும் கடினம்">&#9733;</button>
+        <button type="button" class="fb-star" data-value="2" title="கடினம்">&#9733;</button>
+        <button type="button" class="fb-star" data-value="3" title="சரி">&#9733;</button>
+        <button type="button" class="fb-star" data-value="4" title="எளிது">&#9733;</button>
+        <button type="button" class="fb-star" data-value="5" title="மிகவும் எளிது">&#9733;</button>
+      </div>
+      <input type="hidden" name="ease_of_use" id="fb-ease" value="" />
+    </fieldset>
+
+    <!-- Q2 — Helpfulness -->
+    <fieldset class="fb-field">
+      <legend class="fb-label">இது வேட்பாளர்களைப் பற்றி அறிய உதவியதா?</legend>
+      <div class="fb-options">
+        <label class="fb-option"><input type="radio" name="helps_inform" value="yes" /> ஆம்</label>
+        <label class="fb-option"><input type="radio" name="helps_inform" value="somewhat" /> ஓரளவு</label>
+        <label class="fb-option"><input type="radio" name="helps_inform" value="no" /> இல்லை</label>
+      </div>
+    </fieldset>
+
+    <!-- Q3 — Return intent -->
+    <fieldset class="fb-field">
+      <legend class="fb-label">2026 தேர்தல் தரவு கிடைக்கும்போது இந்த தளத்தைப் பயன்படுத்துவீர்களா?</legend>
+      <div class="fb-options">
+        <label class="fb-option"><input type="radio" name="would_return" value="definitely" /> நிச்சயமாக</label>
+        <label class="fb-option"><input type="radio" name="would_return" value="probably" /> ஒருவேளை</label>
+        <label class="fb-option"><input type="radio" name="would_return" value="not_sure" /> தெரியவில்லை</label>
+        <label class="fb-option"><input type="radio" name="would_return" value="no" /> இல்லை</label>
+      </div>
+    </fieldset>
+
+    <!-- Q4 — Suggestion -->
+    <fieldset class="fb-field">
+      <legend class="fb-label">நீங்கள் என்ன மேம்படுத்துவீர்கள்?</legend>
+      <textarea name="suggestion" class="fb-textarea" rows="3" maxlength="2000" placeholder="உங்கள் எண்ணங்கள்…"></textarea>
+    </fieldset>
+
+    <!-- Email note (inside form, before submit) -->
+    <p class="fb-email-note">
+      
+        விரிவான கருத்து தெரிவிக்க அல்லது பங்களிக்க விரும்புகிறீர்களா?<br>
+        எங்களுக்கு மின்னஞ்சல் அனுப்புங்கள்: <a href="mailto:sundarr.nitt@gmail.com">sundarr.nitt@gmail.com</a>
+      
+    </p>
+
+    <input type="hidden" name="page_url" id="fb-page-url" value="" />
+
+    <button type="submit" class="fb-submit">கருத்தை சமர்ப்பிக்கவும்</button>
+  </form>
+
+  <!-- Success state (hidden by default) -->
+  <div id="fb-success" class="fb-success" style="display:none;">
+    <p>
+      
+        <strong>நன்றி!</strong> உங்கள் கருத்து எங்களை மேம்படுத்த உதவுகிறது.
+      
+    </p>
+  </div>
+</div>
+
+<script>
+(function () {
+  var trigger = document.getElementById("fb-trigger");
+  var panel = document.getElementById("fb-panel");
+  var closeBtn = document.getElementById("fb-close");
+  var form = document.getElementById("fb-form");
+  var success = document.getElementById("fb-success");
+  var stars = document.querySelectorAll(".fb-star");
+  var easeInput = document.getElementById("fb-ease");
+  var pageUrlInput = document.getElementById("fb-page-url");
+
+  pageUrlInput.value = window.location.pathname;
+
+  /* Toggle panel */
+  trigger.addEventListener("click", function () {
+    var visible = panel.style.display !== "none";
+    panel.style.display = visible ? "none" : "flex";
+  });
+  closeBtn.addEventListener("click", function () {
+    panel.style.display = "none";
+  });
+
+  /* Star rating */
+  stars.forEach(function (star) {
+    star.addEventListener("click", function () {
+      var val = parseInt(this.getAttribute("data-value"), 10);
+      easeInput.value = val;
+      stars.forEach(function (s) {
+        s.classList.toggle("fb-star-active", parseInt(s.getAttribute("data-value"), 10) <= val);
+      });
+    });
+  });
+
+  /* Submit */
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var data = new FormData(form);
+    fetch("/feedback/", {
+      method: "POST",
+      body: data,
+    })
+      .then(function (res) { return res.json(); })
+      .then(function () {
+        form.style.display = "none";
+        success.style.display = "block";
+      })
+      .catch(function () {
+        /* Silently fail — feedback is best-effort */
+        form.style.display = "none";
+        success.style.display = "block";
+      });
+  });
+})();
+</script>
+
+  </body>
+</html>

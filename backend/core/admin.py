@@ -24,14 +24,16 @@ from .models import (
 
 @admin.register(Constituency)
 class ConstituencyAdmin(admin.ModelAdmin):
-    list_display = ("name", "number", "district", "reservation_category", "last_updated")
-    search_fields = ("name", "district")
+    list_display = ("name", "number", "district", "reservation_category", "region", "parliamentary_constituency", "literacy_rate_pct", "last_updated")
+    search_fields = ("name", "district", "parliamentary_constituency", "region")
+    list_filter = ("region", "reservation_category", "urbanization_type")
 
 
 @admin.register(Party)
 class PartyAdmin(admin.ModelAdmin):
-    list_display = ("name", "abbreviation", "website")
-    search_fields = ("name", "abbreviation")
+    list_display = ("name", "abbreviation", "political_position", "eci_recognition", "founded_year", "current_leader", "website")
+    search_fields = ("name", "abbreviation", "political_ideology", "founder", "current_leader")
+    list_filter = ("political_position", "eci_recognition")
 
 
 @admin.register(Candidate)
