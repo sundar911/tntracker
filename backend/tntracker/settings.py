@@ -101,7 +101,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DATA_VINTAGE_LABEL = os.environ.get(
     "DATA_VINTAGE_LABEL",
-    "Data shown is official Tamil Nadu Assembly results (2021). 2026 nominations not yet published.",
+    "Official 2021 results. 2026 nominations coming soon.",
 )
 
 REST_FRAMEWORK = {

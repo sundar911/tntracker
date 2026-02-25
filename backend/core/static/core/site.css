@@ -1576,36 +1576,70 @@ dd {
 }
 
 @media (max-width: 768px) {
+  /* --- Compact header ribbon --- */
   .nav {
-    gap: 12px;
-    padding: 14px 18px;
+    gap: 6px;
+    padding: 10px 16px;
+    flex-wrap: wrap;
   }
 
-  .nav-links,
+  .nav-links {
+    width: auto;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
   .nav-actions {
-    width: 100%;
+    width: auto;
     justify-content: flex-start;
     flex-wrap: wrap;
   }
 
+  .nav-link {
+    font-size: 13px;
+  }
+
   .brand-mark {
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
   }
 
   .brand-logo {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+  }
+
+  .brand-title {
+    font-size: 14px;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+
+  /* --- Compact hero section --- */
+  .hero {
+    padding: 14px 0 10px;
   }
 
   .hero h1 {
-    font-size: clamp(2rem, 7vw, 2.8rem);
+    font-size: 1.4rem;
   }
 
   .hero-subtitle {
-    font-size: 1rem;
+    font-size: 0.85rem;
+  }
+
+  .hero-copy {
+    gap: 8px;
+  }
+
+  .hero-feature-grid {
+    margin-top: 12px;
+    grid-template-columns: 1fr;
   }
 
   .feature-grid,
@@ -1616,41 +1650,38 @@ dd {
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   }
 
-  .hero-feature-grid {
-    grid-template-columns: 1fr;
-  }
-
+  /* --- Compact feature cards --- */
   .feature-card {
     flex-direction: row;
-    min-height: 150px;
+    min-height: 120px;
   }
 
   .feature-icon {
-    width: 150px;
-    min-height: 150px;
+    width: 110px;
+    min-height: 110px;
   }
 
   .feature-icon img {
-    width: 105px;
-    height: 105px;
+    width: 85px;
+    height: 85px;
   }
 
   .feature-map .feature-icon img,
   .feature-candidates .feature-icon img {
-    width: 115px;
-    height: 115px;
+    width: 90px;
+    height: 90px;
   }
 
   .feature-content {
-    padding: 18px 20px;
+    padding: 14px 16px;
   }
 
   .feature-title {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .feature-body {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .home-stats-grid {
