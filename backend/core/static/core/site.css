@@ -318,6 +318,10 @@ video {
   user-select: none;
 }
 
+.nav-short {
+  display: none;
+}
+
 .brand {
   display: flex;
   gap: 12px;
@@ -1576,48 +1580,58 @@ dd {
 }
 
 @media (max-width: 768px) {
-  /* --- Compact header ribbon --- */
+  /* --- Single-row header ribbon --- */
   .nav {
-    gap: 6px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
     padding: 10px 16px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+  }
+
+  .brand-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .brand-text {
+    display: none;
   }
 
   .nav-links {
+    display: flex;
+    gap: 10px;
     width: auto;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    gap: 12px;
+    flex-wrap: nowrap;
+  }
+
+  .nav-link {
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .nav-short {
+    display: inline;
+  }
+
+  .nav-full {
+    display: none;
   }
 
   .nav-actions {
     width: auto;
-    justify-content: flex-start;
-    flex-wrap: wrap;
   }
 
-  .nav-link {
-    font-size: 13px;
+  .lang-switch {
+    font-size: 11px;
+    padding: 3px 5px;
+    gap: 2px;
   }
 
-  .brand-mark {
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-  }
-
-  .brand-logo {
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-  }
-
-  .brand-title {
-    font-size: 14px;
-  }
-
-  .brand-subtitle {
-    display: none;
+  .lang-switch a {
+    padding: 3px 7px;
   }
 
   /* --- Compact hero section --- */
