@@ -101,7 +101,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DATA_VINTAGE_LABEL = os.environ.get(
     "DATA_VINTAGE_LABEL",
-    "Official 2021 results. 2026 nominations coming soon.",
+    "Official 2021 data. 2026 nominations coming soon.",
 )
 
 REST_FRAMEWORK = {

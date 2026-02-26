@@ -1,0 +1,42 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-credits">
+      <h3 class="footer-heading">
+        {% if current_language == "ta" %}நன்றிகள்{% else %}Acknowledgements{% endif %}
+      </h3>
+      <div class="footer-credits-list">
+        <div class="footer-credit">
+          <p>
+            {% if current_language == "ta" %}
+              இந்த இணையதளத்தின் அனைத்து தரவுகளும்
+              <a href="https://myneta.info/" target="_blank" rel="noopener noreferrer">MyNeta.info</a>
+              இலிருந்து பெறப்பட்டவை — இது
+              <a href="https://adrindia.org/" target="_blank" rel="noopener noreferrer">Association for Democratic Reforms (ADR)</a>
+              என்ற அமைப்பின் முயற்சி. இந்திய அரசியலில் வெளிப்படைத்தன்மை மற்றும் பொறுப்புணர்வை மேம்படுத்துவதில் ADR-இன் அரும்பணிக்கு நன்றி.
+            {% else %}
+              All data on this website is sourced from
+              <a href="https://myneta.info/" target="_blank" rel="noopener noreferrer">MyNeta.info</a>,
+              an initiative by the
+              <a href="https://adrindia.org/" target="_blank" rel="noopener noreferrer">Association for Democratic Reforms (ADR)</a>.
+              ADR has done incredible work increasing transparency and accountability in Indian politics. We are grateful to stand on their shoulders.
+            {% endif %}
+          </p>
+        </div>
+        <div class="footer-credit">
+          <p>
+            {% if current_language == "ta" %}
+              <a href="https://www.mumbaitracker.in/" target="_blank" rel="noopener noreferrer">Mumbai Tracker</a>
+              (<a href="https://www.linkedin.com/in/ansh-shetty/" target="_blank" rel="noopener noreferrer">Ansh Shetty</a> உருவாக்கியது)
+              இந்த திட்டத்திற்கு ஊக்கமளித்தது. பல வடிவமைப்பு கூறுகள் அவரது படைப்பிலிருந்து ஈர்க்கப்பட்டவை.
+            {% else %}
+              Inspired by
+              <a href="https://www.mumbaitracker.in/" target="_blank" rel="noopener noreferrer">Mumbai Tracker</a>
+              by <a href="https://www.linkedin.com/in/ansh-shetty/" target="_blank" rel="noopener noreferrer">Ansh Shetty</a>.
+              Many design elements are borrowed from or inspired by his work.
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

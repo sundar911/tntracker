@@ -1580,29 +1580,44 @@ dd {
 }
 
 @media (max-width: 768px) {
-  /* --- Single-row header ribbon --- */
+  /* --- Two-row header ribbon --- */
   .nav {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 0;
-    padding: 10px 16px;
-    flex-wrap: nowrap;
+    gap: 6px;
+    padding: 8px 16px;
+    flex-wrap: wrap;
+  }
+
+  /* Row 1: brand takes full width → forces wrap */
+  .brand-link {
+    width: 100%;
   }
 
   .brand-logo {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
   }
 
-  .brand-text {
+  .brand-title {
+    font-size: 14px;
+  }
+
+  .brand-subtitle {
     display: none;
   }
 
+  .brand {
+    gap: 8px;
+  }
+
+  /* Row 2: nav-links + lang toggle share one line */
   .nav-links {
+    flex: 1;
     display: flex;
-    gap: 10px;
+    gap: 12px;
     width: auto;
     flex-wrap: nowrap;
   }
@@ -2629,4 +2644,47 @@ body.theme-dark .indicator-unit {
 
 .collapsible-content.expanded {
   max-height: 2000px;
+}
+
+/* ---- Site footer ---- */
+.site-footer {
+  margin-top: 48px;
+  border-top: 1px solid var(--border);
+  background: var(--cream);
+}
+
+.site-footer .container {
+  padding-top: 32px;
+  padding-bottom: 36px;
+}
+
+.footer-heading {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0 0 16px;
+  color: var(--ink);
+}
+
+.footer-credits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footer-credit p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.footer-credit a {
+  color: var(--secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.footer-credit a:hover {
+  color: var(--ink);
 }
