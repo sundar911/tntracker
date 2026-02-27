@@ -32,6 +32,7 @@ from .models import (
     PromiseAssessment,
 )
 from .serializers import CandidateSerializer, ConstituencySerializer, ManifestoSerializer, PartySerializer
+from .templatetags.indian_numbers import short_indian
 
 
 def home(request):
@@ -249,6 +250,13 @@ def _display_party_name(party_name: str) -> str:
         return "Independent"
     return cleaned
 
+
+PROMINENT_PARTIES = {
+    "Naam Tamilar Katchi", "NTK",
+    "Makkal Needhi Maiam", "MNM",
+    "Desiya Murpokku Dravida Kazhagam", "DMDK",
+    "Amma Makkal Munnettra Kazagam", "AMMK",
+}
 
 PARTY_COLORS = {
     "DMK": "#D7263D",
@@ -627,6 +635,75 @@ def map_search(request):
     return JsonResponse({"results": unique_results})
 
 
+def party_dashboard_search(request):
+    """Return parties and candidates matching search query for party dashboard autocomplete."""
+    query = request.GET.get("q", "").strip()
+    if len(query) < 2:
+        return JsonResponse({"results": []})
+
+    year = request.GET.get("year", "2021").strip()
+    if year not in {"2021", "2026"}:
+        year = "2021"
+
+    data_dir = settings.BASE_DIR.parent / "data"
+    csv_path = data_dir / ("tn_2026_candidates.csv" if year == "2026" else "fct_candidates_21.csv")
+    rows = _load_party_rows(csv_path)
+    if not rows:
+        return JsonResponse({"results": []})
+
+    query_lower = query.lower()
+    district_key = ("2021_district", "district")
+    constituency_key = ("2021_constituency", "constituency")
+
+    # Score parties
+    party_names: dict[str, str] = {}  # raw name -> display name
+    for row in rows:
+        party = (row.get("party") or "").strip() or "Independent / Unknown"
+        if party not in party_names:
+            party_names[party] = _display_party_name(party)
+
+    scored: list[dict] = []
+    for party, display in party_names.items():
+        score = max(
+            _fuzzy_match_score(query_lower, display.lower()),
+            _fuzzy_match_score(query_lower, party.lower()),
+        )
+        if score > 0:
+            scored.append({
+                "type": "party",
+                "name": party,
+                "display_name": display,
+                "symbol_url": _party_symbol_url(party),
+                "score": score,
+            })
+
+    # Score candidates (deduplicate by name+party)
+    seen_candidates: set[tuple[str, str]] = set()
+    for row in rows:
+        candidate = (row.get("candidate") or "").strip()
+        party = (row.get("party") or "").strip() or "Independent / Unknown"
+        if not candidate or (candidate, party) in seen_candidates:
+            continue
+        seen_candidates.add((candidate, party))
+        score = _fuzzy_match_score(query_lower, candidate.lower())
+        if score > 0:
+            scored.append({
+                "type": "candidate",
+                "name": candidate,
+                "party": party,
+                "party_display": _display_party_name(party),
+                "constituency": _row_value(row, constituency_key),
+                "district": _row_value(row, district_key),
+                "score": score,
+            })
+
+    scored.sort(key=lambda x: (-x["score"], x["name"].lower()))
+    results = scored[:10]
+    for r in results:
+        r.pop("score", None)
+    return JsonResponse({"results": results})
+
+
 def set_language(request, language: str):
     if language not in {"en", "ta"}:
         language = "en"
@@ -844,15 +921,14 @@ def constituency_detail(request, constituency_id: int):
         {"label": "வேட்பாளர்கள்" if _ta else "Candidates", "value": _format_indian_number(candidate_count)},
         {"label": "கட்சிகள்" if _ta else "Parties", "value": _format_indian_number(party_count)},
         {"label": "சராசரி வழக்குகள்" if _ta else "Avg cases", "value": _format_indian_number(round(avg_cases, 2) if avg_cases is not None else None)},
-        {"label": "வழக்குகள் %" if _ta else "Cases %", "value": f"{_format_indian_number(cases_pct)}%"},
         {"label": "சராசரி வயது" if _ta else "Avg age", "value": _format_indian_number(round(avg_age, 1) if avg_age is not None else None)},
         {
             "label": "சராசரி சொத்துகள்" if _ta else "Avg assets",
-            "value": f"₹ {_format_indian_number(round(avg_assets, 0) if avg_assets is not None else None)}",
+            "value": f"₹ {short_indian(round(avg_assets, 0))}" if avg_assets is not None else "N/A",
         },
         {
             "label": "சராசரி கடன்கள்" if _ta else "Avg liabilities",
-            "value": f"₹ {_format_indian_number(round(avg_liabilities, 0) if avg_liabilities is not None else None)}",
+            "value": f"₹ {short_indian(round(avg_liabilities, 0))}" if avg_liabilities is not None else "N/A",
         },
     ]
 
@@ -1194,7 +1270,7 @@ def party_dashboard(request):
     district_filter = request.GET.get("district", "").strip()
     constituency_filter = request.GET.get("constituency", "").strip()
     selected_party = request.GET.get("party", "").strip()
-    sort_key = request.GET.get("sort", "candidate_count")
+    sort_key = request.GET.get("sort", "candidate_count")  # kept for backwards-compat URLs
     sort_order = request.GET.get("order", "desc")
 
     cases_min, cases_max = _bucket_range(cases_filter, CASES_BUCKETS)
@@ -1258,6 +1334,7 @@ def party_dashboard(request):
         "education_counts": Counter(),
     })
 
+    parties_with_sitting: set[str] = set()
     for row in filtered_rows:
         party = (row.get("party") or "").strip() or "Independent / Unknown"
         cases_value = _parse_int(row.get("criminal_cases"))
@@ -1281,6 +1358,7 @@ def party_dashboard(request):
             bucket["assets_count"] += 1
         if sitting_value is not None and sitting_value > 0:
             bucket["sitting_total"] += 1
+            parties_with_sitting.add(party)
         if education_value:
             bucket["education_counts"][education_value] += 1
 
@@ -1357,8 +1435,16 @@ def party_dashboard(request):
     }
     base_query_no_party = dict(base_query)
     base_query_no_party.pop("party", None)
+    prominent_set = parties_with_sitting | PROMINENT_PARTIES
     party_options = sorted(
-        [{"value": party, "label": _display_party_name(party)} for party in party_set],
+        [
+            {
+                "value": party,
+                "label": _display_party_name(party),
+                "is_prominent": party in prominent_set,
+            }
+            for party in party_set
+        ],
         key=lambda item: item["label"].lower(),
     )
     return render(
@@ -1385,8 +1471,6 @@ def party_dashboard(request):
             "selected_district": district_filter,
             "constituencies": available_constituencies,
             "selected_constituency": constituency_filter,
-            "sort_key": sort_key,
-            "sort_order": sort_order,
             "base_query": urlencode(base_query, doseq=True),
             "base_query_no_party": urlencode(base_query_no_party, doseq=True),
         },
@@ -1470,12 +1554,14 @@ def party_detail(request, party_name: str):
         "2021_district": "District",
         "myneta_url": "More Info",
     }
+    non_sortable = {"candidate", "2021_constituency", "2021_district", "myneta_url"}
     columns = [
         {
             "key": header,
             "label": label_overrides.get(header, header.replace("_", " ").title()),
             "is_currency": header in {"total_assets_rs", "liabilities_rs"},
             "is_number": header in {"criminal_cases", "age", "total_assets_rs", "liabilities_rs"},
+            "is_sortable": header not in non_sortable,
         }
         for header in allowed_headers
     ]

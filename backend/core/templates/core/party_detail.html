@@ -43,18 +43,15 @@
       </div>
     </header>
     <main class="container">
-      <div class="nav-row">
-        <a class="link" id="back-to-dashboard" href="/party-dashboard/">← {% if current_language == "ta" %}கட்சி காட்சிப்பலகை{% else %}Party Dashboard{% endif %}</a>
-        {% if data_vintage_label %}
-        <div class="banner">
-          {% if current_language == "ta" %}
-            அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.
-          {% else %}
-            {{ data_vintage_label }}
-          {% endif %}
-        </div>
+      {% if data_vintage_label %}
+      <div class="banner" style="margin-top: 8px;">
+        {% if current_language == "ta" %}
+          அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.
+        {% else %}
+          {{ data_vintage_label }}
         {% endif %}
       </div>
+      {% endif %}
       <div class="party-header">
         <h1>{{ party_display_name }}</h1>
         {% if party_symbol %}
@@ -252,27 +249,38 @@
               {% if current_language == "ta" %}வரிசைப்படுத்து{% else %}Sort by{% endif %}
               <select id="card-sort-select">
                 {% for column in columns %}
+                  {% if column.is_sortable %}
                   <option value="{{ column.key }}">{{ column.label }}</option>
+                  {% endif %}
                 {% endfor %}
               </select>
             </label>
-            <button type="button" class="sort-dir-btn" id="sort-dir-btn" data-dir="desc" title="Toggle sort direction">&#9660;</button>
+            <button type="button" class="sort-dir-btn" id="sort-dir-btn" data-dir="desc" title="Sorted descending">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M4 9l4 4 4-4"/></svg>
+            </button>
           </div>
         </div>
 
         <!-- Table view -->
         <div id="table-view">
-        <table class="table">
+        <table class="table" id="detail-table">
           <thead>
             <tr>
               {% for column in columns %}
-              <th>{{ column.label }}</th>
+              <th>
+                {% if column.is_sortable %}
+                  <button class="sort-link" type="button" data-sort="{{ column.key }}">{{ column.label }} <span class="sort-indicator">↕</span></button>
+                {% else %}
+                  {{ column.label }}
+                {% endif %}
+              </th>
               {% endfor %}
             </tr>
           </thead>
           <tbody>
             {% for row in rows %}
-            <tr class="{% if row.is_2016 %}is-2016{% endif %}">
+            <tr class="{% if row.is_2016 %}is-2016{% endif %}"
+                {% for column in columns %}{% if column.is_sortable %}data-{{ column.key }}="{{ row|get_item:column.key|default:"" }}" {% endif %}{% endfor %}>
               {% for column in columns %}
               {% with cell=row|get_item:column.key %}
               <td>
@@ -289,7 +297,7 @@
                     </span>
                   </div>
                 {% elif column.key == myneta_key and cell %}
-                  <a class="link" href="{{ cell }}" target="_blank" rel="noopener">Link</a>
+                  <a class="link myneta-link" href="{{ cell }}" target="_blank" rel="noopener">Myneta Profile</a>
                 {% elif column.is_currency %}
                   {% if cell %}
                     <span title="₹ {{ cell|indian }}">₹ {{ cell|short_indian }}</span>
@@ -335,7 +343,7 @@
                   <dt>{{ column.label }}</dt>
                   <dd>
                     {% if column.key == myneta_key and cell %}
-                      <a class="link" href="{{ cell }}" target="_blank" rel="noopener">Link</a>
+                      <a class="link myneta-link" href="{{ cell }}" target="_blank" rel="noopener">Myneta Profile</a>
                     {% elif column.is_currency %}
                       {% if cell %}<span title="₹ {{ cell|indian }}">₹ {{ cell|short_indian }}</span>{% else %}—{% endif %}
                     {% elif column.is_number %}
@@ -366,92 +374,111 @@
     </main>
     <script>
       /* ---- Filter persistence (sessionStorage) ---- */
+      var STORAGE_KEY = 'tntracker_filters_' + window.location.pathname;
+
+      /* Save current URL params */
+      if (window.location.search) {
+        sessionStorage.setItem(STORAGE_KEY, window.location.search.substring(1));
+      }
+
+      /* ---- AJAX filter submission ---- */
       (function () {
-        var STORAGE_KEY = 'tntracker_filters_' + window.location.pathname;
-        var navEntry = performance.getEntriesByType('navigation')[0];
-        var isReload = navEntry && navEntry.type === 'reload';
-
-        /* On reload, clear saved filters so page shows defaults */
-        if (isReload) {
-          sessionStorage.removeItem(STORAGE_KEY);
-        }
-
-        /* On normal navigation, if URL has no filter params, restore from storage */
-        if (!isReload) {
-          var params = new URLSearchParams(window.location.search);
-          var hasExplicitFilters = false;
-          var filterKeys = ['cases','age_group','assets_range','sitting_mla','district','constituency'];
-          filterKeys.forEach(function(k) {
-            if (params.get(k)) hasExplicitFilters = true;
-          });
-
-          if (!hasExplicitFilters) {
-            var saved = sessionStorage.getItem(STORAGE_KEY);
-            if (saved && saved !== window.location.search.substring(1)) {
-              window.location.replace(window.location.pathname + '?' + saved);
-              return;
-            }
-          }
-        }
-
-        /* Save filters on form submit */
         var form = document.getElementById('filter-form');
-        if (form) {
-          form.addEventListener('submit', function () {
-            var fd = new FormData(form);
-            var qs = new URLSearchParams(fd).toString();
+        if (!form) return;
+
+        function applyFilters(qs) {
+          var url = window.location.pathname + '?' + qs;
+          fetch(url).then(function (r) { return r.text(); }).then(function (html) {
+            var doc = new DOMParser().parseFromString(html, 'text/html');
+
+            /* Replace table view */
+            var newTableView = doc.querySelector('#table-view');
+            var oldTableView = document.querySelector('#table-view');
+            if (newTableView && oldTableView) oldTableView.innerHTML = newTableView.innerHTML;
+
+            /* Replace card view */
+            var newCards = doc.querySelector('#card-view');
+            var oldCards = document.querySelector('#card-view');
+            if (newCards && oldCards) oldCards.innerHTML = newCards.innerHTML;
+
+            /* Replace row count */
+            var newCount = doc.querySelector('.muted');
+            var oldCount = document.querySelector('p.muted');
+            if (newCount && oldCount) oldCount.innerHTML = newCount.innerHTML;
+
+            /* Update constituency dropdown options */
+            var newConst = doc.querySelector('select[name="constituency"]');
+            var oldConst = document.querySelector('select[name="constituency"]');
+            if (newConst && oldConst) oldConst.innerHTML = newConst.innerHTML;
+
+            /* Update URL bar */
+            history.pushState(null, '', url);
             sessionStorage.setItem(STORAGE_KEY, qs);
+
+            /* Re-init table sort and info popups */
+            initTableSort();
+            initInfoPopups();
+
+            /* Update filter badge */
+            updateFilterBadge();
+
+            /* Close mobile drawer if open */
+            closeFilters();
           });
         }
 
-        /* Save current URL params if they contain filters */
-        if (window.location.search) {
-          var currentParams = new URLSearchParams(window.location.search);
-          var hasFilters = false;
-          ['cases','age_group','assets_range','sitting_mla','district','constituency'].forEach(function(k) {
-            if (currentParams.get(k)) hasFilters = true;
-          });
-          if (hasFilters || currentParams.get('year')) {
-            sessionStorage.setItem(STORAGE_KEY, window.location.search.substring(1));
-          }
-        }
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var qs = new URLSearchParams(new FormData(form)).toString();
+          applyFilters(qs);
+        });
 
-        /* Clear all filters button */
-        function clearAllFilters() {
-          sessionStorage.removeItem(STORAGE_KEY);
-          window.location.href = window.location.pathname + '?year=2021';
+        /* Clear all filters */
+        function clearAllFilters(e) {
+          e.preventDefault();
+          var qs = 'year=2021';
+          form.querySelectorAll('select').forEach(function (s) {
+            if (s.name === 'year') { s.value = '2021'; }
+            else { s.selectedIndex = 0; }
+          });
+          applyFilters(qs);
         }
         var clearBtn = document.getElementById('clear-filters');
         var clearBtnMobile = document.getElementById('clear-filters-mobile');
         if (clearBtn) clearBtn.addEventListener('click', clearAllFilters);
         if (clearBtnMobile) clearBtnMobile.addEventListener('click', clearAllFilters);
 
-        /* Update back-to-dashboard link to use saved dashboard filters */
-        var backLink = document.getElementById('back-to-dashboard');
-        if (backLink) {
-          var dashKey = 'tntracker_filters_/party-dashboard/';
-          var dashSaved = sessionStorage.getItem(dashKey);
-          if (dashSaved) {
-            backLink.href = '/party-dashboard/?' + dashSaved;
-          }
-        }
+        /* Handle browser back/forward */
+        window.addEventListener('popstate', function () {
+          var qs = window.location.search.substring(1) || 'year=2021';
+          var params = new URLSearchParams(qs);
+          form.querySelectorAll('select').forEach(function (s) {
+            var val = params.get(s.name) || '';
+            s.value = val;
+          });
+          applyFilters(qs);
+        });
       })();
 
       /* ---- Info popup toggle ---- */
-      document.querySelectorAll("[data-info-toggle]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const popup = btn.nextElementSibling;
-          if (!popup) return;
-          const isHidden = popup.hasAttribute("hidden");
-          document.querySelectorAll(".info-popup").forEach((item) => item.setAttribute("hidden", ""));
-          if (isHidden) {
-            popup.removeAttribute("hidden");
-          }
+      function initInfoPopups() {
+        document.querySelectorAll("[data-info-toggle]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var popup = btn.nextElementSibling;
+            if (!popup) return;
+            var isHidden = popup.hasAttribute("hidden");
+            document.querySelectorAll(".info-popup").forEach(function (item) { item.setAttribute("hidden", ""); });
+            if (isHidden) {
+              popup.removeAttribute("hidden");
+            }
+          });
         });
-      });
-      document.addEventListener("click", (event) => {
+      }
+      initInfoPopups();
+
+      document.addEventListener("click", function (event) {
         if (!event.target.closest(".info-button") && !event.target.closest(".info-popup")) {
-          document.querySelectorAll(".info-popup").forEach((item) => item.setAttribute("hidden", ""));
+          document.querySelectorAll(".info-popup").forEach(function (item) { item.setAttribute("hidden", ""); });
         }
       });
 
@@ -508,41 +535,105 @@
         dirBtn.addEventListener("click", function () {
           const isDesc = this.dataset.dir === "desc";
           this.dataset.dir = isDesc ? "asc" : "desc";
-          this.innerHTML = isDesc ? "&#9650;" : "&#9660;";
+          this.innerHTML = isDesc
+            ? '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V3M4 7l4-4 4 4"/></svg>'
+            : '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M4 9l4 4 4-4"/></svg>';
           this.title = isDesc ? "Sorted ascending" : "Sorted descending";
           sortCards();
         });
       })();
 
+      /* ---- Table sort (client-side) ---- */
+      var _tableSortState = { field: null, asc: false };
+
+      function initTableSort() {
+        var table = document.getElementById("detail-table");
+        if (!table) return;
+        var tbody = table.querySelector("tbody");
+        var headers = table.querySelectorAll("thead .sort-link");
+
+        /* Remove old listeners by cloning */
+        headers.forEach(function (btn) {
+          var clone = btn.cloneNode(true);
+          btn.parentNode.replaceChild(clone, btn);
+        });
+
+        /* Re-query after cloning */
+        headers = table.querySelectorAll("thead .sort-link");
+
+        function sortTable(field) {
+          if (_tableSortState.field === field) {
+            _tableSortState.asc = !_tableSortState.asc;
+          } else {
+            _tableSortState.field = field;
+            _tableSortState.asc = false;
+          }
+          var rows = [].slice.call(tbody.querySelectorAll("tr"));
+          var dir = _tableSortState.asc ? 1 : -1;
+          rows.sort(function (a, b) {
+            var va = a.dataset[field] || "";
+            var vb = b.dataset[field] || "";
+            var na = parseFloat(va);
+            var nb = parseFloat(vb);
+            if (!isNaN(na) && !isNaN(nb)) return (na - nb) * dir;
+            return va.localeCompare(vb, undefined, { sensitivity: "base" }) * dir;
+          });
+          rows.forEach(function (r) { tbody.appendChild(r); });
+          headers.forEach(function (btn) {
+            var ind = btn.querySelector(".sort-indicator");
+            if (btn.dataset.sort === field) {
+              btn.classList.add("active");
+              ind.classList.add("active");
+              ind.textContent = _tableSortState.asc ? "▲" : "▼";
+            } else {
+              btn.classList.remove("active");
+              ind.classList.remove("active");
+              ind.textContent = "↕";
+            }
+          });
+        }
+
+        headers.forEach(function (btn) {
+          btn.addEventListener("click", function () { sortTable(btn.dataset.sort); });
+        });
+      }
+      initTableSort();
+
       /* ---- Mobile filter drawer ---- */
+      function closeFilters() {
+        var section = document.getElementById("filter-section");
+        var backdrop = document.getElementById("filter-backdrop");
+        if (section) section.classList.remove("open");
+        if (backdrop) backdrop.classList.remove("open");
+        document.body.style.overflow = "";
+      }
+
+      function updateFilterBadge() {
+        var count = 0;
+        document.querySelectorAll("#filter-form select").forEach(function (s) {
+          if (s.name !== 'year' && s.selectedIndex > 0) count++;
+        });
+        var badge = document.getElementById("filter-badge");
+        if (badge) badge.textContent = count || "";
+      }
+
       (function () {
-        const trigger = document.getElementById("filter-trigger");
-        const section = document.getElementById("filter-section");
-        const backdrop = document.getElementById("filter-backdrop");
-        const closeBtn = document.getElementById("filter-close");
+        var trigger = document.getElementById("filter-trigger");
+        var section = document.getElementById("filter-section");
+        var backdrop = document.getElementById("filter-backdrop");
+        var closeBtn = document.getElementById("filter-close");
 
         function openFilters() {
           section.classList.add("open");
           backdrop.classList.add("open");
           document.body.style.overflow = "hidden";
         }
-        function closeFilters() {
-          section.classList.remove("open");
-          backdrop.classList.remove("open");
-          document.body.style.overflow = "";
-        }
 
         if (trigger) trigger.addEventListener("click", openFilters);
         if (closeBtn) closeBtn.addEventListener("click", closeFilters);
         if (backdrop) backdrop.addEventListener("click", closeFilters);
 
-        /* Count active filters for badge */
-        let count = 0;
-        document.querySelectorAll("#filter-form select").forEach((s) => {
-          if (s.selectedIndex > 0) count++;
-        });
-        const badge = document.getElementById("filter-badge");
-        if (badge) badge.textContent = count || "";
+        updateFilterBadge();
       })();
     </script>
     {% include "core/_footer.html" %}

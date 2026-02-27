@@ -344,19 +344,15 @@
       </div>
     </header>
     <main class="container">
-      <div class="nav-row">
-        <a class="link" href="/">← {% if current_language == "ta" %}முகப்பு{% else %}Back to home{% endif %}</a>
-        {% if data_vintage_label %}
-        <div class="banner">
-          {% if current_language == "ta" %}
-            அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.
-          {% else %}
-            {{ data_vintage_label }}
-          {% endif %}
-        </div>
+      {% if data_vintage_label %}
+      <div class="banner" style="margin-top: 8px;">
+        {% if current_language == "ta" %}
+          அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.
+        {% else %}
+          {{ data_vintage_label }}
         {% endif %}
       </div>
-      <h1>{% if current_language == "ta" %}தொகுதி வரைபடம்{% else %}Interactive Constituency Map{% endif %}</h1>
+      {% endif %}
       
       <!-- Search bar -->
       <div class="map-search-container">

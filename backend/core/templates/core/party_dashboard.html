@@ -43,22 +43,18 @@
       </div>
     </header>
     <main class="container">
-      <div class="nav-row">
-        <a class="link" href="/">← {% if current_language == "ta" %}முகப்பு{% else %}Back to home{% endif %}</a>
-        {% if data_vintage_label %}
-        <div class="banner">
-          {% if current_language == "ta" %}
-            அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.
-          {% else %}
-            {{ data_vintage_label }}
-          {% endif %}
-        </div>
+      {% if data_vintage_label %}
+      <div class="banner" style="margin-top: 8px;">
+        {% if current_language == "ta" %}
+          அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.
+        {% else %}
+          {{ data_vintage_label }}
         {% endif %}
       </div>
+      {% endif %}
       <h1>{% if current_language == "ta" %}கட்சி காட்சிப்பலகை{% else %}Party Dashboard{% endif %}</h1>
 
       <section class="card">
-        <h2>{% if current_language == "ta" %}மேலோட்டம்{% else %}Overview{% endif %}</h2>
         <dl class="overview-tiles">
           <div>
             <dt>{% if current_language == "ta" %}மொத்த கட்சிகள்{% else %}Total parties{% endif %}</dt>
@@ -155,11 +151,20 @@
               <option value="" {% if not selected_party %}selected{% endif %}>
                 {% if current_language == "ta" %}அனைத்தும்{% else %}All parties{% endif %}
               </option>
-              {% for party in party_options %}
-                <option value="{{ party.value }}" {% if party.value == selected_party %}selected{% endif %}>
-                  {{ party.label }}
-                </option>
-              {% endfor %}
+              <optgroup label="{% if current_language == 'ta' %}முக்கிய கட்சிகள்{% else %}Major parties{% endif %}">
+                {% for party in party_options %}{% if party.is_prominent %}
+                  <option value="{{ party.value }}" {% if party.value == selected_party %}selected{% endif %}>
+                    {{ party.label }}
+                  </option>
+                {% endif %}{% endfor %}
+              </optgroup>
+              <optgroup label="{% if current_language == 'ta' %}பிற கட்சிகள்{% else %}Other parties{% endif %}">
+                {% for party in party_options %}{% if not party.is_prominent %}
+                  <option value="{{ party.value }}" {% if party.value == selected_party %}selected{% endif %}>
+                    {{ party.label }}
+                  </option>
+                {% endif %}{% endfor %}
+              </optgroup>
             </select>
           </label>
           <label>
@@ -202,7 +207,7 @@
             </button>
           </div>
         </form>
-        <p class="muted">
+        <p class="muted" id="filter-row-count">
           {% if current_language == "ta" %}
             வடிகட்டிகளுக்குப் பிறகு: {{ rows_count|indian }} வேட்பாளர் பதிவுகள்.
           {% else %}
@@ -213,6 +218,23 @@
 
       <section class="card">
         <h2>{% if current_language == "ta" %}கட்சிகள் ஒரு பார்வை{% else %}Party snapshot{% endif %}</h2>
+
+        <!-- Search bar -->
+        <div class="party-search-container">
+          <div class="party-search-input-wrapper">
+            <input
+              type="text"
+              id="party-search-input"
+              class="party-search-input"
+              placeholder="{% if current_language == 'ta' %}கட்சி அல்லது வேட்பாளரைத் தேடுங்கள்...{% else %}Search party or candidate...{% endif %}"
+              autocomplete="off"
+              aria-label="{% if current_language == 'ta' %}கட்சி தேடல்{% else %}Search party or candidate{% endif %}"
+            />
+            <button type="button" class="party-search-clear" id="party-search-clear" aria-label="Clear search">&times;</button>
+            <div class="party-search-dropdown" id="party-search-dropdown"></div>
+          </div>
+        </div>
+
         {% if party_stats %}
 
         <!-- View toggle toolbar -->
@@ -237,104 +259,35 @@
                 <option value="avg_assets">{% if current_language == "ta" %}சராசரி சொத்து{% else %}Avg assets{% endif %}</option>
               </select>
             </label>
-            <button type="button" class="sort-dir-btn" id="sort-dir-btn" data-dir="desc" title="Toggle sort direction">&#9660;</button>
+            <button type="button" class="sort-dir-btn" id="sort-dir-btn" data-dir="desc" title="Sorted descending">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M4 9l4 4 4-4"/></svg>
+            </button>
           </div>
         </div>
 
         <!-- Table view -->
         <div id="table-view">
-        <table class="table">
+        <table class="table" id="party-table">
           <thead>
             <tr>
-              <th>
-                <a class="link sort-link" href="?{{ base_query }}&sort=party&order={% if sort_key == 'party' and sort_order == 'desc' %}asc{% else %}desc{% endif %}">
-                  {% if current_language == "ta" %}கட்சி{% else %}Party{% endif %}
-                  <span class="sort-indicator{% if sort_key == 'party' %} active{% endif %}">
-                    {% if sort_key == "party" %}
-                      {% if sort_order == "asc" %}▲{% else %}▼{% endif %}
-                    {% else %}
-                      ↕
-                    {% endif %}
-                  </span>
-                </a>
-              </th>
-              <th>
-                <a class="link sort-link" href="?{{ base_query }}&sort=candidate_count&order={% if sort_key == 'candidate_count' and sort_order == 'desc' %}asc{% else %}desc{% endif %}">
-                  {% if current_language == "ta" %}வேட்பாளர் எண்ணிக்கை{% else %}Candidates{% endif %}
-                  <span class="sort-indicator{% if sort_key == 'candidate_count' %} active{% endif %}">
-                    {% if sort_key == "candidate_count" %}
-                      {% if sort_order == "asc" %}▲{% else %}▼{% endif %}
-                    {% else %}
-                      ↕
-                    {% endif %}
-                  </span>
-                </a>
-              </th>
-              <th>
-                <a class="link sort-link" href="?{{ base_query }}&sort=avg_cases&order={% if sort_key == 'avg_cases' and sort_order == 'desc' %}asc{% else %}desc{% endif %}">
-                  {% if current_language == "ta" %}சராசரி குற்ற வழக்குகள்{% else %}Avg criminal cases{% endif %}
-                  <span class="sort-indicator{% if sort_key == 'avg_cases' %} active{% endif %}">
-                    {% if sort_key == "avg_cases" %}
-                      {% if sort_order == "asc" %}▲{% else %}▼{% endif %}
-                    {% else %}
-                      ↕
-                    {% endif %}
-                  </span>
-                </a>
-              </th>
-              <th>
-                <a class="link sort-link" href="?{{ base_query }}&sort=cases_pct&order={% if sort_key == 'cases_pct' and sort_order == 'desc' %}asc{% else %}desc{% endif %}">
-                  {% if current_language == "ta" %}குற்ற வழக்குகள் உள்ளவர்களின் விகிதம்{% else %}% w/ criminal cases{% endif %}
-                  <span class="sort-indicator{% if sort_key == 'cases_pct' %} active{% endif %}">
-                    {% if sort_key == "cases_pct" %}
-                      {% if sort_order == "asc" %}▲{% else %}▼{% endif %}
-                    {% else %}
-                      ↕
-                    {% endif %}
-                  </span>
-                </a>
-              </th>
-              <th>
-                <a class="link sort-link" href="?{{ base_query }}&sort=avg_age&order={% if sort_key == 'avg_age' and sort_order == 'desc' %}asc{% else %}desc{% endif %}">
-                  {% if current_language == "ta" %}சராசரி வயது{% else %}Avg. age{% endif %}
-                  <span class="sort-indicator{% if sort_key == 'avg_age' %} active{% endif %}">
-                    {% if sort_key == "avg_age" %}
-                      {% if sort_order == "asc" %}▲{% else %}▼{% endif %}
-                    {% else %}
-                      ↕
-                    {% endif %}
-                  </span>
-                </a>
-              </th>
-              <th>
-                <a class="link sort-link" href="?{{ base_query }}&sort=avg_assets&order={% if sort_key == 'avg_assets' and sort_order == 'desc' %}asc{% else %}desc{% endif %}">
-                  {% if current_language == "ta" %}சராசரி சொத்து (₹){% else %}Avg. assets (₹){% endif %}
-                  <span class="sort-indicator{% if sort_key == 'avg_assets' %} active{% endif %}">
-                    {% if sort_key == "avg_assets" %}
-                      {% if sort_order == "asc" %}▲{% else %}▼{% endif %}
-                    {% else %}
-                      ↕
-                    {% endif %}
-                  </span>
-                </a>
-              </th>
-              <th>
-                <a class="link sort-link" href="?{{ base_query }}&sort=top_education&order={% if sort_key == 'top_education' and sort_order == 'desc' %}asc{% else %}desc{% endif %}">
-                  {% if current_language == "ta" %}அதிகம் காணப்படும் கல்வி{% else %}Most common education{% endif %}
-                  <span class="sort-indicator{% if sort_key == 'top_education' %} active{% endif %}">
-                    {% if sort_key == "top_education" %}
-                      {% if sort_order == "asc" %}▲{% else %}▼{% endif %}
-                    {% else %}
-                      ↕
-                    {% endif %}
-                  </span>
-                </a>
-              </th>
+              <th><button class="sort-link" type="button" data-sort="party">{% if current_language == "ta" %}கட்சி{% else %}Party{% endif %} <span class="sort-indicator">↕</span></button></th>
+              <th><button class="sort-link active" type="button" data-sort="candidate_count">{% if current_language == "ta" %}வேட்பாளர் எண்ணிக்கை{% else %}Candidates{% endif %} <span class="sort-indicator active">▼</span></button></th>
+              <th><button class="sort-link" type="button" data-sort="avg_cases">{% if current_language == "ta" %}சராசரி குற்ற வழக்குகள்{% else %}Avg criminal cases{% endif %} <span class="sort-indicator">↕</span></button></th>
+              <th><button class="sort-link" type="button" data-sort="cases_pct">{% if current_language == "ta" %}குற்ற வழக்குகள் உள்ளவர்களின் விகிதம்{% else %}% w/ criminal cases{% endif %} <span class="sort-indicator">↕</span></button></th>
+              <th><button class="sort-link" type="button" data-sort="avg_age">{% if current_language == "ta" %}சராசரி வயது{% else %}Avg. age{% endif %} <span class="sort-indicator">↕</span></button></th>
+              <th><button class="sort-link" type="button" data-sort="avg_assets">{% if current_language == "ta" %}சராசரி சொத்து (₹){% else %}Avg. assets (₹){% endif %} <span class="sort-indicator">↕</span></button></th>
+              <th><button class="sort-link" type="button" data-sort="top_education">{% if current_language == "ta" %}அதிகம் காணப்படும் கல்வி{% else %}Most common education{% endif %} <span class="sort-indicator">↕</span></button></th>
             </tr>
           </thead>
           <tbody>
             {% for party in party_stats %}
-            <tr>
+            <tr data-party="{{ party.party }}"
+                data-candidate_count="{{ party.candidate_count }}"
+                data-avg_cases="{{ party.avg_cases|default:0 }}"
+                data-cases_pct="{{ party.cases_pct|default:0 }}"
+                data-avg_age="{{ party.avg_age|default:0 }}"
+                data-avg_assets="{{ party.avg_assets|default:0 }}"
+                data-top_education="{{ party.top_education|default:"" }}">
               <td>
                 <div class="party-cell">
                   {% if party.party_symbol %}
@@ -365,14 +318,15 @@
         <!-- Card view (hidden by default, shown on mobile or via toggle) -->
         <div class="card-grid" id="card-view" style="display:none">
           {% for party in party_stats %}
-          <div class="data-card"
-               data-party="{{ party.party }}"
-               data-candidate_count="{{ party.candidate_count }}"
-               data-avg_cases="{{ party.avg_cases|default:0 }}"
-               data-cases_pct="{{ party.cases_pct|default:0 }}"
-               data-avg_age="{{ party.avg_age|default:0 }}"
-               data-avg_assets="{{ party.avg_assets|default:0 }}"
-               data-top_education="{{ party.top_education|default:"" }}">
+          <a class="data-card data-card-link"
+             href="/party/{{ party.party|urlencode }}/{% if base_query_no_party %}?{{ base_query_no_party }}{% endif %}"
+             data-party="{{ party.party }}"
+             data-candidate_count="{{ party.candidate_count }}"
+             data-avg_cases="{{ party.avg_cases|default:0 }}"
+             data-cases_pct="{{ party.cases_pct|default:0 }}"
+             data-avg_age="{{ party.avg_age|default:0 }}"
+             data-avg_assets="{{ party.avg_assets|default:0 }}"
+             data-top_education="{{ party.top_education|default:"" }}">
             <div class="data-card-header">
               {% if party.party_symbol %}
                 <img
@@ -382,9 +336,7 @@
                   onerror="this.style.display='none'"
                 />
               {% endif %}
-              <a href="/party/{{ party.party|urlencode }}/{% if base_query_no_party %}?{{ base_query_no_party }}{% endif %}">
-                {{ party.party_display|default:party.party }}
-              </a>
+              <span>{{ party.party_display|default:party.party }}</span>
             </div>
             <dl class="data-card-body">
               <div class="data-card-row">
@@ -412,7 +364,7 @@
                 <dd>{% if party.top_education %}{{ party.top_education }}{% else %}—{% endif %}</dd>
               </div>
             </dl>
-          </div>
+          </a>
           {% endfor %}
         </div>
 
@@ -429,65 +381,96 @@
     </main>
     <script>
       /* ---- Filter persistence (sessionStorage) ---- */
+      var STORAGE_KEY = 'tntracker_filters_' + window.location.pathname;
+
+      /* Save current URL params */
+      if (window.location.search) {
+        sessionStorage.setItem(STORAGE_KEY, window.location.search.substring(1));
+      }
+
+      /* ---- AJAX filter submission ---- */
       (function () {
-        var STORAGE_KEY = 'tntracker_filters_' + window.location.pathname;
-        var navEntry = performance.getEntriesByType('navigation')[0];
-        var isReload = navEntry && navEntry.type === 'reload';
-
-        /* On reload, clear saved filters so page shows defaults */
-        if (isReload) {
-          sessionStorage.removeItem(STORAGE_KEY);
-        }
-
-        /* On normal navigation, if URL has no filter params, restore from storage */
-        if (!isReload) {
-          var params = new URLSearchParams(window.location.search);
-          var hasExplicitFilters = false;
-          var filterKeys = ['cases','age_group','assets_range','sitting_mla','party','district','constituency'];
-          filterKeys.forEach(function(k) {
-            if (params.get(k)) hasExplicitFilters = true;
-          });
-
-          if (!hasExplicitFilters) {
-            var saved = sessionStorage.getItem(STORAGE_KEY);
-            if (saved && saved !== window.location.search.substring(1)) {
-              window.location.replace(window.location.pathname + '?' + saved);
-              return; /* stop further execution while redirecting */
-            }
-          }
-        }
-
-        /* Save filters on form submit */
         var form = document.getElementById('filter-form');
-        if (form) {
-          form.addEventListener('submit', function () {
-            var fd = new FormData(form);
-            var qs = new URLSearchParams(fd).toString();
+        if (!form) return;
+
+        function applyFilters(qs) {
+          var url = window.location.pathname + '?' + qs;
+          fetch(url).then(function (r) { return r.text(); }).then(function (html) {
+            var doc = new DOMParser().parseFromString(html, 'text/html');
+
+            /* Replace overview tiles */
+            var newTiles = doc.querySelector('.overview-tiles');
+            var oldTiles = document.querySelector('.overview-tiles');
+            if (newTiles && oldTiles) oldTiles.innerHTML = newTiles.innerHTML;
+
+            /* Replace table tbody */
+            var newTbody = doc.querySelector('#party-table tbody');
+            var oldTbody = document.querySelector('#party-table tbody');
+            if (newTbody && oldTbody) oldTbody.innerHTML = newTbody.innerHTML;
+
+            /* Replace card view */
+            var newCards = doc.querySelector('#card-view');
+            var oldCards = document.querySelector('#card-view');
+            if (newCards && oldCards) oldCards.innerHTML = newCards.innerHTML;
+
+            /* Replace row count */
+            var newCount = doc.querySelector('#filter-row-count');
+            var oldCount = document.querySelector('#filter-row-count');
+            if (newCount && oldCount) oldCount.innerHTML = newCount.innerHTML;
+
+            /* Update constituency dropdown options */
+            var newConst = doc.querySelector('select[name="constituency"]');
+            var oldConst = document.querySelector('select[name="constituency"]');
+            if (newConst && oldConst) oldConst.innerHTML = newConst.innerHTML;
+
+            /* Update URL bar */
+            history.pushState(null, '', url);
             sessionStorage.setItem(STORAGE_KEY, qs);
+
+            /* Re-init table sort on new tbody rows */
+            initTableSort();
+
+            /* Update filter badge */
+            updateFilterBadge();
+
+            /* Close mobile drawer if open */
+            closeFilters();
           });
         }
 
-        /* Save current URL params if they contain filters */
-        if (window.location.search) {
-          var currentParams = new URLSearchParams(window.location.search);
-          var hasFilters = false;
-          ['cases','age_group','assets_range','sitting_mla','party','district','constituency'].forEach(function(k) {
-            if (currentParams.get(k)) hasFilters = true;
-          });
-          if (hasFilters || currentParams.get('year')) {
-            sessionStorage.setItem(STORAGE_KEY, window.location.search.substring(1));
-          }
-        }
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var qs = new URLSearchParams(new FormData(form)).toString();
+          applyFilters(qs);
+        });
 
-        /* Clear all filters button */
-        function clearAllFilters() {
-          sessionStorage.removeItem(STORAGE_KEY);
-          window.location.href = window.location.pathname + '?year=2021';
+        /* Clear all filters */
+        function clearAllFilters(e) {
+          e.preventDefault();
+          var qs = 'year=2021';
+          /* Reset all selects to first option */
+          form.querySelectorAll('select').forEach(function (s) {
+            if (s.name === 'year') { s.value = '2021'; }
+            else { s.selectedIndex = 0; }
+          });
+          applyFilters(qs);
         }
         var clearBtn = document.getElementById('clear-filters');
         var clearBtnMobile = document.getElementById('clear-filters-mobile');
         if (clearBtn) clearBtn.addEventListener('click', clearAllFilters);
         if (clearBtnMobile) clearBtnMobile.addEventListener('click', clearAllFilters);
+
+        /* Handle browser back/forward */
+        window.addEventListener('popstate', function () {
+          var qs = window.location.search.substring(1) || 'year=2021';
+          /* Sync form selects with URL params */
+          var params = new URLSearchParams(qs);
+          form.querySelectorAll('select').forEach(function (s) {
+            var val = params.get(s.name) || '';
+            s.value = val;
+          });
+          applyFilters(qs);
+        });
       })();
 
       /* ---- View toggle (Table / Cards) ---- */
@@ -543,41 +526,253 @@
         dirBtn.addEventListener("click", function () {
           const isDesc = this.dataset.dir === "desc";
           this.dataset.dir = isDesc ? "asc" : "desc";
-          this.innerHTML = isDesc ? "&#9650;" : "&#9660;";
+          this.innerHTML = isDesc
+            ? '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V3M4 7l4-4 4 4"/></svg>'
+            : '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M4 9l4 4 4-4"/></svg>';
           this.title = isDesc ? "Sorted ascending" : "Sorted descending";
           sortCards();
         });
       })();
 
+      /* ---- Table sort (client-side) ---- */
+      var _tableSortState = { field: "candidate_count", asc: false };
+
+      function initTableSort() {
+        var table = document.getElementById("party-table");
+        if (!table) return;
+        var tbody = table.querySelector("tbody");
+        var headers = table.querySelectorAll("thead .sort-link");
+
+        /* Remove old listeners by cloning */
+        headers.forEach(function (btn) {
+          var clone = btn.cloneNode(true);
+          btn.parentNode.replaceChild(clone, btn);
+        });
+
+        /* Re-query after cloning */
+        headers = table.querySelectorAll("thead .sort-link");
+
+        function sortTable(field) {
+          if (_tableSortState.field === field) {
+            _tableSortState.asc = !_tableSortState.asc;
+          } else {
+            _tableSortState.field = field;
+            _tableSortState.asc = false;
+          }
+          var rows = [].slice.call(tbody.querySelectorAll("tr"));
+          var dir = _tableSortState.asc ? 1 : -1;
+          rows.sort(function (a, b) {
+            var va = a.dataset[field] || "";
+            var vb = b.dataset[field] || "";
+            var na = parseFloat(va);
+            var nb = parseFloat(vb);
+            if (!isNaN(na) && !isNaN(nb)) return (na - nb) * dir;
+            return va.localeCompare(vb, undefined, { sensitivity: "base" }) * dir;
+          });
+          rows.forEach(function (r) { tbody.appendChild(r); });
+          headers.forEach(function (btn) {
+            var ind = btn.querySelector(".sort-indicator");
+            if (btn.dataset.sort === field) {
+              btn.classList.add("active");
+              ind.classList.add("active");
+              ind.textContent = _tableSortState.asc ? "▲" : "▼";
+            } else {
+              btn.classList.remove("active");
+              ind.classList.remove("active");
+              ind.textContent = "↕";
+            }
+          });
+        }
+
+        headers.forEach(function (btn) {
+          btn.addEventListener("click", function () { sortTable(btn.dataset.sort); });
+        });
+      }
+      initTableSort();
+
       /* ---- Mobile filter drawer ---- */
+      function closeFilters() {
+        var section = document.getElementById("filter-section");
+        var backdrop = document.getElementById("filter-backdrop");
+        if (section) section.classList.remove("open");
+        if (backdrop) backdrop.classList.remove("open");
+        document.body.style.overflow = "";
+      }
+
+      function updateFilterBadge() {
+        var count = 0;
+        document.querySelectorAll("#filter-form select").forEach(function (s) {
+          if (s.name !== 'year' && s.selectedIndex > 0) count++;
+        });
+        var badge = document.getElementById("filter-badge");
+        if (badge) badge.textContent = count || "";
+      }
+
       (function () {
-        const trigger = document.getElementById("filter-trigger");
-        const section = document.getElementById("filter-section");
-        const backdrop = document.getElementById("filter-backdrop");
-        const closeBtn = document.getElementById("filter-close");
+        var trigger = document.getElementById("filter-trigger");
+        var section = document.getElementById("filter-section");
+        var backdrop = document.getElementById("filter-backdrop");
+        var closeBtn = document.getElementById("filter-close");
 
         function openFilters() {
           section.classList.add("open");
           backdrop.classList.add("open");
           document.body.style.overflow = "hidden";
         }
-        function closeFilters() {
-          section.classList.remove("open");
-          backdrop.classList.remove("open");
-          document.body.style.overflow = "";
-        }
 
         if (trigger) trigger.addEventListener("click", openFilters);
         if (closeBtn) closeBtn.addEventListener("click", closeFilters);
         if (backdrop) backdrop.addEventListener("click", closeFilters);
 
-        /* Count active filters for badge */
-        let count = 0;
-        document.querySelectorAll("#filter-form select").forEach((s) => {
-          if (s.selectedIndex > 0) count++;
+        updateFilterBadge();
+      })();
+
+      /* ---- Party / Candidate search autocomplete ---- */
+      (function () {
+        var searchInput = document.getElementById('party-search-input');
+        var searchDropdown = document.getElementById('party-search-dropdown');
+        var searchClear = document.getElementById('party-search-clear');
+        if (!searchInput || !searchDropdown) return;
+
+        var searchTimeout = null;
+        var highlightedIndex = -1;
+        var searchResults = [];
+        var currentLang = '{{ current_language }}';
+        var currentYear = '{{ year }}';
+
+        function showDropdown() { searchDropdown.classList.add('active'); }
+        function hideDropdown() { searchDropdown.classList.remove('active'); highlightedIndex = -1; }
+
+        function renderDropdown(results, loading) {
+          searchResults = results || [];
+          highlightedIndex = -1;
+          if (loading) {
+            searchDropdown.innerHTML = '<div class="party-search-dropdown-empty">' +
+              (currentLang === 'ta' ? 'தேடுகிறது...' : 'Searching...') + '</div>';
+            showDropdown();
+            return;
+          }
+          if (!searchResults.length) {
+            searchDropdown.innerHTML = '<div class="party-search-dropdown-empty">' +
+              (currentLang === 'ta' ? 'முடிவுகள் இல்லை' : 'No results found') + '</div>';
+            showDropdown();
+            return;
+          }
+          searchDropdown.innerHTML = searchResults.map(function (r, i) {
+            var icon = '';
+            if (r.type === 'party' && r.symbol_url) {
+              icon = '<img class="party-search-symbol" src="' + r.symbol_url + '" alt="" onerror="this.style.display=\'none\'" />';
+            }
+            var name = r.type === 'party' ? r.display_name : r.name;
+            var subtitle = '';
+            if (r.type === 'candidate') {
+              subtitle = r.party_display + (r.constituency ? ' · ' + r.constituency : '');
+            }
+            var typeLabel = r.type === 'party'
+              ? (currentLang === 'ta' ? 'கட்சி' : 'Party')
+              : (currentLang === 'ta' ? 'வேட்பாளர்' : 'Candidate');
+            return '<div class="party-search-dropdown-item' +
+              (r.type === 'candidate' ? ' party-search-dropdown-item-candidate' : '') +
+              '" data-index="' + i + '">' +
+              '<div class="party-search-dropdown-item-main">' +
+              icon +
+              '<div class="party-search-dropdown-item-text">' +
+              '<div class="party-search-dropdown-item-name">' + name + '</div>' +
+              (subtitle ? '<div class="party-search-dropdown-item-sub">' + subtitle + '</div>' : '') +
+              '</div></div>' +
+              '<span class="party-search-dropdown-item-type">' + typeLabel + '</span>' +
+              '</div>';
+          }).join('');
+          showDropdown();
+        }
+
+        function doSearch(q) {
+          if (q.length < 2) { hideDropdown(); return; }
+          renderDropdown([], true);
+          fetch('/api/party-dashboard-search/?q=' + encodeURIComponent(q) + '&year=' + currentYear)
+            .then(function (r) { return r.json(); })
+            .then(function (data) { renderDropdown(data.results); })
+            .catch(function () { renderDropdown([]); });
+        }
+
+        searchInput.addEventListener('input', function () {
+          clearTimeout(searchTimeout);
+          var q = this.value.trim();
+          searchTimeout = setTimeout(function () { doSearch(q); }, 200);
         });
-        const badge = document.getElementById("filter-badge");
-        if (badge) badge.textContent = count || "";
+
+        if (searchClear) {
+          searchClear.addEventListener('click', function () {
+            searchInput.value = '';
+            hideDropdown();
+          });
+        }
+
+        function selectResult(result) {
+          hideDropdown();
+          searchInput.value = '';
+          if (result.type === 'candidate') {
+            /* Navigate to the party detail page */
+            var partyUrl = '/party/' + encodeURIComponent(result.party) + '/?year=' + currentYear;
+            window.location.href = partyUrl;
+            return;
+          }
+          /* Party result: scroll to card/row and highlight */
+          var partyName = result.name;
+          var tableView = document.getElementById('table-view');
+          var cardView = document.getElementById('card-view');
+          var target = null;
+          if (cardView && cardView.style.display !== 'none') {
+            target = cardView.querySelector('.data-card[data-party="' + CSS.escape(partyName) + '"]');
+          }
+          if (!target && tableView && tableView.style.display !== 'none') {
+            target = tableView.querySelector('tr[data-party="' + CSS.escape(partyName) + '"]');
+          }
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            target.classList.add('search-highlighted');
+            setTimeout(function () { target.classList.remove('search-highlighted'); }, 2200);
+          }
+        }
+
+        /* Click handler on dropdown items */
+        searchDropdown.addEventListener('click', function (e) {
+          var item = e.target.closest('.party-search-dropdown-item');
+          if (!item) return;
+          var idx = parseInt(item.dataset.index, 10);
+          if (searchResults[idx]) selectResult(searchResults[idx]);
+        });
+
+        /* Keyboard navigation */
+        searchInput.addEventListener('keydown', function (e) {
+          var items = searchDropdown.querySelectorAll('.party-search-dropdown-item');
+          if (!items.length) return;
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            highlightedIndex = Math.min(highlightedIndex + 1, items.length - 1);
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            highlightedIndex = Math.max(highlightedIndex - 1, 0);
+          } else if (e.key === 'Enter' && highlightedIndex >= 0) {
+            e.preventDefault();
+            if (searchResults[highlightedIndex]) selectResult(searchResults[highlightedIndex]);
+            return;
+          } else if (e.key === 'Escape') {
+            hideDropdown();
+            return;
+          } else {
+            return;
+          }
+          items.forEach(function (el, i) {
+            el.classList.toggle('highlighted', i === highlightedIndex);
+          });
+          items[highlightedIndex].scrollIntoView({ block: 'nearest' });
+        });
+
+        /* Close dropdown on outside click */
+        document.addEventListener('click', function (e) {
+          if (!e.target.closest('.party-search-container')) hideDropdown();
+        });
       })();
     </script>
     {% include "core/_footer.html" %}

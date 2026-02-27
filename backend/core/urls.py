@@ -15,6 +15,7 @@ urlpatterns = [
     path("resources/", views.resources, name="resources"),
     path("map/data/", views.map_data, name="map-data"),
     path("api/map-search/", views.map_search, name="map-search"),
+    path("api/party-dashboard-search/", views.party_dashboard_search, name="party-dashboard-search"),
     path("search/", views.search, name="search"),
     path("dashboard/", views.data_quality_dashboard, name="dashboard"),
     path("party-dashboard/", views.party_dashboard, name="party-dashboard"),
