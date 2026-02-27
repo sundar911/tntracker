@@ -1643,10 +1643,6 @@ dd {
     font-size: 16px;
   }
 
-  .brand-subtitle {
-    display: none;
-  }
-
   .brand {
     gap: 8px;
   }

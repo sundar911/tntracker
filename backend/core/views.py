@@ -258,6 +258,22 @@ PROMINENT_PARTIES = {
     "Amma Makkal Munnettra Kazagam", "AMMK",
 }
 
+PARTY_ALIASES: dict[str, list[str]] = {
+    "DMK": ["Dravida Munnetra Kazhagam"],
+    "AIADMK": ["All India Anna Dravida Munnetra Kazhagam"],
+    "BJP": ["Bharatiya Janata Party"],
+    "INC": ["Indian National Congress", "Congress"],
+    "Pattali Makkal Katchi": ["PMK"],
+    "Viduthalai Chiruthaigal Katchi": ["VCK"],
+    "CPI": ["Communist Party of India"],
+    "CPI(M)": ["Communist Party of India (Marxist)", "CPIM"],
+    "CPI(ML)(L)": ["Communist Party of India (Marxist-Leninist) (Liberation)"],
+    "DMDK": ["Desiya Murpokku Dravida Kazhagam"],
+    "Amma Makkal Munnettra Kazagam": ["AMMK"],
+    "Makkal Needhi Maiam": ["MNM"],
+    "Naam Tamilar Katchi": ["NTK"],
+}
+
 PARTY_COLORS = {
     "DMK": "#D7263D",
     "AIADMK": "#2E8B57",
@@ -668,6 +684,8 @@ def party_dashboard_search(request):
             _fuzzy_match_score(query_lower, display.lower()),
             _fuzzy_match_score(query_lower, party.lower()),
         )
+        for alias in PARTY_ALIASES.get(party, []):
+            score = max(score, _fuzzy_match_score(query_lower, alias.lower()))
         if score > 0:
             scored.append({
                 "type": "party",

@@ -280,6 +280,7 @@
           <tbody>
             {% for row in rows %}
             <tr class="{% if row.is_2016 %}is-2016{% endif %}"
+                data-candidate="{{ row|get_item:'candidate'|default:'' }}"
                 {% for column in columns %}{% if column.is_sortable %}data-{{ column.key }}="{{ row|get_item:column.key|default:"" }}" {% endif %}{% endfor %}>
               {% for column in columns %}
               {% with cell=row|get_item:column.key %}
@@ -326,6 +327,7 @@
         <div class="card-grid" id="card-view" style="display:none">
           {% for row in rows %}
           <div class="data-card{% if row.is_2016 %} is-2016{% endif %}"
+               data-candidate="{{ row|get_item:'candidate'|default:'' }}"
                {% for column in columns %}data-{{ column.key }}="{{ row|get_item:column.key|default:"" }}" {% endfor %}>
             <div class="data-card-header">
               {% with cand_name=row|get_item:"candidate" %}
@@ -634,6 +636,33 @@
         if (backdrop) backdrop.addEventListener("click", closeFilters);
 
         updateFilterBadge();
+      })();
+
+      /* ---- Auto-scroll to highlighted candidate from search ---- */
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var highlight = params.get('highlight');
+        if (!highlight) return;
+        var escaped = CSS.escape(highlight);
+        var tableView = document.getElementById('table-view');
+        var cardView = document.getElementById('card-view');
+        var target = null;
+        if (cardView && cardView.style.display !== 'none') {
+          target = cardView.querySelector('.data-card[data-candidate="' + escaped + '"]');
+        }
+        if (!target && tableView && tableView.style.display !== 'none') {
+          target = tableView.querySelector('tr[data-candidate="' + escaped + '"]');
+        }
+        if (target) {
+          /* Small delay to ensure page has fully rendered */
+          setTimeout(function () {
+            var headerOffset = 70;
+            var top = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+            window.scrollTo({ top: top, behavior: 'smooth' });
+            target.classList.add('search-highlighted');
+            setTimeout(function () { target.classList.remove('search-highlighted'); }, 2200);
+          }, 300);
+        }
       })();
     </script>
     {% include "core/_footer.html" %}
