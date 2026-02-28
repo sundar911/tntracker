@@ -654,14 +654,16 @@
           target = tableView.querySelector('tr[data-candidate="' + escaped + '"]');
         }
         if (target) {
-          /* Small delay to ensure page has fully rendered */
+          /* Delay to ensure page has fully rendered, then use rAF for layout-settled guarantee */
           setTimeout(function () {
-            var headerOffset = 70;
-            var top = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-            window.scrollTo({ top: top, behavior: 'smooth' });
-            target.classList.add('search-highlighted');
-            setTimeout(function () { target.classList.remove('search-highlighted'); }, 2200);
-          }, 300);
+            requestAnimationFrame(function () {
+              var headerOffset = 70;
+              var top = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+              window.scrollTo({ top: top, behavior: 'smooth' });
+              target.classList.add('search-highlighted');
+              setTimeout(function () { target.classList.remove('search-highlighted'); }, 3500);
+            });
+          }, 500);
         }
       })();
     </script>

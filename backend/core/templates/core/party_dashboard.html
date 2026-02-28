@@ -698,7 +698,7 @@
         searchInput.addEventListener('input', function () {
           clearTimeout(searchTimeout);
           var q = this.value.trim();
-          searchTimeout = setTimeout(function () { doSearch(q); }, 200);
+          searchTimeout = setTimeout(function () { doSearch(q); }, 350);
         });
 
         if (searchClear) {
@@ -713,7 +713,7 @@
           var top = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
           window.scrollTo({ top: top, behavior: 'smooth' });
           target.classList.add('search-highlighted');
-          setTimeout(function () { target.classList.remove('search-highlighted'); }, 2200);
+          setTimeout(function () { target.classList.remove('search-highlighted'); }, 3500);
         }
 
         function selectResult(result) {

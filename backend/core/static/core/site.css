@@ -2866,14 +2866,18 @@ body.theme-dark .indicator-unit {
   font-size: 14px;
 }
 
-/* Search highlight animation */
+/* Search highlight animation — 3 pulses over 3s */
 @keyframes search-highlight {
-  0% { background-color: #fef3c7; }
+  0%   { background-color: #fef3c7; }
+  25%  { background-color: transparent; }
+  35%  { background-color: #fef3c7; }
+  55%  { background-color: transparent; }
+  65%  { background-color: #fef3c7; }
   100% { background-color: transparent; }
 }
 
 .search-highlighted {
-  animation: search-highlight 2s ease-out;
+  animation: search-highlight 3s ease-in-out;
 }
 
 /* Mobile adjustments */

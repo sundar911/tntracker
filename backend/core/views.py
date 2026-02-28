@@ -39,7 +39,7 @@ def home(request):
     # Load 2021 candidate data for overview stats
     data_dir = settings.BASE_DIR.parent / "data"
     csv_path = data_dir / "fct_candidates_21.csv"
-    rows = _load_party_rows(csv_path)
+    rows = _load_party_rows(str(csv_path))
     stats = _compute_overview_stats(rows)
 
     return render(request, "core/home.html", {
@@ -663,7 +663,7 @@ def party_dashboard_search(request):
 
     data_dir = settings.BASE_DIR.parent / "data"
     csv_path = data_dir / ("tn_2026_candidates.csv" if year == "2026" else "fct_candidates_21.csv")
-    rows = _load_party_rows(csv_path)
+    rows = _load_party_rows(str(csv_path))
     if not rows:
         return JsonResponse({"results": []})
 
@@ -1188,12 +1188,13 @@ def _numeric_bounds(rows: list[dict], key: str) -> tuple[int, int]:
     return min(values), max(values)
 
 
-def _load_party_rows(csv_path: Path) -> list[dict]:
-    if not csv_path.exists():
+@lru_cache(maxsize=4)
+def _load_party_rows(csv_path: str) -> list[dict]:
+    path = Path(csv_path)
+    if not path.exists():
         return []
-    with csv_path.open("r", encoding="utf-8") as handle:
-        reader = csv.DictReader(handle)
-        return list(reader)
+    with path.open("r", encoding="utf-8") as handle:
+        return list(csv.DictReader(handle))
 
 
 def _compute_overview_stats(rows: list[dict]) -> dict:
@@ -1300,7 +1301,7 @@ def party_dashboard(request):
 
     data_dir = settings.BASE_DIR.parent / "data"
     csv_path = data_dir / ("tn_2026_candidates.csv" if year == "2026" else "fct_candidates_21.csv")
-    rows = _load_party_rows(csv_path)
+    rows = _load_party_rows(str(csv_path))
     has_sitting = bool(rows and "sitting_MLA" in rows[0])
 
     filtered_rows: list[dict] = []
@@ -1517,7 +1518,7 @@ def party_detail(request, party_name: str):
 
     data_dir = settings.BASE_DIR.parent / "data"
     csv_path = data_dir / ("tn_2026_candidates.csv" if year == "2026" else "fct_candidates_21.csv")
-    rows = _load_party_rows(csv_path)
+    rows = _load_party_rows(str(csv_path))
 
     has_sitting = bool(rows and "sitting_MLA" in rows[0])
     district_key = ("2021_district", "district")
