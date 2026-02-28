@@ -918,7 +918,7 @@ input[type="range"]::-moz-range-thumb {
 
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin-top: 12px;
 }
@@ -1545,6 +1545,10 @@ a.data-card-link:focus {
     pointer-events: auto;
   }
 
+  .filter-actions-desktop {
+    display: none;
+  }
+
   .filter-actions-mobile {
     display: flex;
     gap: 10px;
@@ -1708,9 +1712,12 @@ dd {
   .feature-grid,
   .explore-grid,
   .candidate-grid,
-  .stat-grid,
   .grid {
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   /* --- Compact feature cards --- */
@@ -1839,7 +1846,6 @@ dd {
   .feature-grid,
   .explore-grid,
   .candidate-grid,
-  .stat-grid,
   .grid {
     grid-template-columns: 1fr;
   }

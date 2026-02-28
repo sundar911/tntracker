@@ -86,13 +86,6 @@ def resources(request):
             "category": "Analytics",
         },
         {
-            "title": "DMK's 2021 Manifesto Promise Fulfilment (The Hindu)",
-            "url": "https://www.thehindu.com/news/national/tamil-nadu/dmk-says-its-govt-fulfilled-80-of-poll-promises/article70467002.ece",
-            "description": "News report on DMK's claim of fulfilling 80% of its 2021 election manifesto promises, with details on implemented and pending commitments.",
-            "description_ta": "2021 தேர்தல் அறிக்கை வாக்குறுதிகளில் 80% நிறைவேற்றப்பட்டதாக திமுக அறிவிப்பு, செயல்படுத்தப்பட்ட மற்றும் நிலுவையில் உள்ள உறுதிமொழிகள் குறித்த விவரங்கள்.",
-            "category": "News",
-        },
-        {
             "title": "MyNeta - Tamil Nadu Assembly Elections",
             "url": "https://myneta.info/state_assembly.php?state=Tamil%20Nadu",
             "description": "Candidate affidavit data from Election Commission archives, including criminal records, assets, liabilities, and educational qualifications for all candidates.",

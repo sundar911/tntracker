@@ -189,12 +189,14 @@
               {% endfor %}
             </select>
           </label>
-          <button type="submit" class="button">
-            {% if current_language == "ta" %}பயன் காட்ட{% else %}Apply{% endif %}
-          </button>
-          <button type="button" class="btn-clear-filters" id="clear-filters">
-            {% if current_language == "ta" %}அனைத்தையும் அழி{% else %}Clear all filters{% endif %}
-          </button>
+          <div class="filter-actions-desktop">
+            <button type="submit" class="button">
+              {% if current_language == "ta" %}பயன் காட்ட{% else %}Apply{% endif %}
+            </button>
+            <button type="button" class="btn-clear-filters" id="clear-filters">
+              {% if current_language == "ta" %}அனைத்தையும் அழி{% else %}Clear all filters{% endif %}
+            </button>
+          </div>
           <div class="filter-actions-mobile">
             <button type="submit" class="button">
               {% if current_language == "ta" %}பயன் காட்ட{% else %}Apply{% endif %}
