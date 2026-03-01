@@ -17,6 +17,8 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 CSRF_TRUSTED_ORIGINS = [
     "https://*.railway.app",
     "https://*.up.railway.app",
+    "https://tntracker.in",
+    "https://www.tntracker.in",
 ]
 
 INSTALLED_APPS = [
