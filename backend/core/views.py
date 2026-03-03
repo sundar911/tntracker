@@ -48,7 +48,7 @@ def home(request):
         "overall_avg_cases": stats["overall_avg_cases"],
         "overall_avg_age": stats["overall_avg_age"],
         "overall_avg_assets": stats["overall_avg_assets"],
-        "overall_avg_liabilities": stats["overall_avg_liabilities"],
+        "overall_avg_expenditure": stats["overall_avg_expenditure"],
     })
 
 
@@ -72,20 +72,6 @@ def resources(request):
     """External resources page with curated links to election data sources."""
     resources_list = [
         {
-            "title": "IndiaVotes - Tamil Nadu 2021 Results",
-            "url": "https://www.indiavotes.com/vidhan-sabha/2021/tamil-nadu/283/40",
-            "description": "Comprehensive assembly-wise election results for Tamil Nadu 2021, including vote counts and margins for all constituencies.",
-            "description_ta": "தமிழ்நாடு 2021 தொகுதி வாரியான தேர்தல் முடிவுகள், வாக்கு எண்ணிக்கை மற்றும் வெற்றி வித்தியாசம் உள்ளிட்ட தகவல்கள்.",
-            "category": "Results",
-        },
-        {
-            "title": "Tamil Nadu Assembly Elections Visual Analytics",
-            "url": "https://data-analytics.github.io/Election_Data/tamil_nadu.html?extra_year=2021#individual_hold",
-            "description": "Interactive visualizations of Tamil Nadu assembly elections from 1967 to 2021, with party-wise trends and constituency-level analysis.",
-            "description_ta": "1967 முதல் 2021 வரையிலான தமிழ்நாடு சட்டமன்றத் தேர்தல்களின் ஊடாடும் காட்சிப்படுத்தல்கள், கட்சி வாரியான போக்குகள் மற்றும் தொகுதி நிலை பகுப்பாய்வு.",
-            "category": "Analytics",
-        },
-        {
             "title": "MyNeta - Tamil Nadu Assembly Elections",
             "url": "https://myneta.info/state_assembly.php?state=Tamil%20Nadu",
             "description": "Candidate affidavit data from Election Commission archives, including criminal records, assets, liabilities, and educational qualifications for all candidates.",
@@ -100,11 +86,11 @@ def resources(request):
             "category": "Expenditure",
         },
         {
-            "title": "16th Tamil Nadu Legislative Assembly Members",
-            "url": "https://assembly.tn.gov.in/16thassembly/members.php",
-            "description": "Official list of current MLAs from the Tamil Nadu Legislative Assembly website, with contact details and constituency information.",
-            "description_ta": "தமிழ்நாடு சட்டமன்ற இணையதளத்திலிருந்து தற்போதைய சட்டமன்ற உறுப்பினர்களின் அதிகாரப்பூர்வ பட்டியல், தொடர்பு விவரங்கள் மற்றும் தொகுதி தகவல்கள்.",
-            "category": "Official",
+            "title": "Tamil Nadu Economic Survey 2025-26",
+            "url": "https://tamildigitallibrary.in/assets/docs/uploads/catalogue_article_file/BOK/upload/2026/02/TVA_TVA_BOK_062955/upload_primary_20260216113955411_20260216113539.pdf",
+            "description": "Official economic survey of Tamil Nadu for 2025-26, covering the state's economic performance, sectoral analysis, and development indicators.",
+            "description_ta": "தமிழ்நாட்டின் 2025-26 அதிகாரப்பூர்வ பொருளாதார ஆய்வு, மாநிலத்தின் பொருளாதார செயல்திறன், துறை வாரியான பகுப்பாய்வு மற்றும் வளர்ச்சி குறியீடுகள்.",
+            "category": "Economy",
         },
         {
             "title": "NITI Aayog - Tamil Nadu Fiscal Landscape",
@@ -112,6 +98,27 @@ def resources(request):
             "description": "NITI Aayog report on Tamil Nadu's macroeconomic and fiscal landscape, providing context on state finances and development indicators.",
             "description_ta": "தமிழ்நாட்டின் பொருளாதார மற்றும் நிதி நிலப்பரப்பு குறித்த நிதி ஆயோக் அறிக்கை, மாநில நிதி மற்றும் வளர்ச்சி குறியீடுகள் பற்றிய சூழல்.",
             "category": "Economy",
+        },
+        {
+            "title": "16th Tamil Nadu Legislative Assembly Members",
+            "url": "https://assembly.tn.gov.in/16thassembly/members.php",
+            "description": "Official list of current MLAs from the Tamil Nadu Legislative Assembly website, with contact details and constituency information.",
+            "description_ta": "தமிழ்நாடு சட்டமன்ற இணையதளத்திலிருந்து தற்போதைய சட்டமன்ற உறுப்பினர்களின் அதிகாரப்பூர்வ பட்டியல், தொடர்பு விவரங்கள் மற்றும் தொகுதி தகவல்கள்.",
+            "category": "Official",
+        },
+        {
+            "title": "IndiaVotes - Tamil Nadu 2021 Results",
+            "url": "https://www.indiavotes.com/vidhan-sabha/2021/tamil-nadu/283/40",
+            "description": "Comprehensive assembly-wise election results for Tamil Nadu 2021, including vote counts and margins for all constituencies.",
+            "description_ta": "தமிழ்நாடு 2021 தொகுதி வாரியான தேர்தல் முடிவுகள், வாக்கு எண்ணிக்கை மற்றும் வெற்றி வித்தியாசம் உள்ளிட்ட தகவல்கள்.",
+            "category": "Results",
+        },
+        {
+            "title": "Tamil Nadu Assembly Elections Visual Analytics",
+            "url": "https://data-analytics.github.io/Election_Data/tamil_nadu.html?extra_year=2021#individual_hold",
+            "description": "Interactive visualizations of Tamil Nadu assembly elections from 1967 to 2021, with party-wise trends and constituency-level analysis.",
+            "description_ta": "1967 முதல் 2021 வரையிலான தமிழ்நாடு சட்டமன்றத் தேர்தல்களின் ஊடாடும் காட்சிப்படுத்தல்கள், கட்சி வாரியான போக்குகள் மற்றும் தொகுதி நிலை பகுப்பாய்வு.",
+            "category": "Analytics",
         },
     ]
     return render(request, "core/resources.html", {"resources": resources_list})
@@ -1045,8 +1052,13 @@ def constituency_detail(request, constituency_id: int):
                 "criminal_cases": _parse_int(row.get("criminal_cases")),
                 "assets": assets_value,
                 "liabilities": liabilities_value,
+                "election_expenditure": _parse_int(row.get("election_expenditure_rs")),
                 "sitting": str(row.get("sitting_MLA", "")).strip() == "1",
                 "myneta_url": (row.get("myneta_url") or "").strip(),
+                "self_profession": (row.get("self_profession") or "").strip(),
+                "spouse_profession": (row.get("spouse_profession") or "").strip(),
+                "education_details_clean": (row.get("education_formatted") or row.get("education_details_clean") or "").strip(),
+                "criminal_cases_summary": (row.get("legal_summary_short") or row.get("criminal_cases_summary") or "").strip(),
                 "key_promises": key_promises,
                 "state_delivery": state_delivery,
                 "constituency_delivery": constituency_delivery,
@@ -1199,7 +1211,7 @@ def _compute_overview_stats(rows: list[dict]) -> dict:
             "overall_avg_cases": None,
             "overall_avg_age": None,
             "overall_avg_assets": None,
-            "overall_avg_liabilities": None,
+            "overall_avg_expenditure": None,
         }
 
     party_set = set()
@@ -1209,8 +1221,8 @@ def _compute_overview_stats(rows: list[dict]) -> dict:
     age_count = 0
     assets_total = 0
     assets_count = 0
-    liabilities_total = 0
-    liabilities_count = 0
+    expenditure_total = 0
+    expenditure_count = 0
 
     for row in rows:
         party_name = (row.get("party") or "").strip() or "Independent / Unknown"
@@ -1219,7 +1231,7 @@ def _compute_overview_stats(rows: list[dict]) -> dict:
         cases_value = _parse_int(row.get("criminal_cases"))
         age_value = _parse_int(row.get("age"))
         assets_value = _parse_int(row.get("total_assets_rs"))
-        liabilities_value = _parse_int(row.get("liabilities_rs"))
+        expenditure_value = _parse_int(row.get("election_expenditure_rs"))
 
         if cases_value is not None:
             cases_total += cases_value
@@ -1230,9 +1242,9 @@ def _compute_overview_stats(rows: list[dict]) -> dict:
         if assets_value is not None:
             assets_total += assets_value
             assets_count += 1
-        if liabilities_value is not None:
-            liabilities_total += liabilities_value
-            liabilities_count += 1
+        if expenditure_value is not None:
+            expenditure_total += expenditure_value
+            expenditure_count += 1
 
     return {
         "total_parties": len(party_set),
@@ -1240,7 +1252,7 @@ def _compute_overview_stats(rows: list[dict]) -> dict:
         "overall_avg_cases": round(cases_total / cases_count, 2) if cases_count else None,
         "overall_avg_age": round(age_total / age_count, 1) if age_count else None,
         "overall_avg_assets": round(assets_total / assets_count, 0) if assets_count else None,
-        "overall_avg_liabilities": round(liabilities_total / liabilities_count, 0) if liabilities_count else None,
+        "overall_avg_expenditure": round(expenditure_total / expenditure_count, 0) if expenditure_count else None,
     }
 
 
@@ -1342,6 +1354,8 @@ def party_dashboard(request):
         "age_count": 0,
         "assets_total": 0,
         "assets_count": 0,
+        "expenditure_total": 0,
+        "expenditure_count": 0,
         "sitting_total": 0,
         "education_counts": Counter(),
     })
@@ -1353,6 +1367,7 @@ def party_dashboard(request):
         age_value = _parse_int(row.get("age"))
         education_value = (row.get("education") or "").strip()
         assets_value = _parse_int(row.get("total_assets_rs"))
+        expenditure_value = _parse_int(row.get("election_expenditure_rs"))
         sitting_value = _parse_int(row.get("sitting_MLA"))
 
         bucket = party_data[party]
@@ -1368,6 +1383,9 @@ def party_dashboard(request):
         if assets_value is not None:
             bucket["assets_total"] += assets_value
             bucket["assets_count"] += 1
+        if expenditure_value is not None:
+            bucket["expenditure_total"] += expenditure_value
+            bucket["expenditure_count"] += 1
         if sitting_value is not None and sitting_value > 0:
             bucket["sitting_total"] += 1
             parties_with_sitting.add(party)
@@ -1389,6 +1407,12 @@ def party_dashboard(request):
         )
         cases_pct = round((stats["cases_positive"] / stats["count"]) * 100, 1) if stats["count"] else 0.0
         top_education = stats["education_counts"].most_common(1)
+        avg_expenditure = (
+            round(stats["expenditure_total"] / stats["expenditure_count"], 0)
+            if stats["expenditure_count"]
+            else None
+        )
+        total_expenditure = stats["expenditure_total"]
         party_stats.append(
             {
                 "party": party,
@@ -1398,6 +1422,8 @@ def party_dashboard(request):
                 "avg_cases": avg_cases,
                 "avg_age": avg_age,
                 "avg_assets": avg_assets,
+                "avg_expenditure": avg_expenditure,
+                "total_expenditure": total_expenditure,
                 "cases_pct": cases_pct,
                 "top_education": top_education[0][0] if top_education else "",
             }
@@ -1429,7 +1455,7 @@ def party_dashboard(request):
     overall_avg_cases = overview["overall_avg_cases"]
     overall_avg_age = overview["overall_avg_age"]
     overall_avg_assets = overview["overall_avg_assets"]
-    overall_avg_liabilities = overview["overall_avg_liabilities"]
+    overall_avg_expenditure = overview["overall_avg_expenditure"]
 
     available_constituencies = sorted(district_map.get(district_filter, set())) if district_filter else sorted(
         {const for consts in district_map.values() for const in consts}
@@ -1470,7 +1496,7 @@ def party_dashboard(request):
             "overall_avg_cases": overall_avg_cases,
             "overall_avg_age": overall_avg_age,
             "overall_avg_assets": overall_avg_assets,
-            "overall_avg_liabilities": overall_avg_liabilities,
+            "overall_avg_expenditure": overall_avg_expenditure,
             "party_stats": party_stats,
             "selected_cases": cases_filter,
             "selected_age_group": age_group_filter,
@@ -1556,27 +1582,43 @@ def party_detail(request, party_name: str):
         party_rows.append(row)
 
     headers = list(rows[0].keys()) if rows else []
-    excluded_headers = {"party", "sitting_MLA", "bye_election", "total_assets", "liabilities", "const_off"}
+    excluded_headers = {
+        "party", "sitting_MLA", "bye_election", "total_assets", "liabilities", "const_off",
+        "liabilities_rs", "myneta_url",
+        "education_details", "criminal_cases_details", "election_expenditure",
+        "education_details_clean", "criminal_cases_summary",
+        "self_profession", "spouse_profession",
+    }
     allowed_headers = [header for header in headers if header not in excluded_headers]
+    # Ensure election_expenditure_rs is included
+    if "election_expenditure_rs" not in allowed_headers and "election_expenditure_rs" in (headers or []):
+        allowed_headers.append("election_expenditure_rs")
     label_overrides = {
         "total_assets_rs": "Total Assets (₹)",
-        "liabilities_rs": "Total Liabilities (₹)",
+        "election_expenditure_rs": "Election Expenditure (₹)",
         "criminal_cases": "Criminal cases",
         "2021_constituency": "Constituency",
         "2021_district": "District",
-        "myneta_url": "More Info",
+        "education_formatted": "Education Details",
+        "legal_summary_short": "Legal History",
     }
-    non_sortable = {"candidate", "2021_constituency", "2021_district", "myneta_url"}
+    non_sortable = {"candidate", "2021_constituency", "2021_district", "education_formatted", "legal_summary_short"}
     columns = [
         {
             "key": header,
             "label": label_overrides.get(header, header.replace("_", " ").title()),
-            "is_currency": header in {"total_assets_rs", "liabilities_rs"},
-            "is_number": header in {"criminal_cases", "age", "total_assets_rs", "liabilities_rs"},
+            "is_currency": header in {"total_assets_rs", "election_expenditure_rs"},
+            "is_number": header in {"criminal_cases", "age", "total_assets_rs", "election_expenditure_rs"},
             "is_sortable": header not in non_sortable,
         }
         for header in allowed_headers
     ]
+    # Card view: reorder so Education, Age, Criminal Cases come first
+    card_order = ["candidate", "education", "age", "criminal_cases"]
+    card_exclude = {"education_formatted", "legal_summary_short"}
+    col_by_key = {c["key"]: c for c in columns}
+    card_columns = [col_by_key[k] for k in card_order if k in col_by_key]
+    card_columns += [c for c in columns if c["key"] not in card_order and c["key"] not in card_exclude]
     myneta_key = "myneta_url"
     constituency_header = None
     if "2021_constituency" in allowed_headers:
@@ -1584,6 +1626,7 @@ def party_detail(request, party_name: str):
     elif "constituency" in allowed_headers:
         constituency_header = "constituency"
     rows_table = []
+    candidate_modal_data = []
     for row in party_rows:
         row_data = {header: row.get(header, "") for header in allowed_headers}
         const_off = (row.get("const_off") or "").strip()
@@ -1594,6 +1637,21 @@ def party_detail(request, party_name: str):
                 row_data[district_header] = str(row_data[district_header]).strip().title()
         row_data["is_2016"] = _is_2016_row(row)
         rows_table.append(row_data)
+        # Modal extended data
+        candidate_modal_data.append({
+            "name": (row.get("candidate") or "").strip(),
+            "education": (row.get("education") or "").strip(),
+            "age": _parse_int(row.get("age")),
+            "criminal_cases": _parse_int(row.get("criminal_cases")),
+            "assets": _parse_int(row.get("total_assets_rs")),
+            "liabilities": _parse_int(row.get("liabilities_rs")),
+            "election_expenditure": _parse_int(row.get("election_expenditure_rs")),
+            "self_profession": (row.get("self_profession") or "").strip(),
+            "spouse_profession": (row.get("spouse_profession") or "").strip(),
+            "education_details_clean": (row.get("education_formatted") or row.get("education_details_clean") or "").strip(),
+            "criminal_cases_summary": (row.get("legal_summary_short") or row.get("criminal_cases_summary") or "").strip(),
+            "myneta_url": (row.get("myneta_url") or "").strip(),
+        })
     available_constituencies = sorted(district_map.get(district_filter, set())) if district_filter else sorted(
         {const for consts in district_map.values() for const in consts}
     )
@@ -1611,8 +1669,10 @@ def party_detail(request, party_name: str):
             "year": year,
             "rows": rows_table,
             "columns": columns,
+            "card_columns": card_columns,
             "myneta_key": myneta_key,
             "row_count": len(party_rows),
+            "candidate_modal_data_json": json.dumps(candidate_modal_data, ensure_ascii=False),
             "selected_cases": cases_filter,
             "selected_age_group": age_group_filter,
             "selected_assets_range": assets_range_filter,

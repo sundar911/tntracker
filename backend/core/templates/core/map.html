@@ -9,6 +9,7 @@
     <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/core/logo.png" />
     <meta property="og:type" content="website" />
     <meta name="description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
+    <link rel="icon" type="image/png" href="/static/core/logo.png" />
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -383,7 +384,10 @@
         </div>
       </div>
 
-      <div id="map"></div>
+      <div style="position:relative">
+        <div id="map"></div>
+        <div id="map-loading" class="loading-overlay"><div class="loading-spinner"></div></div>
+      </div>
       
       <!-- Toast notification -->
       <div id="map-toast" class="map-toast"></div>
@@ -560,6 +564,10 @@
             };
             legendControl.addTo(map);
           }
+
+          // Hide loading overlay
+          var mapLoading = document.getElementById('map-loading');
+          if (mapLoading) mapLoading.classList.add('hidden');
 
           // ========== Search Autocomplete ==========
           const searchInput = document.getElementById('map-search-input');

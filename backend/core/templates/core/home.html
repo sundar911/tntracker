@@ -10,6 +10,7 @@
     <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/core/logo.png" />
     <meta property="og:type" content="website" />
     <meta name="description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
+    <link rel="icon" type="image/png" href="/static/core/logo.png" />
     <link rel="stylesheet" href="/static/core/site.css" />
   </head>
   <body class="home">
@@ -112,8 +113,8 @@
                 <div class="home-stat-label">{% if current_language == "ta" %}சராசரி சொத்து{% else %}Avg. assets{% endif %}</div>
               </div>
               <div class="home-stat-card">
-                <div class="home-stat-value">{% if overall_avg_liabilities is not None %}<span title="₹ {{ overall_avg_liabilities|indian }}">₹ {{ overall_avg_liabilities|short_indian }}</span>{% else %}—{% endif %}</div>
-                <div class="home-stat-label">{% if current_language == "ta" %}சராசரி கடன்கள்{% else %}Avg. liabilities{% endif %}</div>
+                <div class="home-stat-value">{% if overall_avg_expenditure is not None %}<span title="₹ {{ overall_avg_expenditure|indian }}">₹ {{ overall_avg_expenditure|short_indian }}</span>{% else %}—{% endif %}</div>
+                <div class="home-stat-label">{% if current_language == "ta" %}சராசரி தேர்தல் செலவு{% else %}Avg. election expenditure{% endif %}</div>
               </div>
             </div>
           </div>

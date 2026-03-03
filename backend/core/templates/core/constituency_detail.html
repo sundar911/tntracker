@@ -10,6 +10,7 @@
     <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/core/logo.png" />
     <meta property="og:type" content="website" />
     <meta name="description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
+    <link rel="icon" type="image/png" href="/static/core/logo.png" />
     <link rel="stylesheet" href="/static/core/site.css" />
   </head>
   <body>
@@ -265,6 +266,7 @@
           <button class="sort-btn" data-sort="age">{% if current_language == "ta" %}வயது{% else %}Age{% endif %}</button>
           <button class="sort-btn" data-sort="cases">{% if current_language == "ta" %}வழக்குகள்{% else %}Cases{% endif %}</button>
           <button class="sort-btn" data-sort="assets">{% if current_language == "ta" %}சொத்துகள்{% else %}Assets{% endif %}</button>
+          <button class="sort-btn" data-sort="expenditure">{% if current_language == "ta" %}செலவு{% else %}Expenditure{% endif %}</button>
         </div>
         <div class="candidate-grid">
           {% for candidate in candidate_cards %}
@@ -272,7 +274,10 @@
                data-age="{{ candidate.age|default:'0' }}"
                data-cases="{{ candidate.criminal_cases|default:'0' }}"
                data-assets="{{ candidate.assets|default:'0' }}"
-               data-sitting="{{ candidate.sitting|yesno:'1,0' }}">
+               data-expenditure="{{ candidate.election_expenditure|default:'0' }}"
+               data-sitting="{{ candidate.sitting|yesno:'1,0' }}"
+               data-idx="{{ forloop.counter0 }}"
+               style="cursor:pointer">
             <div class="candidate-header">
               <div>
                 <div class="candidate-name">{{ candidate.name }}</div>
@@ -310,7 +315,7 @@
               {% if candidate.age %}<span>{% if current_language == "ta" %}வயது{% else %}Age{% endif %}: {{ candidate.age|indian }}</span>{% endif %}
               {% if candidate.criminal_cases is not None %}<span>{% if current_language == "ta" %}வழக்குகள்{% else %}Cases{% endif %}: {{ candidate.criminal_cases|indian }}</span>{% endif %}
               <span>{% if current_language == "ta" %}சொத்துகள்{% else %}Assets{% endif %}: {% if candidate.assets %}<span title="₹ {{ candidate.assets|indian }}">₹ {{ candidate.assets|short_indian }}</span>{% else %}N/A{% endif %}</span>
-              <span>{% if current_language == "ta" %}பாக்கிகள்{% else %}Liabilities{% endif %}: {% if candidate.liabilities %}<span title="₹ {{ candidate.liabilities|indian }}">₹ {{ candidate.liabilities|short_indian }}</span>{% else %}N/A{% endif %}</span>
+              <span>{% if current_language == "ta" %}தேர்தல் செலவு{% else %}Election Expenditure{% endif %}: {% if candidate.election_expenditure %}<span title="₹ {{ candidate.election_expenditure|indian }}">₹ {{ candidate.election_expenditure|short_indian }}</span>{% else %}N/A{% endif %}</span>
             </div>
             {% if candidate.myneta_url %}
               <a class="link myneta-link" href="{{ candidate.myneta_url }}" target="_blank" rel="noopener">
@@ -369,6 +374,13 @@
           {% endfor %}
         </div>
       </section>
+      <!-- Candidate detail modal -->
+      <div class="candidate-modal-backdrop" id="candidate-modal-backdrop">
+        <div class="candidate-modal">
+          <button class="candidate-modal-close" id="candidate-modal-close">&times;</button>
+          <div class="candidate-modal-body" id="candidate-modal-body"></div>
+        </div>
+      </div>
     </main>
     <script>
       /* ---- Collapsible sections ---- */
@@ -435,6 +447,86 @@
 
         buttons.forEach((btn) => {
           btn.addEventListener("click", () => sortCards(btn.dataset.sort));
+        });
+      })();
+
+      /* ---- Candidate modal ---- */
+      (function () {
+        var candidateData = [
+          {% for c in candidate_cards %}
+          {
+            name: "{{ c.name|escapejs }}",
+            party: "{{ c.party|escapejs }}",
+            education: "{{ c.education|escapejs }}",
+            age: {{ c.age|default:"null" }},
+            criminal_cases: {{ c.criminal_cases|default:"null" }},
+            assets: {{ c.assets|default:"null" }},
+            liabilities: {{ c.liabilities|default:"null" }},
+            election_expenditure: {{ c.election_expenditure|default:"null" }},
+            self_profession: "{{ c.self_profession|escapejs }}",
+            spouse_profession: "{{ c.spouse_profession|escapejs }}",
+            education_details_clean: "{{ c.education_details_clean|escapejs }}",
+            criminal_cases_summary: "{{ c.criminal_cases_summary|escapejs }}",
+            myneta_url: "{{ c.myneta_url|escapejs }}"
+          }{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        ];
+
+        function shortIndian(n) {
+          if (n === null || n === undefined) return 'N/A';
+          if (n >= 10000000) return '₹ ' + (n / 10000000).toFixed(2) + ' Cr';
+          if (n >= 100000) return '₹ ' + (n / 100000).toFixed(2) + ' L';
+          if (n >= 1000) return '₹ ' + (n / 1000).toFixed(1) + ' K';
+          return '₹ ' + n.toLocaleString('en-IN');
+        }
+
+        var backdrop = document.getElementById('candidate-modal-backdrop');
+        var body = document.getElementById('candidate-modal-body');
+        var closeBtn = document.getElementById('candidate-modal-close');
+        if (!backdrop || !body) return;
+
+        function openModal(idx) {
+          var c = candidateData[idx];
+          if (!c) return;
+          var isTa = '{{ current_language }}' === 'ta';
+          var html = '<h3 class="candidate-modal-name">' + c.name + '</h3>';
+          html += '<p class="candidate-modal-party">' + c.party + '</p>';
+          html += '<dl class="candidate-modal-dl">';
+          if (c.age !== null) html += '<div><dt>' + (isTa ? 'வயது' : 'Age') + '</dt><dd>' + c.age + '</dd></div>';
+          if (c.education) html += '<div><dt>' + (isTa ? 'கல்வி' : 'Education') + '</dt><dd>' + c.education + '</dd></div>';
+          if (c.criminal_cases !== null) html += '<div><dt>' + (isTa ? 'குற்ற வழக்குகள்' : 'Criminal Cases') + '</dt><dd>' + c.criminal_cases + '</dd></div>';
+          html += '<div><dt>' + (isTa ? 'சொத்துகள்' : 'Assets') + '</dt><dd>' + shortIndian(c.assets) + '</dd></div>';
+          html += '<div><dt>' + (isTa ? 'பாக்கிகள்' : 'Liabilities') + '</dt><dd>' + shortIndian(c.liabilities) + '</dd></div>';
+          html += '<div><dt>' + (isTa ? 'தேர்தல் செலவு' : 'Election Expenditure') + '</dt><dd>' + shortIndian(c.election_expenditure) + '</dd></div>';
+          if (c.self_profession) html += '<div><dt>' + (isTa ? 'தொழில்' : 'Profession') + '</dt><dd>' + c.self_profession + '</dd></div>';
+          if (c.spouse_profession) html += '<div><dt>' + (isTa ? 'துணைவர் தொழில்' : 'Spouse Profession') + '</dt><dd>' + c.spouse_profession + '</dd></div>';
+          if (c.education_details_clean) html += '<div><dt>' + (isTa ? 'கல்வி விவரங்கள்' : 'Education Details') + '</dt><dd>' + c.education_details_clean + '</dd></div>';
+          if (c.criminal_cases_summary) html += '<div><dt>' + (isTa ? 'வழக்கு விவரம்' : 'Legal History') + '</dt><dd>' + c.criminal_cases_summary + '</dd></div>';
+          html += '</dl>';
+          if (c.myneta_url) html += '<a class="link myneta-link" href="' + c.myneta_url + '" target="_blank" rel="noopener">' + (isTa ? 'MyNeta சுயவிவரம் →' : 'MyNeta Profile →') + '</a>';
+          body.innerHTML = html;
+          backdrop.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+          backdrop.classList.remove('open');
+          document.body.style.overflow = '';
+        }
+
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        backdrop.addEventListener('click', function (e) {
+          if (e.target === backdrop) closeModal();
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') closeModal();
+        });
+
+        document.querySelectorAll('.candidate-card[data-idx]').forEach(function (card) {
+          card.addEventListener('click', function (e) {
+            if (e.target.closest('a') || e.target.closest('button')) return;
+            openModal(parseInt(card.dataset.idx, 10));
+          });
         });
       })();
     </script>

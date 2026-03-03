@@ -10,6 +10,7 @@
     <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/core/logo.png" />
     <meta property="og:type" content="website" />
     <meta name="description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
+    <link rel="icon" type="image/png" href="/static/core/logo.png" />
     <link rel="stylesheet" href="/static/core/site.css" />
   </head>
   <body>
@@ -231,7 +232,8 @@
         </form>
       </section>
 
-      <section class="card">
+      <section class="card" style="position:relative">
+        <div id="data-loading" class="loading-overlay hidden"><div class="loading-spinner"></div></div>
         {% if rows %}
 
         <!-- View toggle toolbar -->
@@ -328,6 +330,8 @@
           {% for row in rows %}
           <div class="data-card{% if row.is_2016 %} is-2016{% endif %}"
                data-candidate="{{ row|get_item:'candidate'|default:'' }}"
+               data-idx="{{ forloop.counter0 }}"
+               style="cursor:pointer"
                {% for column in columns %}data-{{ column.key }}="{{ row|get_item:column.key|default:"" }}" {% endfor %}>
             <div class="data-card-header">
               {% with cand_name=row|get_item:"candidate" %}
@@ -338,15 +342,13 @@
               {% endif %}
             </div>
             <dl class="data-card-body">
-              {% for column in columns %}
+              {% for column in card_columns %}
                 {% if column.key != "candidate" %}
                 {% with cell=row|get_item:column.key %}
                 <div class="data-card-row">
                   <dt>{{ column.label }}</dt>
                   <dd>
-                    {% if column.key == myneta_key and cell %}
-                      <a class="link myneta-link" href="{{ cell }}" target="_blank" rel="noopener">Myneta Profile</a>
-                    {% elif column.is_currency %}
+                    {% if column.is_currency %}
                       {% if cell %}<span title="₹ {{ cell|indian }}">₹ {{ cell|short_indian }}</span>{% else %}—{% endif %}
                     {% elif column.is_number %}
                       {% if cell %}{{ cell|indian }}{% else %}—{% endif %}
@@ -373,7 +375,16 @@
         </p>
         {% endif %}
       </section>
+
+      <!-- Candidate detail modal -->
+      <div class="candidate-modal-backdrop" id="candidate-modal-backdrop">
+        <div class="candidate-modal">
+          <button class="candidate-modal-close" id="candidate-modal-close">&times;</button>
+          <div class="candidate-modal-body" id="candidate-modal-body"></div>
+        </div>
+      </div>
     </main>
+    <script type="application/json" id="candidate-modal-json">{{ candidate_modal_data_json|safe }}</script>
     <script>
       /* ---- Filter persistence (sessionStorage) ---- */
       var STORAGE_KEY = 'tntracker_filters_' + window.location.pathname;
@@ -390,6 +401,8 @@
 
         function applyFilters(qs) {
           var url = window.location.pathname + '?' + qs;
+          var loader = document.getElementById('data-loading');
+          if (loader) loader.classList.remove('hidden');
           fetch(url).then(function (r) { return r.text(); }).then(function (html) {
             var doc = new DOMParser().parseFromString(html, 'text/html');
 
@@ -413,6 +426,11 @@
             var oldConst = document.querySelector('select[name="constituency"]');
             if (newConst && oldConst) oldConst.innerHTML = newConst.innerHTML;
 
+            /* Update candidate modal JSON data */
+            var newJson = doc.querySelector('#candidate-modal-json');
+            var oldJson = document.getElementById('candidate-modal-json');
+            if (newJson && oldJson) oldJson.textContent = newJson.textContent;
+
             /* Update URL bar */
             history.pushState(null, '', url);
             sessionStorage.setItem(STORAGE_KEY, qs);
@@ -426,6 +444,10 @@
 
             /* Close mobile drawer if open */
             closeFilters();
+
+            /* Hide loading overlay */
+            var loader = document.getElementById('data-loading');
+            if (loader) loader.classList.add('hidden');
           });
         }
 
@@ -665,6 +687,75 @@
             });
           }, 500);
         }
+      })();
+
+      /* ---- Candidate detail modal ---- */
+      (function () {
+        function getModalData() {
+          var el = document.getElementById('candidate-modal-json');
+          if (!el) return [];
+          try { return JSON.parse(el.textContent); } catch (e) { return []; }
+        }
+
+        function shortIndian(n) {
+          if (n === null || n === undefined) return 'N/A';
+          if (n >= 10000000) return '₹ ' + (n / 10000000).toFixed(2) + ' Cr';
+          if (n >= 100000) return '₹ ' + (n / 100000).toFixed(2) + ' L';
+          if (n >= 1000) return '₹ ' + (n / 1000).toFixed(1) + ' K';
+          return '₹ ' + n.toLocaleString('en-IN');
+        }
+
+        var backdrop = document.getElementById('candidate-modal-backdrop');
+        var body = document.getElementById('candidate-modal-body');
+        var closeBtn = document.getElementById('candidate-modal-close');
+        if (!backdrop || !body) return;
+
+        function openModal(idx) {
+          var candidateData = getModalData();
+          var c = candidateData[idx];
+          if (!c) return;
+          var isTa = '{{ current_language }}' === 'ta';
+          var html = '<h3 class="candidate-modal-name">' + c.name + '</h3>';
+          html += '<p class="candidate-modal-party">{{ party_display_name|escapejs }}</p>';
+          html += '<dl class="candidate-modal-dl">';
+          if (c.age !== null) html += '<div><dt>' + (isTa ? 'வயது' : 'Age') + '</dt><dd>' + c.age + '</dd></div>';
+          if (c.education) html += '<div><dt>' + (isTa ? 'கல்வி' : 'Education') + '</dt><dd>' + c.education + '</dd></div>';
+          if (c.criminal_cases !== null) html += '<div><dt>' + (isTa ? 'குற்ற வழக்குகள்' : 'Criminal Cases') + '</dt><dd>' + c.criminal_cases + '</dd></div>';
+          html += '<div><dt>' + (isTa ? 'சொத்துகள்' : 'Assets') + '</dt><dd>' + shortIndian(c.assets) + '</dd></div>';
+          html += '<div><dt>' + (isTa ? 'பாக்கிகள்' : 'Liabilities') + '</dt><dd>' + shortIndian(c.liabilities) + '</dd></div>';
+          html += '<div><dt>' + (isTa ? 'தேர்தல் செலவு' : 'Election Expenditure') + '</dt><dd>' + shortIndian(c.election_expenditure) + '</dd></div>';
+          if (c.self_profession) html += '<div><dt>' + (isTa ? 'தொழில்' : 'Profession') + '</dt><dd>' + c.self_profession + '</dd></div>';
+          if (c.spouse_profession) html += '<div><dt>' + (isTa ? 'துணைவர் தொழில்' : 'Spouse Profession') + '</dt><dd>' + c.spouse_profession + '</dd></div>';
+          if (c.education_details_clean) html += '<div><dt>' + (isTa ? 'கல்வி விவரங்கள்' : 'Education Details') + '</dt><dd>' + c.education_details_clean.replace(/\n/g, '<br>') + '</dd></div>';
+          if (c.criminal_cases_summary) html += '<div><dt>' + (isTa ? 'வழக்கு விவரம்' : 'Legal History') + '</dt><dd>' + c.criminal_cases_summary + '</dd></div>';
+          html += '</dl>';
+          if (c.myneta_url) html += '<a class="link myneta-link" href="' + c.myneta_url + '" target="_blank" rel="noopener">' + (isTa ? 'MyNeta சுயவிவரம் →' : 'MyNeta Profile →') + '</a>';
+          body.innerHTML = html;
+          backdrop.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+          backdrop.classList.remove('open');
+          document.body.style.overflow = '';
+        }
+
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        backdrop.addEventListener('click', function (e) {
+          if (e.target === backdrop) closeModal();
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') closeModal();
+        });
+
+        /* Event delegation — survives AJAX DOM replacement (cards only) */
+        document.addEventListener('click', function (e) {
+          if (e.target.closest('a') || e.target.closest('button')) return;
+          var target = e.target.closest('#card-view .data-card[data-idx]');
+          if (target) {
+            openModal(parseInt(target.dataset.idx, 10));
+          }
+        });
       })();
     </script>
     {% include "core/_footer.html" %}
