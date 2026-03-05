@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{% if current_language == 'ta' %}ta{% else %}en{% endif %}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Map | TN Tracker</title>
-    <meta property="og:title" content="Tamil Nadu Assembly Elections 2026" />
-    <meta property="og:description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
+    <title>{% if current_language == "ta" %}வரைபடம் | TN Tracker{% else %}Map | TN Tracker{% endif %}</title>
+    <meta property="og:title" content="{% if current_language == 'ta' %}தமிழ்நாடு சட்டமன்றத் தேர்தல்கள் 2026{% else %}Tamil Nadu Assembly Elections 2026{% endif %}" />
+    <meta property="og:description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
     <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/core/logo.png" />
     <meta property="og:type" content="website" />
-    <meta name="description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
+    <meta name="description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
     <link rel="icon" type="image/png" href="/static/core/logo.png" />
     <link
       rel="stylesheet"
@@ -41,6 +41,21 @@
         text-transform: uppercase;
         color: #475569;
       }
+      .legend-toggle {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        user-select: none;
+      }
+      .legend-arrow {
+        transition: transform 0.2s;
+        font-size: 12px;
+      }
+      .map-legend.collapsed .legend-body { display: none; }
+      .map-legend.collapsed .legend-arrow { transform: rotate(-90deg); }
+      .map-legend.collapsed { max-height: none; overflow: visible; }
+      .map-legend.collapsed h3 { margin-bottom: 0; }
       .map-legend .legend-row {
         display: flex;
         align-items: center;
@@ -71,6 +86,7 @@
         flex: 1;
         min-width: 200px;
         position: relative;
+        z-index: 1001;
       }
       .map-search-input {
         width: 100%;
@@ -345,16 +361,6 @@
       </div>
     </header>
     <main class="container">
-      {% if data_vintage_label %}
-      <div class="banner" style="margin-top: 8px;">
-        {% if current_language == "ta" %}
-          அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.
-        {% else %}
-          {{ data_vintage_label }}
-        {% endif %}
-      </div>
-      {% endif %}
-      
       <!-- Search bar -->
       <div class="map-search-container">
         <div class="map-search-row">
@@ -389,6 +395,15 @@
         <div id="map-loading" class="loading-overlay"><div class="loading-spinner"></div></div>
       </div>
       
+      {% if data_vintage_label %}
+      <div class="info-btn-wrapper" style="margin-top: 10px; text-align: right;">
+        <button class="info-btn" id="data-info-btn" aria-label="Data information">
+          i
+          <span class="info-text">{% if current_language == "ta" %}அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.{% else %}{{ data_vintage_label }}{% endif %}</span>
+        </button>
+      </div>
+      {% endif %}
+
       <!-- Toast notification -->
       <div id="map-toast" class="map-toast"></div>
     </main>
@@ -418,11 +433,13 @@
         minZoom: 6,
       }).addTo(map);
 
+      const currentLang = '{{ current_language }}';
       const partyLabel = {
         "Pattali Makkal Katchi": "PMK",
         "Viduthalai Chiruthaigal Katchi": "VCK",
         IND: "Independent",
       };
+      const partyLabelTa = {{ party_label_ta_json|safe }};
 
       // Detect touch device
       const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -464,9 +481,11 @@
           const geoJsonLayer = L.geoJSON(data, {
             style: styleFeature,
             onEachFeature: (feature, layer) => {
-              const { id, name, district } = feature.properties;
-              const tooltip = `<strong>${name}</strong><br /><span>${district}</span><br /><small>{% if current_language == "ta" %}மீண்டும் தட்டவும்{% else %}Tap again to view{% endif %}</small>`;
-              const desktopTooltip = `<strong>${name}</strong><br /><span>${district}</span>`;
+              const { id, name, district, name_ta, district_ta } = feature.properties;
+              const displayName = (currentLang === 'ta' && name_ta) ? name_ta : name;
+              const displayDistrict = (currentLang === 'ta' && district_ta) ? district_ta : district;
+              const tooltip = `<strong>${displayName}</strong><br /><span>${displayDistrict}</span><br /><small>{% if current_language == "ta" %}மீண்டும் தட்டவும்{% else %}Tap again to view{% endif %}</small>`;
+              const desktopTooltip = `<strong>${displayName}</strong><br /><span>${displayDistrict}</span>`;
               layer.bindTooltip(isTouchDevice ? tooltip : desktopTooltip, {
                 direction: "top",
                 sticky: !isTouchDevice,
@@ -540,13 +559,19 @@
             const legendControl = L.control({ position: "bottomright" });
             legendControl.onAdd = () => {
               const div = L.DomUtil.create("div", "map-legend");
-              div.innerHTML = `<h3>Legend</h3>`;
+              if (window.innerWidth < 769) div.classList.add("collapsed");
+              div.innerHTML = `<h3 class="legend-toggle">${currentLang === 'ta' ? 'குறியீடு' : 'Legend'} <span class="legend-arrow">▾</span></h3>`;
+              const body = document.createElement("div");
+              body.className = "legend-body";
               const fragment = document.createDocumentFragment();
               data.legend.forEach((item) => {
                 const row = document.createElement("div");
                 row.className = "legend-row";
                 row.dataset.party = item.party;
-                row.innerHTML = `<span class="swatch" style="background:${item.color}"></span><span class="legend-label">${partyLabel[item.party] || item.party}</span>`;
+                const legendName = currentLang === 'ta'
+                  ? (partyLabelTa[item.party] || partyLabel[item.party] || item.party)
+                  : (partyLabel[item.party] || item.party);
+                row.innerHTML = `<span class="swatch" style="background:${item.color}"></span><span class="legend-label">${legendName}</span>`;
                 row.addEventListener("click", () => {
                   activeParty = activeParty === item.party ? null : item.party;
                   applyLegendFilter();
@@ -556,9 +581,13 @@
               });
               const vacantRow = document.createElement("div");
               vacantRow.className = "legend-row legend-row-static";
-              vacantRow.innerHTML = `<span class="swatch" style="background:#CBD5F5"></span>Vacant`;
+              vacantRow.innerHTML = `<span class="swatch" style="background:#CBD5F5"></span>${currentLang === 'ta' ? 'காலியிடம்' : 'Vacant'}`;
               fragment.appendChild(vacantRow);
-              div.appendChild(fragment);
+              body.appendChild(fragment);
+              div.appendChild(body);
+              div.querySelector(".legend-toggle").addEventListener("click", () => {
+                div.classList.toggle("collapsed");
+              });
               L.DomEvent.disableClickPropagation(div);
               return div;
             };
@@ -1043,6 +1072,16 @@
             );
           });
         });
+    </script>
+    <script>
+      document.getElementById('data-info-btn')?.addEventListener('click', function(e) {
+        e.stopPropagation();
+        this.classList.toggle('expanded');
+      });
+      document.addEventListener('click', function(e) {
+        var btn = document.getElementById('data-info-btn');
+        if (btn && !btn.contains(e.target)) btn.classList.remove('expanded');
+      });
     </script>
     {% include "core/_footer.html" %}
     {% include "core/_consent_dialog.html" %}

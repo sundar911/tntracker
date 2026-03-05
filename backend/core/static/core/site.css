@@ -138,6 +138,65 @@ video {
   display: inline-flex;
 }
 
+.heading-with-info {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.heading-with-info h1 {
+  margin-bottom: 0;
+  line-height: 1;
+}
+
+.info-btn-wrapper {
+  display: inline-block;
+}
+
+.info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fef9c3;
+  border: 2px solid #854d0e;
+  color: #854d0e;
+  font-weight: 600;
+  font-size: 15px;
+  font-style: normal;
+  font-family: inherit;
+  cursor: pointer;
+  line-height: 1;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: width 0.25s, border-radius 0.25s;
+  white-space: nowrap;
+  padding: 0;
+}
+
+.info-btn .info-text {
+  display: none;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.info-btn.expanded {
+  width: auto;
+  max-width: 100%;
+  border-radius: 14px;
+  padding: 4px 12px 4px 8px;
+}
+
+.info-btn.expanded .info-text {
+  display: inline;
+}
+
 .search {
   display: flex;
   gap: 12px;
@@ -918,7 +977,7 @@ input[type="range"]::-moz-range-thumb {
 
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 12px;
   margin-top: 12px;
 }
@@ -1037,6 +1096,10 @@ input[type="range"]::-moz-range-thumb {
   align-items: center;
   gap: 8px;
   position: relative;
+}
+
+.table tr {
+  scroll-margin-top: 90px;
 }
 
 .table tr.is-2016 td {
@@ -1276,6 +1339,19 @@ a.sort-link {
   }
 }
 
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.party-header + .muted {
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
 /* ========== View Toggle & Card Grid ========== */
 
 .view-toolbar {
@@ -1367,6 +1443,7 @@ a.sort-link {
   padding: 16px;
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
   transition: box-shadow 0.2s;
+  scroll-margin-top: 90px;
 }
 
 a.data-card-link {
@@ -1626,7 +1703,8 @@ dd {
 
 @media (max-width: 768px) {
   /* --- Two-row header ribbon --- */
-  .nav {
+  .nav,
+  .site-header.compact .nav {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -1871,17 +1949,27 @@ dd {
   .home-stat-label {
     font-size: 13px;
   }
+
+  .district-inline {
+    display: inline;
+    font-size: 0.5em;
+    font-weight: 400;
+    color: var(--muted);
+  }
+
+  .district-block {
+    display: none;
+  }
 }
 
 /* Resources Page Styles */
 .resources-section {
-  padding: 32px 0 48px;
+  padding: 16px 0 48px;
 }
 
 .resources-section h1 {
-  font-family: var(--serif);
   font-size: clamp(2rem, 3.5vw, 2.8rem);
-  margin: 20px 0 12px;
+  margin: 8px 0 12px;
   line-height: 1.2;
 }
 
@@ -2654,6 +2742,10 @@ body.theme-dark .indicator-unit {
 
 .constituency-subtitle .sep {
   color: #cbd5e1;
+}
+
+.district-inline {
+  display: none;
 }
 
 /* ---- Collapsible sections ---- */

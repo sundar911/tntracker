@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{% if current_language == 'ta' %}ta{% else %}en{% endif %}">
   {% load indian_numbers %}
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{ candidate.name }} | TN Tracker</title>
-    <meta property="og:title" content="Tamil Nadu Assembly Elections 2026" />
-    <meta property="og:description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
+    <title>{% if current_language == "ta" and candidate.name_ta %}{{ candidate.name_ta }}{% else %}{{ candidate.name }}{% endif %} | TN Tracker</title>
+    <meta property="og:title" content="{% if current_language == 'ta' %}தமிழ்நாடு சட்டமன்றத் தேர்தல்கள் 2026{% else %}Tamil Nadu Assembly Elections 2026{% endif %}" />
+    <meta property="og:description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
     <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/core/logo.png" />
     <meta property="og:type" content="website" />
-    <meta name="description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
+    <meta name="description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
     <link rel="icon" type="image/png" href="/static/core/logo.png" />
     <link rel="stylesheet" href="/static/core/site.css" />
   </head>
@@ -49,7 +49,7 @@
           ← {% if current_language == "ta" %}தொகுதி{% else %}Back to constituency{% endif %}
         </a>
         {% if data_vintage_label %}
-        <div class="banner">{{ data_vintage_label }}</div>
+        <div class="banner">{% if current_language == "ta" %}அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.{% else %}{{ data_vintage_label }}{% endif %}</div>
         {% endif %}
       </div>
       <h1>
@@ -98,7 +98,7 @@
         <dl class="grid">
           <div>
             <dt>{% if current_language == "ta" %}நிலை{% else %}Status{% endif %}</dt>
-            <dd>{{ candidate.status }}</dd>
+            <dd>{% if current_language == "ta" %}{{ status_ta|default:candidate.status }}{% else %}{{ candidate.status }}{% endif %}</dd>
           </div>
           <div>
             <dt>{% if current_language == "ta" %}வயது{% else %}Age{% endif %}</dt>
@@ -106,7 +106,7 @@
           </div>
           <div>
             <dt>{% if current_language == "ta" %}பாலினம்{% else %}Gender{% endif %}</dt>
-            <dd>{{ candidate.gender|default:"-" }}</dd>
+            <dd>{% if current_language == "ta" %}{{ gender_ta|default:candidate.gender|default:"-" }}{% else %}{{ candidate.gender|default:"-" }}{% endif %}</dd>
           </div>
           <div>
             <dt>{% if current_language == "ta" %}கல்வி{% else %}Education{% endif %}</dt>

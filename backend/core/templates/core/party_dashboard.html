@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{% if current_language == 'ta' %}ta{% else %}en{% endif %}">
   {% load indian_numbers %}
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Candidates | TN Tracker</title>
-    <meta property="og:title" content="Tamil Nadu Assembly Elections 2026" />
-    <meta property="og:description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
+    <title>{% if current_language == "ta" %}வேட்பாளர்கள் | TN Tracker{% else %}Candidates | TN Tracker{% endif %}</title>
+    <meta property="og:title" content="{% if current_language == 'ta' %}தமிழ்நாடு சட்டமன்றத் தேர்தல்கள் 2026{% else %}Tamil Nadu Assembly Elections 2026{% endif %}" />
+    <meta property="og:description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள். 234 தொகுதிகளில் ~4000 வேட்பாளர்களின் நிதி மற்றும் சட்ட பின்னணியை ஆராயுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
     <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/core/logo.png" />
     <meta property="og:type" content="website" />
-    <meta name="description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
+    <meta name="description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள். 234 தொகுதிகளில் ~4000 வேட்பாளர்களின் நிதி மற்றும் சட்ட பின்னணியை ஆராயுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
     <link rel="icon" type="image/png" href="/static/core/logo.png" />
     <link rel="stylesheet" href="/static/core/site.css" />
   </head>
@@ -44,16 +44,15 @@
       </div>
     </header>
     <main class="container">
-      {% if data_vintage_label %}
-      <div class="banner" style="margin-top: 8px;">
-        {% if current_language == "ta" %}
-          அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.
-        {% else %}
-          {{ data_vintage_label }}
+      <div class="heading-with-info">
+        <h1>{% if current_language == "ta" %}கட்சி காட்சிப்பலகை{% else %}Party Dashboard{% endif %}</h1>
+        {% if data_vintage_label %}
+        <button class="info-btn" id="data-info-btn" aria-label="Data information">
+          i
+          <span class="info-text">{% if current_language == "ta" %}அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.{% else %}{{ data_vintage_label }}{% endif %}</span>
+        </button>
         {% endif %}
       </div>
-      {% endif %}
-      <h1>{% if current_language == "ta" %}கட்சி காட்சிப்பலகை{% else %}Party Dashboard{% endif %}</h1>
 
       <section class="card" style="position:relative">
         <div id="data-loading" class="loading-overlay hidden"><div class="loading-spinner"></div></div>
@@ -84,12 +83,6 @@
           </div>
         </dl>
       </section>
-
-      <!-- Mobile filter trigger (hidden on desktop via CSS) -->
-      <button class="filter-trigger" type="button" id="filter-trigger">
-        {% if current_language == "ta" %}வடிகட்டிகள்{% else %}Filters{% endif %}
-        <span class="filter-badge" id="filter-badge"></span>
-      </button>
 
       <!-- Filter backdrop -->
       <div class="filter-backdrop" id="filter-backdrop"></div>
@@ -156,14 +149,14 @@
               <optgroup label="{% if current_language == 'ta' %}முக்கிய கட்சிகள்{% else %}Major parties{% endif %}">
                 {% for party in party_options %}{% if party.is_prominent %}
                   <option value="{{ party.value }}" {% if party.value == selected_party %}selected{% endif %}>
-                    {{ party.label }}
+                    {% if current_language == "ta" and party.label_ta %}{{ party.label_ta }}{% else %}{{ party.label }}{% endif %}
                   </option>
                 {% endif %}{% endfor %}
               </optgroup>
               <optgroup label="{% if current_language == 'ta' %}பிற கட்சிகள்{% else %}Other parties{% endif %}">
                 {% for party in party_options %}{% if not party.is_prominent %}
                   <option value="{{ party.value }}" {% if party.value == selected_party %}selected{% endif %}>
-                    {{ party.label }}
+                    {% if current_language == "ta" and party.label_ta %}{{ party.label_ta }}{% else %}{{ party.label }}{% endif %}
                   </option>
                 {% endif %}{% endfor %}
               </optgroup>
@@ -175,8 +168,8 @@
               <option value="" {% if not selected_district %}selected{% endif %}>
                 {% if current_language == "ta" %}அனைத்தும்{% else %}All districts{% endif %}
               </option>
-              {% for district in districts %}
-                <option value="{{ district }}" {% if district == selected_district %}selected{% endif %}>{{ district }}</option>
+              {% for d in districts %}
+                <option value="{{ d.value }}" {% if d.value == selected_district %}selected{% endif %}>{% if current_language == "ta" and d.label_ta %}{{ d.label_ta }}{% else %}{{ d.value }}{% endif %}</option>
               {% endfor %}
             </select>
           </label>
@@ -186,8 +179,8 @@
               <option value="" {% if not selected_constituency %}selected{% endif %}>
                 {% if current_language == "ta" %}அனைத்தும்{% else %}All constituencies{% endif %}
               </option>
-              {% for constituency in constituencies %}
-                <option value="{{ constituency }}" {% if constituency == selected_constituency %}selected{% endif %}>{{ constituency }}</option>
+              {% for c in constituencies %}
+                <option value="{{ c.value }}" {% if c.value == selected_constituency %}selected{% endif %}>{% if current_language == "ta" and c.label_ta %}{{ c.label_ta }}{% else %}{{ c.value }}{% endif %}</option>
               {% endfor %}
             </select>
           </label>
@@ -221,8 +214,6 @@
       </section>
 
       <section class="card">
-        <h2>{% if current_language == "ta" %}கட்சிகள் ஒரு பார்வை{% else %}Party snapshot{% endif %}</h2>
-
         <!-- Search bar -->
         <div class="party-search-container">
           <div class="party-search-input-wrapper">
@@ -241,8 +232,11 @@
 
         {% if party_stats %}
 
-        <!-- View toggle toolbar -->
-        <div class="view-toolbar">
+        <div class="controls-row">
+          <button class="filter-trigger" type="button" id="filter-trigger">
+            {% if current_language == "ta" %}வடிகட்டிகள்{% else %}Filters{% endif %}
+            <span class="filter-badge" id="filter-badge"></span>
+          </button>
           <div class="view-toggle">
             <button class="view-btn active" data-view="table" type="button">
               {% if current_language == "ta" %}அட்டவணை{% else %}Table{% endif %}
@@ -251,6 +245,8 @@
               {% if current_language == "ta" %}அட்டைகள்{% else %}Cards{% endif %}
             </button>
           </div>
+        </div>
+        <div class="view-toolbar">
           <div class="card-sort" id="card-sort" style="display:none">
             <label>
               {% if current_language == "ta" %}வரிசைப்படுத்து{% else %}Sort by{% endif %}
@@ -307,7 +303,7 @@
                     />
                   {% endif %}
                   <a class="link" href="/party/{{ party.party|urlencode }}/{% if base_query_no_party %}?{{ base_query_no_party }}{% endif %}">
-                    {{ party.party_display|default:party.party }}
+                    {% if current_language == "ta" and party.party_display_ta %}{{ party.party_display_ta }}{% else %}{{ party.party_display|default:party.party }}{% endif %}
                   </a>
                 </div>
               </td>
@@ -318,7 +314,7 @@
               <td>{% if party.avg_assets is not None %}<span title="₹ {{ party.avg_assets|indian }}">₹ {{ party.avg_assets|short_indian }}</span>{% else %}—{% endif %}</td>
               <td>{% if party.avg_expenditure is not None %}<span title="₹ {{ party.avg_expenditure|indian }}">₹ {{ party.avg_expenditure|short_indian }}</span>{% else %}—{% endif %}</td>
               <td>{% if party.total_expenditure %}<span title="₹ {{ party.total_expenditure|indian }}">₹ {{ party.total_expenditure|short_indian }}</span>{% else %}—{% endif %}</td>
-              <td>{% if party.top_education %}{{ party.top_education }}{% else %}—{% endif %}</td>
+              <td>{% if party.top_education %}{% if current_language == "ta" and party.top_education_ta %}{{ party.top_education_ta }}{% else %}{{ party.top_education }}{% endif %}{% else %}—{% endif %}</td>
             </tr>
             {% endfor %}
           </tbody>
@@ -348,7 +344,7 @@
                   onerror="this.style.display='none'"
                 />
               {% endif %}
-              <span>{{ party.party_display|default:party.party }}</span>
+              <span>{% if current_language == "ta" and party.party_display_ta %}{{ party.party_display_ta }}{% else %}{{ party.party_display|default:party.party }}{% endif %}</span>
             </div>
             <dl class="data-card-body">
               <div class="data-card-row">
@@ -373,7 +369,7 @@
               </div>
               <div class="data-card-row">
                 <dt>{% if current_language == "ta" %}அதிகம் காணப்படும் கல்வி{% else %}Most common education{% endif %}</dt>
-                <dd>{% if party.top_education %}{{ party.top_education }}{% else %}—{% endif %}</dd>
+                <dd>{% if party.top_education %}{% if current_language == "ta" and party.top_education_ta %}{{ party.top_education_ta }}{% else %}{{ party.top_education }}{% endif %}{% else %}—{% endif %}</dd>
               </div>
             </dl>
           </a>
@@ -681,10 +677,14 @@
             if (r.type === 'party' && r.symbol_url) {
               icon = '<img class="party-search-symbol" src="' + r.symbol_url + '" alt="" onerror="this.style.display=\'none\'" />';
             }
-            var name = r.type === 'party' ? r.display_name : r.name;
+            var name = r.type === 'party'
+              ? (currentLang === 'ta' && r.display_name_ta ? r.display_name_ta : r.display_name)
+              : (currentLang === 'ta' && r.name_ta ? r.name_ta : r.name);
             var subtitle = '';
             if (r.type === 'candidate') {
-              subtitle = r.party_display + (r.constituency ? ' · ' + r.constituency : '');
+              var pDisp = currentLang === 'ta' && r.party_display_ta ? r.party_display_ta : r.party_display;
+              var cDisp = currentLang === 'ta' && r.constituency_ta ? r.constituency_ta : r.constituency;
+              subtitle = pDisp + (cDisp ? ' · ' + cDisp : '');
             }
             var typeLabel = r.type === 'party'
               ? (currentLang === 'ta' ? 'கட்சி' : 'Party')
@@ -727,9 +727,7 @@
         }
 
         function scrollAndHighlight(target) {
-          var headerOffset = 70;
-          var top = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-          window.scrollTo({ top: top, behavior: 'smooth' });
+          target.scrollIntoView({ block: 'start', behavior: 'smooth' });
           target.classList.add('search-highlighted');
           setTimeout(function () { target.classList.remove('search-highlighted'); }, 3500);
         }
@@ -799,6 +797,16 @@
           if (!e.target.closest('.party-search-container')) hideDropdown();
         });
       })();
+    </script>
+    <script>
+      document.getElementById('data-info-btn')?.addEventListener('click', function(e) {
+        e.stopPropagation();
+        this.classList.toggle('expanded');
+      });
+      document.addEventListener('click', function(e) {
+        var btn = document.getElementById('data-info-btn');
+        if (btn && !btn.contains(e.target)) btn.classList.remove('expanded');
+      });
     </script>
     {% include "core/_footer.html" %}
     {% include "core/_consent_dialog.html" %}

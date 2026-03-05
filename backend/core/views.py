@@ -32,6 +32,15 @@ from .models import (
     PromiseAssessment,
 )
 from .serializers import CandidateSerializer, ConstituencySerializer, ManifestoSerializer, PartySerializer
+from .tamil_translations import (
+    COLUMN_LABEL_TA,
+    EDUCATION_TA,
+    PARTY_NAME_TA,
+    RESOURCE_CATEGORY_TA,
+    RESOURCE_TITLE_TA,
+    STATUS_TA,
+    GENDER_TA,
+)
 from .templatetags.indian_numbers import short_indian
 
 
@@ -73,59 +82,102 @@ def resources(request):
     resources_list = [
         {
             "title": "MyNeta - Tamil Nadu Assembly Elections",
+            "title_ta": RESOURCE_TITLE_TA.get("MyNeta - Tamil Nadu Assembly Elections", ""),
             "url": "https://myneta.info/state_assembly.php?state=Tamil%20Nadu",
             "description": "Candidate affidavit data from Election Commission archives, including criminal records, assets, liabilities, and educational qualifications for all candidates.",
             "description_ta": "தேர்தல் ஆணையக் காப்பகங்களிலிருந்து வேட்பாளர் வாக்குறுதி தரவு, குற்றப் பதிவுகள், சொத்துக்கள், கடன்கள் மற்றும் கல்வித் தகுதிகள் உள்ளிட்டவை.",
             "category": "Affidavits",
+            "category_ta": RESOURCE_CATEGORY_TA.get("Affidavits", ""),
+        },
+        {
+            "title": "MyNeta - Asset Comparison of Re-contesting Winners",
+            "title_ta": RESOURCE_TITLE_TA.get("MyNeta - Asset Comparison of Re-contesting Winners", ""),
+            "url": "https://myneta.info/TamilNadu2021/index.php?action=recontestAssetsComparison",
+            "description": "Asset comparison of 143 MLAs who won in both 2016 and 2021, showing how their wealth changed over the five-year period between elections.",
+            "description_ta": "2016 மற்றும் 2021 இரண்டிலும் வெற்றி பெற்ற 143 சட்டமன்ற உறுப்பினர்களின் சொத்து ஒப்பீடு, ஐந்தாண்டு காலத்தில் அவர்களின் செல்வம் எவ்வாறு மாறியது என்பதைக் காட்டுகிறது.",
+            "category": "Affidavits",
+            "category_ta": RESOURCE_CATEGORY_TA.get("Affidavits", ""),
         },
         {
             "title": "MLA Election Expenditure Analysis 2021 (ADR)",
+            "title_ta": RESOURCE_TITLE_TA.get("MLA Election Expenditure Analysis 2021 (ADR)", ""),
             "url": "https://adrindia.org/sites/default/files/Analysis_of_Election_Expenditure_Statements_of_MLA_Tamil_Nadu_Assembly_2021_English.pdf",
             "description": "Association for Democratic Reforms analysis of election expenditure statements filed by MLAs in Tamil Nadu 2021, including party-wise spending patterns.",
             "description_ta": "தமிழ்நாடு 2021-ல் சட்டமன்ற உறுப்பினர்கள் தாக்கல் செய்த தேர்தல் செலவு அறிக்கைகளின் ஜனநாயக சீர்திருத்த சங்கம் பகுப்பாய்வு.",
             "category": "Expenditure",
+            "category_ta": RESOURCE_CATEGORY_TA.get("Expenditure", ""),
         },
         {
             "title": "Tamil Nadu Economic Survey 2025-26",
+            "title_ta": RESOURCE_TITLE_TA.get("Tamil Nadu Economic Survey 2025-26", ""),
             "url": "https://tamildigitallibrary.in/assets/docs/uploads/catalogue_article_file/BOK/upload/2026/02/TVA_TVA_BOK_062955/upload_primary_20260216113955411_20260216113539.pdf",
             "description": "Official economic survey of Tamil Nadu for 2025-26, covering the state's economic performance, sectoral analysis, and development indicators.",
             "description_ta": "தமிழ்நாட்டின் 2025-26 அதிகாரப்பூர்வ பொருளாதார ஆய்வு, மாநிலத்தின் பொருளாதார செயல்திறன், துறை வாரியான பகுப்பாய்வு மற்றும் வளர்ச்சி குறியீடுகள்.",
             "category": "Economy",
+            "category_ta": RESOURCE_CATEGORY_TA.get("Economy", ""),
         },
         {
             "title": "NITI Aayog - Tamil Nadu Fiscal Landscape",
+            "title_ta": RESOURCE_TITLE_TA.get("NITI Aayog - Tamil Nadu Fiscal Landscape", ""),
             "url": "https://www.niti.gov.in/sites/default/files/2025-03/Macro-and-Fiscal-Landscape-of-the-State-of-Tamil-Nadu.pdf",
             "description": "NITI Aayog report on Tamil Nadu's macroeconomic and fiscal landscape, providing context on state finances and development indicators.",
             "description_ta": "தமிழ்நாட்டின் பொருளாதார மற்றும் நிதி நிலப்பரப்பு குறித்த நிதி ஆயோக் அறிக்கை, மாநில நிதி மற்றும் வளர்ச்சி குறியீடுகள் பற்றிய சூழல்.",
             "category": "Economy",
+            "category_ta": RESOURCE_CATEGORY_TA.get("Economy", ""),
+        },
+        {
+            "title": "PRS - Tamil Nadu Budget Analysis 2025-26",
+            "title_ta": RESOURCE_TITLE_TA.get("PRS - Tamil Nadu Budget Analysis 2025-26", ""),
+            "url": "https://prsindia.org/budgets/states/tamil-nadu-budget-analysis-2025-26",
+            "description": "PRS Legislative Research analysis of Tamil Nadu's 2025-26 state budget, covering expenditure, receipts, deficit targets, and key policy initiatives.",
+            "description_ta": "தமிழ்நாட்டின் 2025-26 மாநில வரவு செலவுத் திட்டத்தின் PRS சட்டமன்ற ஆராய்ச்சி பகுப்பாய்வு, செலவுகள், வருவாய், பற்றாக்குறை இலக்குகள் மற்றும் முக்கிய கொள்கை முன்முயற்சிகள்.",
+            "category": "Economy",
+            "category_ta": RESOURCE_CATEGORY_TA.get("Economy", ""),
         },
         {
             "title": "16th Tamil Nadu Legislative Assembly Members",
+            "title_ta": RESOURCE_TITLE_TA.get("16th Tamil Nadu Legislative Assembly Members", ""),
             "url": "https://assembly.tn.gov.in/16thassembly/members.php",
             "description": "Official list of current MLAs from the Tamil Nadu Legislative Assembly website, with contact details and constituency information.",
             "description_ta": "தமிழ்நாடு சட்டமன்ற இணையதளத்திலிருந்து தற்போதைய சட்டமன்ற உறுப்பினர்களின் அதிகாரப்பூர்வ பட்டியல், தொடர்பு விவரங்கள் மற்றும் தொகுதி தகவல்கள்.",
             "category": "Official",
+            "category_ta": RESOURCE_CATEGORY_TA.get("Official", ""),
+        },
+        {
+            "title": "PRS - Profile of 16th Tamil Nadu Assembly",
+            "title_ta": RESOURCE_TITLE_TA.get("PRS - Profile of 16th Tamil Nadu Assembly", ""),
+            "url": "https://prsindia.org/legislatures/state/vital-stats/profile-of-the-16th-tamil-nadu-legislative-assembly",
+            "description": "PRS Legislative Research profile of the 16th Tamil Nadu Assembly, covering MLA demographics, party composition, gender representation, education, and age distribution.",
+            "description_ta": "16-ஆவது தமிழ்நாடு சட்டமன்றத்தின் PRS சட்டமன்ற ஆராய்ச்சி விவரக்குறிப்பு, சட்டமன்ற உறுப்பினர்களின் மக்கள்தொகை, கட்சி அமைப்பு, பாலின பிரதிநிதித்துவம், கல்வி மற்றும் வயது விநியோகம்.",
+            "category": "Analytics",
+            "category_ta": RESOURCE_CATEGORY_TA.get("Analytics", ""),
         },
         {
             "title": "IndiaVotes - Tamil Nadu 2021 Results",
+            "title_ta": RESOURCE_TITLE_TA.get("IndiaVotes - Tamil Nadu 2021 Results", ""),
             "url": "https://www.indiavotes.com/vidhan-sabha/2021/tamil-nadu/283/40",
             "description": "Comprehensive assembly-wise election results for Tamil Nadu 2021, including vote counts and margins for all constituencies.",
             "description_ta": "தமிழ்நாடு 2021 தொகுதி வாரியான தேர்தல் முடிவுகள், வாக்கு எண்ணிக்கை மற்றும் வெற்றி வித்தியாசம் உள்ளிட்ட தகவல்கள்.",
             "category": "Results",
+            "category_ta": RESOURCE_CATEGORY_TA.get("Results", ""),
         },
         {
             "title": "Tamil Nadu Assembly Elections Visual Analytics",
+            "title_ta": RESOURCE_TITLE_TA.get("Tamil Nadu Assembly Elections Visual Analytics", ""),
             "url": "https://data-analytics.github.io/Election_Data/tamil_nadu.html?extra_year=2021#individual_hold",
             "description": "Interactive visualizations of Tamil Nadu assembly elections from 1967 to 2021, with party-wise trends and constituency-level analysis.",
             "description_ta": "1967 முதல் 2021 வரையிலான தமிழ்நாடு சட்டமன்றத் தேர்தல்களின் ஊடாடும் காட்சிப்படுத்தல்கள், கட்சி வாரியான போக்குகள் மற்றும் தொகுதி நிலை பகுப்பாய்வு.",
             "category": "Analytics",
+            "category_ta": RESOURCE_CATEGORY_TA.get("Analytics", ""),
         },
     ]
     return render(request, "core/resources.html", {"resources": resources_list})
 
 
 def map_view(request):
-    return render(request, "core/map.html")
+    return render(request, "core/map.html", {
+        "party_label_ta_json": json.dumps(PARTY_NAME_TA, ensure_ascii=False),
+    })
 
 
 @lru_cache(maxsize=1)
@@ -248,6 +300,40 @@ def _display_party_name(party_name: str) -> str:
     cleaned = (party_name or "").strip()
     if cleaned == "IND":
         return "Independent"
+    return cleaned
+
+
+@lru_cache(maxsize=1)
+def _load_names_ta() -> dict:
+    """Load the Tamil name translations from data/names_ta.json."""
+    names_path = Path(settings.BASE_DIR).parent / "data" / "names_ta.json"
+    if names_path.exists():
+        with open(names_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+
+def _get_tamil_name(english_name: str) -> str:
+    """Look up Tamil transliteration for a name. Falls back to English."""
+    ta_map = _load_names_ta()
+    return ta_map.get(english_name, english_name)
+
+
+def _display_party_name_ta(party_name: str) -> str:
+    """Return Tamil display name for a party."""
+    cleaned = (party_name or "").strip()
+    # Check static translations first
+    ta = PARTY_NAME_TA.get(cleaned)
+    if ta:
+        return ta
+    # Check DB-based translations
+    ta_map = _load_names_ta()
+    ta = ta_map.get(cleaned)
+    if ta:
+        return ta
+    # Fallback to English
+    if cleaned == "IND":
+        return "சுயேச்சை"
     return cleaned
 
 
@@ -426,7 +512,9 @@ def map_data(request):
                 "properties": {
                     "id": constituency.id,
                     "name": official_name,
+                    "name_ta": constituency.name_ta or "",
                     "district": display_district,
+                    "district_ta": constituency.district_ta or "",
                     "party": lookup.get("party", ""),
                     "party_color": lookup.get("party_color"),
                     "vacant": is_vacant,
@@ -671,6 +759,12 @@ def party_dashboard_search(request):
     district_key = ("2021_district", "district")
     constituency_key = ("2021_constituency", "constituency")
 
+    # Build Tamil lookup maps
+    names_ta = _load_names_ta()
+    constituency_ta_map = dict(
+        Constituency.objects.exclude(name_ta="").values_list("name", "name_ta")
+    )
+
     # Score parties
     party_names: dict[str, str] = {}  # raw name -> display name
     for row in rows:
@@ -680,10 +774,14 @@ def party_dashboard_search(request):
 
     scored: list[dict] = []
     for party, display in party_names.items():
+        ta_display = _display_party_name_ta(party)
         score = max(
             _fuzzy_match_score(query_lower, display.lower()),
             _fuzzy_match_score(query_lower, party.lower()),
         )
+        # Also match against Tamil party name
+        if ta_display:
+            score = max(score, _fuzzy_match_score(query_lower, ta_display.lower()))
         for alias in PARTY_ALIASES.get(party, []):
             score = max(score, _fuzzy_match_score(query_lower, alias.lower()))
         if score > 0:
@@ -691,6 +789,7 @@ def party_dashboard_search(request):
                 "type": "party",
                 "name": party,
                 "display_name": display,
+                "display_name_ta": ta_display,
                 "symbol_url": _party_symbol_url(party),
                 "score": score,
             })
@@ -703,14 +802,22 @@ def party_dashboard_search(request):
         if not candidate or (candidate, party) in seen_candidates:
             continue
         seen_candidates.add((candidate, party))
+        name_ta = names_ta.get(candidate, "")
         score = _fuzzy_match_score(query_lower, candidate.lower())
+        # Also match against Tamil name
+        if name_ta:
+            score = max(score, _fuzzy_match_score(query_lower, name_ta.lower()))
         if score > 0:
+            constituency_en = _row_value(row, constituency_key)
             scored.append({
                 "type": "candidate",
                 "name": candidate,
+                "name_ta": name_ta,
                 "party": party,
                 "party_display": _display_party_name(party),
-                "constituency": _row_value(row, constituency_key),
+                "party_display_ta": _display_party_name_ta(party),
+                "constituency": constituency_en,
+                "constituency_ta": constituency_ta_map.get(constituency_en, ""),
                 "district": _row_value(row, district_key),
                 "score": score,
             })
@@ -922,8 +1029,8 @@ def constituency_detail(request, constituency_id: int):
     age_values = [value for value in age_values if value is not None]
     assets_values = [_parse_int(row.get("total_assets_rs")) for row in candidates]
     assets_values = [value for value in assets_values if value is not None]
-    liabilities_values = [_parse_int(row.get("liabilities_rs")) for row in candidates]
-    liabilities_values = [value for value in liabilities_values if value is not None]
+    expenditure_values = [_parse_int(row.get("election_expenditure_rs")) for row in candidates]
+    expenditure_values = [value for value in expenditure_values if value is not None]
 
     candidate_count = len(candidates)
     party_count = len({(row.get("party") or "").strip() for row in candidates if (row.get("party") or "").strip()})
@@ -931,7 +1038,7 @@ def constituency_detail(request, constituency_id: int):
     avg_cases = (sum(cases_values) / len(cases_values)) if cases_values else None
     avg_age = (sum(age_values) / len(age_values)) if age_values else None
     avg_assets = (sum(assets_values) / len(assets_values)) if assets_values else None
-    avg_liabilities = (sum(liabilities_values) / len(liabilities_values)) if liabilities_values else None
+    avg_expenditure = (sum(expenditure_values) / len(expenditure_values)) if expenditure_values else None
     cases_pct = round((cases_positive / candidate_count) * 100, 1) if candidate_count else 0
 
     _ta = current_language == "ta"
@@ -945,8 +1052,8 @@ def constituency_detail(request, constituency_id: int):
             "value": f"₹ {short_indian(round(avg_assets, 0))}" if avg_assets is not None else "N/A",
         },
         {
-            "label": "சராசரி கடன்கள்" if _ta else "Avg liabilities",
-            "value": f"₹ {short_indian(round(avg_liabilities, 0))}" if avg_liabilities is not None else "N/A",
+            "label": "சராசரி தேர்தல் செலவு" if _ta else "Avg expenditure",
+            "value": f"₹ {short_indian(round(avg_expenditure, 0))}" if avg_expenditure is not None else "N/A",
         },
     ]
 
@@ -1041,13 +1148,19 @@ def constituency_detail(request, constituency_id: int):
                 "summary": c_summary,
                 "as_of": c_as_of,
             }
+        name_en = (row.get("candidate") or "").strip() or "Unknown"
+        party_en = (row.get("party") or "").strip() or "Independent / Unknown"
+        education_en = (row.get("education") or "").strip()
         candidate_cards.append(
             {
-                "name": (row.get("candidate") or "").strip() or "Unknown",
-                "party": (row.get("party") or "").strip() or "Independent / Unknown",
+                "name": name_en,
+                "name_ta": _get_tamil_name(name_en) if _ta else "",
+                "party": party_en,
+                "party_ta": _display_party_name_ta(raw_party) if _ta else "",
                 "party_symbol": _party_symbol_url(raw_party) or party_symbols.get(raw_party.lower()),
                 "is_2016": _is_2016_row(row),
-                "education": (row.get("education") or "").strip(),
+                "education": education_en,
+                "education_ta": EDUCATION_TA.get(education_en, "") if _ta else "",
                 "age": _parse_int(row.get("age")),
                 "criminal_cases": _parse_int(row.get("criminal_cases")),
                 "assets": assets_value,
@@ -1108,6 +1221,8 @@ def candidate_detail(request, candidate_id: int):
             "missing_legal": not candidate.legal_cases.all(),
             "missing_results": not candidate.results_2021,
             "party_symbol": party_symbol,
+            "status_ta": STATUS_TA.get(candidate.status or "", ""),
+            "gender_ta": GENDER_TA.get(candidate.gender or "", ""),
         },
     )
 
@@ -1413,10 +1528,12 @@ def party_dashboard(request):
             else None
         )
         total_expenditure = stats["expenditure_total"]
+        top_edu_en = top_education[0][0] if top_education else ""
         party_stats.append(
             {
                 "party": party,
                 "party_display": _display_party_name(party),
+                "party_display_ta": _display_party_name_ta(party),
                 "party_symbol": _party_symbol_url(party),
                 "candidate_count": stats["count"],
                 "avg_cases": avg_cases,
@@ -1425,7 +1542,8 @@ def party_dashboard(request):
                 "avg_expenditure": avg_expenditure,
                 "total_expenditure": total_expenditure,
                 "cases_pct": cases_pct,
-                "top_education": top_education[0][0] if top_education else "",
+                "top_education": top_edu_en,
+                "top_education_ta": EDUCATION_TA.get(top_edu_en, top_edu_en),
             }
         )
 
@@ -1479,12 +1597,33 @@ def party_dashboard(request):
             {
                 "value": party,
                 "label": _display_party_name(party),
+                "label_ta": _display_party_name_ta(party),
                 "is_prominent": party in prominent_set,
             }
             for party in party_set
         ],
         key=lambda item: item["label"].lower(),
     )
+
+    # Build Tamil district/constituency lookups from the DB
+    district_ta_map = dict(
+        Constituency.objects.exclude(district_ta="")
+        .values_list("district", "district_ta")
+        .distinct()
+    )
+    constituency_ta_map = dict(
+        Constituency.objects.exclude(name_ta="")
+        .values_list("name", "name_ta")
+    )
+    districts_list = [
+        {"value": d, "label_ta": district_ta_map.get(d, "")}
+        for d in sorted(district_set)
+    ]
+    constituencies_list = [
+        {"value": c, "label_ta": constituency_ta_map.get(c, "")}
+        for c in available_constituencies
+    ]
+
     return render(
         request,
         "core/party_dashboard.html",
@@ -1505,9 +1644,9 @@ def party_dashboard(request):
             "rows_count": len(filtered_rows),
             "party_options": party_options,
             "selected_party": selected_party,
-            "districts": sorted(district_set),
+            "districts": districts_list,
             "selected_district": district_filter,
-            "constituencies": available_constituencies,
+            "constituencies": constituencies_list,
             "selected_constituency": constituency_filter,
             "base_query": urlencode(base_query, doseq=True),
             "base_query_no_party": urlencode(base_query_no_party, doseq=True),
@@ -1520,6 +1659,7 @@ def party_detail(request, party_name: str):
     if year not in {"2021", "2026"}:
         year = "2021"
     party_display_name = _display_party_name(party_name)
+    party_display_name_ta = _display_party_name_ta(party_name)
     party_symbol = _party_symbol_url(party_name)
     cases_filter = request.GET.get("cases", "").strip()
     age_group_filter = request.GET.get("age_group", "").strip()
@@ -1603,16 +1743,17 @@ def party_detail(request, party_name: str):
         "legal_summary_short": "Legal History",
     }
     non_sortable = {"candidate", "2021_constituency", "2021_district", "education_formatted", "legal_summary_short"}
-    columns = [
-        {
+    columns = []
+    for header in allowed_headers:
+        label_en = label_overrides.get(header, header.replace("_", " ").title())
+        columns.append({
             "key": header,
-            "label": label_overrides.get(header, header.replace("_", " ").title()),
+            "label": label_en,
+            "label_ta": COLUMN_LABEL_TA.get(label_en, ""),
             "is_currency": header in {"total_assets_rs", "election_expenditure_rs"},
             "is_number": header in {"criminal_cases", "age", "total_assets_rs", "election_expenditure_rs"},
             "is_sortable": header not in non_sortable,
-        }
-        for header in allowed_headers
-    ]
+        })
     # Card view: reorder so Education, Age, Criminal Cases come first
     card_order = ["candidate", "education", "age", "criminal_cases"]
     card_exclude = {"education_formatted", "legal_summary_short"}
@@ -1638,9 +1779,13 @@ def party_detail(request, party_name: str):
         row_data["is_2016"] = _is_2016_row(row)
         rows_table.append(row_data)
         # Modal extended data
+        cand_name_en = (row.get("candidate") or "").strip()
+        edu_en = (row.get("education") or "").strip()
         candidate_modal_data.append({
-            "name": (row.get("candidate") or "").strip(),
-            "education": (row.get("education") or "").strip(),
+            "name": cand_name_en,
+            "name_ta": _get_tamil_name(cand_name_en),
+            "education": edu_en,
+            "education_ta": EDUCATION_TA.get(edu_en, ""),
             "age": _parse_int(row.get("age")),
             "criminal_cases": _parse_int(row.get("criminal_cases")),
             "assets": _parse_int(row.get("total_assets_rs")),
@@ -1658,12 +1803,32 @@ def party_detail(request, party_name: str):
 
     party_obj = Party.objects.filter(name=party_name).first() or Party.objects.filter(abbreviation=party_name).first()
 
+    # Tamil lookups for districts/constituencies
+    district_ta_map = dict(
+        Constituency.objects.exclude(district_ta="")
+        .values_list("district", "district_ta")
+        .distinct()
+    )
+    constituency_ta_map = dict(
+        Constituency.objects.exclude(name_ta="")
+        .values_list("name", "name_ta")
+    )
+    districts_list = [
+        {"value": d, "label_ta": district_ta_map.get(d, "")}
+        for d in sorted(district_set)
+    ]
+    constituencies_list = [
+        {"value": c, "label_ta": constituency_ta_map.get(c, "")}
+        for c in available_constituencies
+    ]
+
     return render(
         request,
         "core/party_detail.html",
         {
             "party_name": party_name,
             "party_display_name": party_display_name,
+            "party_display_name_ta": party_display_name_ta,
             "party_symbol": party_symbol,
             "party_obj": party_obj,
             "year": year,
@@ -1677,9 +1842,9 @@ def party_detail(request, party_name: str):
             "selected_age_group": age_group_filter,
             "selected_assets_range": assets_range_filter,
             "sitting_mla": sitting_filter if has_sitting else "",
-            "districts": sorted(district_set),
+            "districts": districts_list,
             "selected_district": district_filter,
-            "constituencies": available_constituencies,
+            "constituencies": constituencies_list,
             "selected_constituency": constituency_filter,
         },
     )

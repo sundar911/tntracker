@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{% if current_language == 'ta' %}ta{% else %}en{% endif %}">
   {% load indian_numbers %}
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{ constituency.name }} | TN Tracker</title>
-    <meta property="og:title" content="Tamil Nadu Assembly Elections 2026" />
-    <meta property="og:description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
+    <title>{% if current_language == "ta" and constituency.name_ta %}{{ constituency.name_ta }}{% else %}{{ constituency.name }}{% endif %} | TN Tracker</title>
+    <meta property="og:title" content="{% if current_language == 'ta' %}தமிழ்நாடு சட்டமன்றத் தேர்தல்கள் 2026{% else %}Tamil Nadu Assembly Elections 2026{% endif %}" />
+    <meta property="og:description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
     <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/core/logo.png" />
     <meta property="og:type" content="website" />
-    <meta name="description" content="Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies." />
+    <meta name="description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
     <link rel="icon" type="image/png" href="/static/core/logo.png" />
     <link rel="stylesheet" href="/static/core/site.css" />
   </head>
@@ -44,43 +44,25 @@
       </div>
     </header>
     <main class="container">
-      {% if data_vintage_label %}
-      <div class="banner" style="margin-top: 8px;">
-        {% if current_language == "ta" %}
-          அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.
-        {% else %}
-          {{ data_vintage_label }}
+      <div class="heading-with-info">
+        <h1>
+          {% if current_language == "ta" and constituency.name_ta %}{{ constituency.name_ta }}{% else %}{{ constituency.name }}{% endif %}
+          <span class="district-inline">
+            ({% if current_language == "ta" and constituency.district_ta %}{{ constituency.district_ta }}{% else %}{{ district_name }}{% endif %})
+          </span>
+        </h1>
+        {% if data_vintage_label %}
+        <button class="info-btn" id="data-info-btn" aria-label="Data information">
+          i
+          <span class="info-text">{% if current_language == "ta" %}அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.{% else %}{{ data_vintage_label }}{% endif %}</span>
+        </button>
         {% endif %}
       </div>
-      {% endif %}
-      <h1>
-        {% if current_language == "ta" and constituency.name_ta %}{{ constituency.name_ta }}{% else %}{{ constituency.name }}{% endif %}
-      </h1>
-      <p class="muted">
+      <p class="muted district-block">
         {% if current_language == "ta" and constituency.district_ta %}{{ constituency.district_ta }}{% else %}{{ district_name }}{% endif %}
       </p>
-      {% if constituency.parliamentary_constituency or constituency.region or constituency.reservation_category %}
-      <div class="constituency-subtitle">
-        {% if constituency.parliamentary_constituency %}
-          <span>{{ constituency.parliamentary_constituency }}</span>
-        {% endif %}
-        {% if constituency.parliamentary_constituency and constituency.region %}
-          <span class="sep">|</span>
-        {% endif %}
-        {% if constituency.region %}
-          <span>{{ region_display }}</span>
-        {% endif %}
-        {% if constituency.region and constituency.reservation_category %}
-          <span class="sep">|</span>
-        {% endif %}
-        {% if constituency.reservation_category %}
-          <span>{% if current_language == "ta" and constituency.reservation_category_ta %}{{ constituency.reservation_category_ta }}{% else %}{{ constituency.reservation_category }}{% endif %}</span>
-        {% endif %}
-      </div>
-      {% endif %}
 
-      <section class="card">
-        <h2>{% if current_language == "ta" %}சுருக்கம்{% else %}Summary{% endif %}</h2>
+      <section class="card" style="padding-top: 8px;">
         <div class="stat-grid">
           {% for stat in summary_cards %}
           <div class="stat-card">
@@ -90,174 +72,6 @@
           {% endfor %}
         </div>
       </section>
-
-      {% if constituency.literacy_rate_pct %}
-      <section class="card">
-        <h2 class="collapsible-header" id="socioeconomic-toggle">
-          {% if current_language == "ta" %}சமூக-பொருளாதார குறிகாட்டிகள்{% else %}Socioeconomic Indicators{% endif %}
-          <span class="collapsible-toggle">&#9654;</span>
-        </h2>
-        <div class="collapsible-content" id="socioeconomic-content">
-        <p class="muted" style="margin-bottom: 1rem;">
-          {% if current_language == "ta" %}
-            மாவட்ட அளவிலான தரவு ({{ constituency.district }})
-          {% else %}
-            District-level data ({{ constituency.district }})
-          {% endif %}
-        </p>
-        <div class="indicator-sections">
-
-          <div class="indicator-group">
-            <h3>{% if current_language == "ta" %}சுகாதாரம்{% else %}Health{% endif %}</h3>
-            <div class="indicator-grid">
-              {% if constituency.infant_mortality_rate %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.infant_mortality_rate }}</span>
-                <span class="indicator-label">{% if current_language == "ta" %}குழந்தை இறப்பு விகிதம்{% else %}Infant Mortality Rate{% endif %}</span>
-                <span class="indicator-unit">{% if current_language == "ta" %}1,000 பிறப்புகளுக்கு{% else %}per 1,000 births{% endif %}</span>
-              </div>
-              {% endif %}
-              {% if constituency.child_stunting_pct %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.child_stunting_pct }}%</span>
-                <span class="indicator-label">{% if current_language == "ta" %}குழந்தை வளர்ச்சிக் குறைபாடு{% else %}Child Stunting{% endif %}</span>
-              </div>
-              {% endif %}
-              {% if constituency.child_wasting_pct %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.child_wasting_pct }}%</span>
-                <span class="indicator-label">{% if current_language == "ta" %}குழந்தை சிதைவு{% else %}Child Wasting{% endif %}</span>
-              </div>
-              {% endif %}
-              {% if constituency.full_immunization_pct %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.full_immunization_pct }}%</span>
-                <span class="indicator-label">{% if current_language == "ta" %}முழு நோய்த்தடுப்பு{% else %}Full Immunization{% endif %}</span>
-              </div>
-              {% endif %}
-              {% if constituency.anaemia_women_pct %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.anaemia_women_pct }}%</span>
-                <span class="indicator-label">{% if current_language == "ta" %}பெண்களுக்கு இரத்தசோகை{% else %}Anaemia in Women{% endif %}</span>
-              </div>
-              {% endif %}
-              {% if constituency.institutional_delivery_pct %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.institutional_delivery_pct }}%</span>
-                <span class="indicator-label">{% if current_language == "ta" %}நிறுவன பிரசவம்{% else %}Institutional Delivery{% endif %}</span>
-              </div>
-              {% endif %}
-            </div>
-          </div>
-
-          <div class="indicator-group">
-            <h3>{% if current_language == "ta" %}கல்வி{% else %}Education{% endif %}</h3>
-            <div class="indicator-grid">
-              {% if constituency.literacy_rate_pct %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.literacy_rate_pct }}%</span>
-                <span class="indicator-label">{% if current_language == "ta" %}எழுத்தறிவு விகிதம்{% else %}Literacy Rate{% endif %}</span>
-              </div>
-              {% endif %}
-              {% if constituency.female_literacy_rate_pct %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.female_literacy_rate_pct }}%</span>
-                <span class="indicator-label">{% if current_language == "ta" %}பெண் எழுத்தறிவு{% else %}Female Literacy{% endif %}</span>
-              </div>
-              {% endif %}
-              {% if constituency.literacy_gender_gap_pct %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.literacy_gender_gap_pct }}%</span>
-                <span class="indicator-label">{% if current_language == "ta" %}எழுத்தறிவு பாலின இடைவெளி{% else %}Literacy Gender Gap{% endif %}</span>
-              </div>
-              {% endif %}
-              {% if constituency.graduate_and_above_pct %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.graduate_and_above_pct }}%</span>
-                <span class="indicator-label">{% if current_language == "ta" %}பட்டதாரிகள் & மேல்{% else %}Graduates & Above{% endif %}</span>
-              </div>
-              {% endif %}
-            </div>
-          </div>
-
-          <div class="indicator-group">
-            <h3>{% if current_language == "ta" %}பொருளாதாரம்{% else %}Economy{% endif %}</h3>
-            <div class="indicator-grid">
-              {% if constituency.per_capita_income_inr %}
-              <div class="indicator-item">
-                <span class="indicator-value">₹ {{ constituency.per_capita_income_inr|indian }}</span>
-                <span class="indicator-label">{% if current_language == "ta" %}தனிநபர் வருமானம்{% else %}Per Capita Income{% endif %}</span>
-              </div>
-              {% endif %}
-              {% if constituency.bpl_households_pct %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.bpl_households_pct }}%</span>
-                <span class="indicator-label">{% if current_language == "ta" %}வறுமைக் கோட்டிற்கு கீழ்{% else %}Below Poverty Line{% endif %}</span>
-              </div>
-              {% endif %}
-              {% if constituency.agricultural_workers_pct %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.agricultural_workers_pct }}%</span>
-                <span class="indicator-label">{% if current_language == "ta" %}விவசாய தொழிலாளர்கள்{% else %}Agricultural Workers{% endif %}</span>
-              </div>
-              {% endif %}
-              {% if constituency.banking_access_pct %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.banking_access_pct }}%</span>
-                <span class="indicator-label">{% if current_language == "ta" %}வங்கி அணுகல்{% else %}Banking Access{% endif %}</span>
-              </div>
-              {% endif %}
-            </div>
-          </div>
-
-          <div class="indicator-group">
-            <h3>{% if current_language == "ta" %}பாதுகாப்பு & உள்கட்டமைப்பு{% else %}Safety & Infrastructure{% endif %}</h3>
-            <div class="indicator-grid">
-              {% if constituency.crime_rate_per_lakh %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.crime_rate_per_lakh }}</span>
-                <span class="indicator-label">{% if current_language == "ta" %}குற்ற விகிதம்{% else %}Crime Rate{% endif %}</span>
-                <span class="indicator-unit">{% if current_language == "ta" %}லட்சத்திற்கு{% else %}per lakh{% endif %}</span>
-              </div>
-              {% endif %}
-              {% if constituency.crimes_against_women_per_lakh %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.crimes_against_women_per_lakh }}</span>
-                <span class="indicator-label">{% if current_language == "ta" %}பெண்களுக்கு எதிரான குற்றங்கள்{% else %}Crimes Against Women{% endif %}</span>
-                <span class="indicator-unit">{% if current_language == "ta" %}லட்சத்திற்கு{% else %}per lakh{% endif %}</span>
-              </div>
-              {% endif %}
-              {% if constituency.tap_water_pct %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.tap_water_pct }}%</span>
-                <span class="indicator-label">{% if current_language == "ta" %}குழாய் நீர் அணுகல்{% else %}Tap Water Access{% endif %}</span>
-              </div>
-              {% endif %}
-              {% if constituency.sanitation_pct %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.sanitation_pct }}%</span>
-                <span class="indicator-label">{% if current_language == "ta" %}சுகாதார வசதி{% else %}Sanitation{% endif %}</span>
-              </div>
-              {% endif %}
-              {% if constituency.electricity_pct %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.electricity_pct }}%</span>
-                <span class="indicator-label">{% if current_language == "ta" %}மின்சார இணைப்பு{% else %}Electricity{% endif %}</span>
-              </div>
-              {% endif %}
-              {% if constituency.pucca_housing_pct %}
-              <div class="indicator-item">
-                <span class="indicator-value">{{ constituency.pucca_housing_pct }}%</span>
-                <span class="indicator-label">{% if current_language == "ta" %}பக்கா வீடுகள்{% else %}Pucca Housing{% endif %}</span>
-              </div>
-              {% endif %}
-            </div>
-          </div>
-
-        </div>
-        </div>
-      </section>
-      {% endif %}
 
       <section class="card">
         <h2>{% if current_language == "ta" %}வேட்பாளர்கள்{% else %}Candidates{% endif %}</h2>
@@ -280,8 +94,8 @@
                style="cursor:pointer">
             <div class="candidate-header">
               <div>
-                <div class="candidate-name">{{ candidate.name }}</div>
-                <div class="muted">{{ candidate.party }}</div>
+                <div class="candidate-name">{% if current_language == "ta" and candidate.name_ta %}{{ candidate.name_ta }}{% else %}{{ candidate.name }}{% endif %}</div>
+                <div class="muted">{% if current_language == "ta" and candidate.party_ta %}{{ candidate.party_ta }}{% else %}{{ candidate.party }}{% endif %}</div>
               </div>
               <div class="candidate-badges">
                 {% if candidate.party_symbol %}
@@ -311,7 +125,7 @@
               </div>
             </div>
             <div class="candidate-meta">
-              {% if candidate.education %}<span>{% if current_language == "ta" %}கல்வி{% else %}Education{% endif %}: {{ candidate.education }}</span>{% endif %}
+              {% if candidate.education %}<span>{% if current_language == "ta" %}கல்வி{% else %}Education{% endif %}: {% if current_language == "ta" and candidate.education_ta %}{{ candidate.education_ta }}{% else %}{{ candidate.education }}{% endif %}</span>{% endif %}
               {% if candidate.age %}<span>{% if current_language == "ta" %}வயது{% else %}Age{% endif %}: {{ candidate.age|indian }}</span>{% endif %}
               {% if candidate.criminal_cases is not None %}<span>{% if current_language == "ta" %}வழக்குகள்{% else %}Cases{% endif %}: {{ candidate.criminal_cases|indian }}</span>{% endif %}
               <span>{% if current_language == "ta" %}சொத்துகள்{% else %}Assets{% endif %}: {% if candidate.assets %}<span title="₹ {{ candidate.assets|indian }}">₹ {{ candidate.assets|short_indian }}</span>{% else %}N/A{% endif %}</span>
@@ -319,7 +133,7 @@
             </div>
             {% if candidate.myneta_url %}
               <a class="link myneta-link" href="{{ candidate.myneta_url }}" target="_blank" rel="noopener">
-                MyNeta Profile &rarr;
+                {% if current_language == "ta" %}MyNeta சுயவிவரம் →{% else %}MyNeta Profile →{% endif %}
               </a>
             {% endif %}
             {% if candidate.key_promises %}
@@ -410,6 +224,16 @@
         }
       });
 
+      /* Data info button toggle */
+      document.getElementById('data-info-btn')?.addEventListener('click', function(e) {
+        e.stopPropagation();
+        this.classList.toggle('expanded');
+      });
+      document.addEventListener('click', function(e) {
+        var btn = document.getElementById('data-info-btn');
+        if (btn && !btn.contains(e.target)) btn.classList.remove('expanded');
+      });
+
       /* Candidate card sorting */
       (function () {
         const grid = document.querySelector(".candidate-grid");
@@ -435,9 +259,6 @@
           });
           const cards = Array.from(grid.children).filter((el) => el.classList.contains("candidate-card"));
           cards.sort((a, b) => {
-            const aSitting = a.dataset.sitting === "1";
-            const bSitting = b.dataset.sitting === "1";
-            if (aSitting !== bSitting) return aSitting ? -1 : 1;
             const aVal = parseFloat(a.dataset[field]) || 0;
             const bVal = parseFloat(b.dataset[field]) || 0;
             return ascending ? aVal - bVal : bVal - aVal;
@@ -456,8 +277,11 @@
           {% for c in candidate_cards %}
           {
             name: "{{ c.name|escapejs }}",
+            name_ta: "{{ c.name_ta|escapejs }}",
             party: "{{ c.party|escapejs }}",
+            party_ta: "{{ c.party_ta|escapejs }}",
             education: "{{ c.education|escapejs }}",
+            education_ta: "{{ c.education_ta|escapejs }}",
             age: {{ c.age|default:"null" }},
             criminal_cases: {{ c.criminal_cases|default:"null" }},
             assets: {{ c.assets|default:"null" }},
@@ -489,11 +313,14 @@
           var c = candidateData[idx];
           if (!c) return;
           var isTa = '{{ current_language }}' === 'ta';
-          var html = '<h3 class="candidate-modal-name">' + c.name + '</h3>';
-          html += '<p class="candidate-modal-party">' + c.party + '</p>';
+          var displayName = (isTa && c.name_ta) ? c.name_ta : c.name;
+          var displayParty = (isTa && c.party_ta) ? c.party_ta : c.party;
+          var displayEdu = (isTa && c.education_ta) ? c.education_ta : c.education;
+          var html = '<h3 class="candidate-modal-name">' + displayName + '</h3>';
+          html += '<p class="candidate-modal-party">' + displayParty + '</p>';
           html += '<dl class="candidate-modal-dl">';
           if (c.age !== null) html += '<div><dt>' + (isTa ? 'வயது' : 'Age') + '</dt><dd>' + c.age + '</dd></div>';
-          if (c.education) html += '<div><dt>' + (isTa ? 'கல்வி' : 'Education') + '</dt><dd>' + c.education + '</dd></div>';
+          if (c.education) html += '<div><dt>' + (isTa ? 'கல்வி' : 'Education') + '</dt><dd>' + displayEdu + '</dd></div>';
           if (c.criminal_cases !== null) html += '<div><dt>' + (isTa ? 'குற்ற வழக்குகள்' : 'Criminal Cases') + '</dt><dd>' + c.criminal_cases + '</dd></div>';
           html += '<div><dt>' + (isTa ? 'சொத்துகள்' : 'Assets') + '</dt><dd>' + shortIndian(c.assets) + '</dd></div>';
           html += '<div><dt>' + (isTa ? 'பாக்கிகள்' : 'Liabilities') + '</dt><dd>' + shortIndian(c.liabilities) + '</dd></div>';
