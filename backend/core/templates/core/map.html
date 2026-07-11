@@ -3,12 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% if current_language == "ta" %}வரைபடம் | TN Tracker{% else %}Map | TN Tracker{% endif %}</title>
-    <meta property="og:title" content="{% if current_language == 'ta' %}தமிழ்நாடு சட்டமன்றத் தேர்தல்கள் 2026{% else %}Tamil Nadu Assembly Elections 2026{% endif %}" />
-    <meta property="og:description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
+    <title>{% if current_language == "ta" %}தொகுதி வரைபடம் | தமிழ்நாடு தேர்தல் 2026 | TN Tracker{% else %}Constituency Map | Tamil Nadu Elections 2026 | TN Tracker{% endif %}</title>
+    <meta property="og:title" content="{% if current_language == 'ta' %}தொகுதி வரைபடம் | தமிழ்நாடு தேர்தல் 2026{% else %}Constituency Map | Tamil Nadu Elections 2026{% endif %}" />
+    <meta property="og:description" content="{% if current_language == 'ta' %}தமிழ்நாட்டின் 234 சட்டமன்றத் தொகுதிகளின் ஊடாடும் வரைபடம். உங்கள் தொகுதியை கண்டுபிடித்து வேட்பாளர்களை ஒப்பிடுங்கள்.{% else %}Interactive map of all 234 Tamil Nadu assembly constituencies. Find your constituency and compare candidates for the 2026 elections.{% endif %}" />
     <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/core/logo.png" />
     <meta property="og:type" content="website" />
-    <meta name="description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
+    <meta property="og:url" content="https://tntracker.in/map/" />
+    <meta name="description" content="{% if current_language == 'ta' %}தமிழ்நாட்டின் 234 சட்டமன்றத் தொகுதிகளின் ஊடாடும் வரைபடம். உங்கள் தொகுதியை கண்டுபிடித்து வேட்பாளர்களை ஒப்பிடுங்கள்.{% else %}Interactive map of all 234 Tamil Nadu assembly constituencies. Find your constituency and compare candidates for the 2026 elections.{% endif %}" />
+    <link rel="canonical" href="https://tntracker.in/map/" />
     <link rel="icon" type="image/png" href="/static/core/logo.png" />
     <link
       rel="stylesheet"
@@ -19,9 +21,12 @@
     <link rel="stylesheet" href="/static/core/site.css" />
     <style>
       #map {
-        height: 70vh;
+        height: 80vh;
         border-radius: 12px;
         background: #f8fafc;
+      }
+      @media (min-width: 1024px) {
+        #map { height: 85vh; }
       }
       .map-legend {
         background: #ffffff;
@@ -395,15 +400,6 @@
         <div id="map-loading" class="loading-overlay"><div class="loading-spinner"></div></div>
       </div>
       
-      {% if data_vintage_label %}
-      <div class="info-btn-wrapper" style="margin-top: 10px; text-align: right;">
-        <button class="info-btn" id="data-info-btn" aria-label="Data information">
-          i
-          <span class="info-text">{% if current_language == "ta" %}அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.{% else %}{{ data_vintage_label }}{% endif %}</span>
-        </button>
-      </div>
-      {% endif %}
-
       <!-- Toast notification -->
       <div id="map-toast" class="map-toast"></div>
     </main>
@@ -415,15 +411,15 @@
     ></script>
     <script>
       // Tamil Nadu bounds with buffer for surrounding context
-      const tnBounds = L.latLngBounds([7.5, 76.0], [14.0, 81.0]);
-      
+      const tnBounds = L.latLngBounds([6.5, 74.5], [15.0, 82.5]);
+
       const map = L.map("map", {
         zoomControl: true,
         attributionControl: true,
         minZoom: 6,
         maxZoom: 14,
-        maxBounds: tnBounds.pad(0.1),
-        maxBoundsViscosity: 0.8,
+        maxBounds: tnBounds.pad(0.15),
+        maxBoundsViscosity: 0.9,
       }).setView([10.9, 78.7], 7);
 
       // Add OpenStreetMap tile layer for geographic context
@@ -431,6 +427,8 @@
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         maxZoom: 14,
         minZoom: 6,
+        bounds: tnBounds.pad(0.3),
+        noWrap: true,
       }).addTo(map);
 
       const currentLang = '{{ current_language }}';
@@ -443,19 +441,24 @@
 
       // Detect touch device
       const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const currentYear = '{{ year }}';
 
-      fetch("/map/data/")
+      fetch("/map/data/?year=" + currentYear)
         .then((response) => response.json())
         .then((data) => {
           let activeParty = null;
           let selectedLayer = null;
           const legendRows = [];
 
+          let activeColor = null;
+
           const styleFeature = (feature) => {
             const partyColor = feature.properties.party_color;
             const isVacant = feature.properties.vacant;
             const isUnknown = feature.properties.unknown;
-            const isFilteredOut = activeParty && feature.properties.party !== activeParty;
+            const isFilteredOut = currentYear === '2026'
+              ? (activeColor && partyColor !== activeColor)
+              : (activeParty && feature.properties.party !== activeParty);
             return {
               color: isFilteredOut ? "#cbd5f5" : "#94a3b8",
               weight: isFilteredOut ? 0.5 : 1,
@@ -481,11 +484,14 @@
           const geoJsonLayer = L.geoJSON(data, {
             style: styleFeature,
             onEachFeature: (feature, layer) => {
-              const { id, name, district, name_ta, district_ta } = feature.properties;
+              const { id, name, district, name_ta, district_ta, candidate_count } = feature.properties;
               const displayName = (currentLang === 'ta' && name_ta) ? name_ta : name;
               const displayDistrict = (currentLang === 'ta' && district_ta) ? district_ta : district;
-              const tooltip = `<strong>${displayName}</strong><br /><span>${displayDistrict}</span><br /><small>{% if current_language == "ta" %}மீண்டும் தட்டவும்{% else %}Tap again to view{% endif %}</small>`;
-              const desktopTooltip = `<strong>${displayName}</strong><br /><span>${displayDistrict}</span>`;
+              const extraLine = (currentYear === '2026' && candidate_count !== undefined)
+                ? `<br /><span>${candidate_count} {% if current_language == "ta" %}வேட்பாளர்கள்{% else %}candidate{{ "s" }}{% endif %}</span>`
+                : '';
+              const tooltip = `<strong>${displayName}</strong><br /><span>${displayDistrict}</span>${extraLine}<br /><small>{% if current_language == "ta" %}மீண்டும் தட்டவும்{% else %}Tap again to view{% endif %}</small>`;
+              const desktopTooltip = `<strong>${displayName}</strong><br /><span>${displayDistrict}</span>${extraLine}`;
               layer.bindTooltip(isTouchDevice ? tooltip : desktopTooltip, {
                 direction: "top",
                 sticky: !isTouchDevice,
@@ -513,7 +519,7 @@
                     // Mobile: tap-to-preview, tap-again-to-navigate
                     if (selectedLayer === layer) {
                       // Second tap on same constituency - navigate
-                      window.location.href = `/constituency/${id}/`;
+                      window.location.href = `/constituency/${id}/?year=${currentYear}`;
                     } else {
                       // First tap - select and show info
                       clearSelection();
@@ -524,12 +530,15 @@
                     }
                   } else {
                     // Desktop - navigate immediately
-                    window.location.href = `/constituency/${id}/`;
+                    window.location.href = `/constituency/${id}/?year=${currentYear}`;
                   }
                 },
               });
             },
           }).addTo(map);
+
+          // Auto-zoom to fit all constituencies
+          map.fitBounds(geoJsonLayer.getBounds(), { padding: [30, 30] });
 
           // Clear selection when tapping on empty map area (mobile)
           if (isTouchDevice) {
@@ -546,12 +555,15 @@
           }
 
           const applyLegendFilter = () => {
-            clearSelection(); // Clear any selected constituency when filtering
+            clearSelection();
             geoJsonLayer.eachLayer((layer) => {
               layer.setStyle(styleFeature(layer.feature));
             });
             legendRows.forEach((row) => {
-              row.classList.toggle("active", row.dataset.party === activeParty);
+              const isActive = currentYear === '2026'
+                ? row.dataset.color === activeColor
+                : row.dataset.party === activeParty;
+              row.classList.toggle("active", isActive);
             });
           };
 
@@ -568,21 +580,28 @@
                 const row = document.createElement("div");
                 row.className = "legend-row";
                 row.dataset.party = item.party;
+                row.dataset.color = item.color;
                 const legendName = currentLang === 'ta'
-                  ? (partyLabelTa[item.party] || partyLabel[item.party] || item.party)
+                  ? (item.party_ta || partyLabelTa[item.party] || partyLabel[item.party] || item.party)
                   : (partyLabel[item.party] || item.party);
                 row.innerHTML = `<span class="swatch" style="background:${item.color}"></span><span class="legend-label">${legendName}</span>`;
                 row.addEventListener("click", () => {
-                  activeParty = activeParty === item.party ? null : item.party;
+                  if (currentYear === '2026') {
+                    activeColor = activeColor === item.color ? null : item.color;
+                  } else {
+                    activeParty = activeParty === item.party ? null : item.party;
+                  }
                   applyLegendFilter();
                 });
                 legendRows.push(row);
                 fragment.appendChild(row);
               });
-              const vacantRow = document.createElement("div");
-              vacantRow.className = "legend-row legend-row-static";
-              vacantRow.innerHTML = `<span class="swatch" style="background:#CBD5F5"></span>${currentLang === 'ta' ? 'காலியிடம்' : 'Vacant'}`;
-              fragment.appendChild(vacantRow);
+              if (currentYear !== '2026') {
+                const vacantRow = document.createElement("div");
+                vacantRow.className = "legend-row legend-row-static";
+                vacantRow.innerHTML = `<span class="swatch" style="background:#CBD5F5"></span>${currentLang === 'ta' ? 'காலியிடம்' : 'Vacant'}`;
+                fragment.appendChild(vacantRow);
+              }
               body.appendChild(fragment);
               div.appendChild(body);
               div.querySelector(".legend-toggle").addEventListener("click", () => {

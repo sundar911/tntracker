@@ -1,0 +1,417 @@
+[
+  {
+    "year": 2026,
+    "party": "Tamilaga Vettri Kazhagam",
+    "summary": "TVK's 2026 manifesto, titled 'Vetri Tamil Nadu' (Victorious Tamil Nadu), is structured along the classical Tamil framework of Aram (righteousness), Porul (wealth) and Inbam (joy). Key pillars: dignified livelihoods and social protection for workers, women and the vulnerable; farmer- and fisher-focused agricultural reform with MSP, crop insurance and cooperative infrastructure; a 1.5-trillion-dollar economy by 2036 driven by MSMEs, youth employment, EVs and digital infrastructure; and a welfare delivery model that auto-enrolls eligible citizens without requiring applications.",
+    "summary_ta": "தவெக-வின் 2026 தேர்தல் அறிக்கை 'வெற்றி தமிழ்நாடு' என்னும் பெயரில், அறம், பொருள், இன்பம் என்னும் தமிழ் சிந்தனை அடிப்படையில் வகுக்கப்பட்டுள்ளது. முக்கிய தூண்கள்: தொழிலாளர், பெண்கள், பலவீனமானவர்களுக்கான கண்ணியமான வாழ்வு; குறைந்தபட்ச ஆதார விலை, பயிர்க் காப்பீடு உள்ளிட்ட விவசாய சீர்திருத்தம்; 2036-க்குள் 1.5 டிரில்லியன் டாலர் பொருளாதாரம்; விண்ணப்பமின்றி நலத்திட்டங்களை மக்களுக்கே நேரடியாக வழங்கும் நிர்வாக முறை.",
+    "documents": [
+      {
+        "language": "ta",
+        "source_title": "Vetri Tamil Nadu — TVK Election Manifesto 2026",
+        "source_type": "official"
+      }
+    ],
+    "promises": [
+      {
+        "slug": "farmer-loan-waiver",
+        "text": "Complete waiver of outstanding loans in cooperative banks for farmers holding up to 5 acres.",
+        "text_ta": "5 ஏக்கருக்கு குறைவாக நிலம் வைத்துள்ள விவசாயிகளுக்கு கூட்டுறவு வங்கிகளில் உள்ள அனைத்து பயிர்க் கடன்களும் முற்றிலுமாக தள்ளுபடி.",
+        "category": "Agriculture",
+        "is_key": true,
+        "position": 1
+      },
+      {
+        "slug": "farmer-death-solatium",
+        "text": "Rs 15,000 monthly solatium for families of farmers who lose their lives, plus lifetime insurance cover.",
+        "text_ta": "உயிர் இழக்கும் விவசாயிகளின் குடும்பங்களுக்கு மாதம் ரூ.15,000 ஈரடிமை தொகையும், ஆயுள் காப்பீடும் வழங்கப்படும்.",
+        "category": "Agriculture",
+        "is_key": true,
+        "position": 2
+      },
+      {
+        "slug": "paddy-msp",
+        "text": "Minimum Support Price of Rs 3,500 per quintal for paddy and Rs 4,500 per quintal for short-grain rice.",
+        "text_ta": "நெல்லுக்கு குவிண்டால் ஒன்றுக்கு ரூ.3,500 மற்றும் குறுந்தானியப்பட்ட நெல்லுக்கு ரூ.4,500 குறைந்தபட்ச ஆதார விலை உறுதி.",
+        "category": "Agriculture",
+        "is_key": true,
+        "position": 3
+      },
+      {
+        "slug": "100-percent-crop-insurance",
+        "text": "Government-funded 100% crop insurance for all farmers; premiums paid by the state; compensation credited directly to farmer accounts.",
+        "text_ta": "அனைத்து விவசாயிகளுக்கும் அரசே முழுப் பிரீமியமும் செலுத்தி 100% பயிர்க் காப்பீடு. இழப்பு ஏற்படும்போது நேரடியாக விவசாயிகளின் கணக்கில் தொகை வைப்பு.",
+        "category": "Agriculture",
+        "is_key": true,
+        "position": 4
+      },
+      {
+        "slug": "coconut-msp",
+        "text": "Guaranteed MSP for coconut farmers with direct procurement; state-run coconut-processing industries for value addition.",
+        "text_ta": "தேங்காய் விவசாயிகளுக்கு ஆதார விலையுடன் நேரடி கொள்முதல்; மதிப்புக்கூட்டப்பட்ட தேங்காய்ப் பொருட்களின் உற்பத்தி அரசு பாதுகாக்கும்.",
+        "category": "Agriculture",
+        "is_key": true,
+        "position": 5
+      },
+      {
+        "slug": "organic-farming-plan",
+        "text": "State-wide natural-and-organic farming plan: free organic input distribution, chemical-free produce subsidy and dedicated organic markets.",
+        "text_ta": "இயற்கை விவசாயத்தை ஊக்குவிக்கும் திட்டம்: இயற்கை இடுபொருட்கள் இலவசமாக, இரசாயனமில்லா விளைபொருட்களுக்கு விலை ஆதரவு, தனி சந்தைகள்.",
+        "category": "Agriculture",
+        "is_key": true,
+        "position": 6
+      },
+      {
+        "slug": "39-check-dams",
+        "text": "39 new check dams and river-linking works to extend irrigation to 5 lakh additional acres.",
+        "text_ta": "39 புதிய தடுப்பணைகள் மற்றும் நதி நீர் இணைப்பு பணிகள் மூலம் கூடுதலாக 5 லட்சம் ஏக்கர் நிலத்திற்கு பாசன வசதி.",
+        "category": "Agriculture",
+        "is_key": true,
+        "position": 7
+      },
+      {
+        "slug": "cluster-storage-hubs",
+        "text": "Cluster-hub silos and primary-processing centres across the state so farmers are not forced to distress-sell after harvest.",
+        "text_ta": "அறுவடைக்குப் பிறகு விவசாயிகள் கட்டாய விற்பனை செய்ய வேண்டியிராமல் இருக்க, மாவட்ட அளவில் களஞ்சியங்கள் (Cluster Hubs) மற்றும் தொடக்க பதப்படுத்தும் மையங்கள்.",
+        "category": "Agriculture",
+        "is_key": false,
+        "position": 8
+      },
+      {
+        "slug": "fisher-monsoon-insurance",
+        "text": "Rs 7,000 per month relief payment to fisher families during the annual fishing ban; expanded life insurance for all registered fishermen.",
+        "text_ta": "மீன்பிடித் தடைக் காலத்தில் மீனவர் குடும்பங்களுக்கு மாதம் ரூ.7,000 நிவாரணம்; பதிவு செய்யப்பட்ட அனைத்து மீனவர்களுக்கும் ஆயுள் காப்பீடு.",
+        "category": "Agriculture",
+        "is_key": true,
+        "position": 9
+      },
+      {
+        "slug": "fisher-boat-insurance",
+        "text": "Rs 25 lakh insurance cover for every mechanised fishing boat and Rs 15-per-litre fuel subsidy for fishermen.",
+        "text_ta": "ஒவ்வொரு இயந்திரப் படகுக்கும் ரூ.25 லட்சம் காப்பீடு; மீனவர்களுக்கு லிட்டருக்கு ரூ.15 எரிபொருள் மானியம்.",
+        "category": "Agriculture",
+        "is_key": false,
+        "position": 10
+      },
+      {
+        "slug": "deep-sea-boat-loans",
+        "text": "Interest-free loans for fishermen to buy modern deep-sea fishing vessels; new fishing harbours upgraded with Bio-Floc facilities.",
+        "text_ta": "ஆழ்கடல் மீன்பிடிப் படகுகள் வாங்க மீனவர்களுக்கு வட்டியில்லா கடன்; Bio-Floc தொழில்நுட்பம் உள்ளிட்ட நவீன மீன்பிடித் துறைமுக மேம்பாடு.",
+        "category": "Agriculture",
+        "is_key": false,
+        "position": 11
+      },
+      {
+        "slug": "livestock-insurance",
+        "text": "Insurance cover for all livestock-rearing families with no premium payable by the household.",
+        "text_ta": "கால்நடை வளர்ப்பில் ஈடுபட்டுள்ள குடும்பங்களுக்கு எந்தக் கட்டணமும் இல்லாமல் முழு கால்நடை காப்பீடு.",
+        "category": "Agriculture",
+        "is_key": false,
+        "position": 12
+      },
+      {
+        "slug": "native-cattle-revival",
+        "text": "Rs 5,000 revival grant through women self-help groups for preserving native Tamil Nadu cattle breeds (Kangayam, Pulikulam, Umblachery etc.).",
+        "text_ta": "காங்கேயம், புலிக்குளம், உம்பளச்சேரி உள்ளிட்ட தமிழகத்தின் பாரம்பரிய மாட்டினங்களை மீட்க மகளிர் சுய உதவிக் குழுக்கள் மூலம் ரூ.5,000 உதவித்தொகை.",
+        "category": "Agriculture",
+        "is_key": false,
+        "position": 13
+      },
+      {
+        "slug": "no-application-welfare",
+        "text": "No-Application welfare: the state automatically identifies eligible citizens and pushes benefits to them, ending the need to apply for schemes.",
+        "text_ta": "விண்ணப்பமேயின்றி தகுதியுள்ள மக்களுக்கு நலத்திட்டப் பலன்களை அரசே தானாகக் கண்டறிந்து கொண்டு சென்று வழங்கும் புதிய ஆட்சி முறை.",
+        "category": "Social Welfare",
+        "is_key": true,
+        "position": 14
+      },
+      {
+        "slug": "journalist-welfare",
+        "text": "Rs 15 lakh health insurance for all accredited journalists and Rs 15,000 monthly pension for retired journalists earning under Rs 5 lakh/year.",
+        "text_ta": "அங்கீகாரம் பெற்ற அனைத்துப் பத்திரிகையாளர்களுக்கும் ரூ.15 லட்சம் ஆயுள் காப்பீடு; ஆண்டுக்கு ரூ.5 லட்சத்துக்குக் குறைவாக வருமானம் பெறும் ஓய்வு பெற்ற பத்திரிகையாளர்களுக்கு மாதம் ரூ.15,000 ஓய்வூதியம்.",
+        "category": "Social Welfare",
+        "is_key": true,
+        "position": 15
+      },
+      {
+        "slug": "lawyer-stipend",
+        "text": "Rs 3,000 monthly stipend for junior lawyers with under 20 years of practice earning below Rs 5 lakh/year, plus lifetime insurance.",
+        "text_ta": "ஆண்டு வருமானம் ரூ.5 லட்சத்திற்குக் குறைவாக உள்ள, 20 ஆண்டுகள் வரை பயிற்சியிலுள்ள வழக்கறிஞர்களுக்கு மாதம் ரூ.3,000 ஊக்கத் தொகை மற்றும் ஆயுள் காப்பீடு.",
+        "category": "Social Welfare",
+        "is_key": true,
+        "position": 16
+      },
+      {
+        "slug": "construction-worker-insurance",
+        "text": "Rs 5 lakh insurance cover for every registered construction worker and a complete overhaul of the Construction Workers Welfare Board.",
+        "text_ta": "பதிவு செய்யப்பட்ட கட்டுமானத் தொழிலாளர்கள் அனைவருக்கும் ரூ.5 லட்சம் காப்பீடு; கட்டுமானத் தொழிலாளர் நல வாரியத்தின் முழுமையான சீரமைப்பு.",
+        "category": "Social Welfare",
+        "is_key": false,
+        "position": 17
+      },
+      {
+        "slug": "migrant-worker-welfare",
+        "text": "A dedicated welfare board for Tamil migrant workers outside the state, with portable benefits for housing, healthcare and child education.",
+        "text_ta": "பிற மாநிலங்கள் மற்றும் பிற நாடுகளில் பணிபுரியும் தமிழ் புலம்பெயர் தொழிலாளர்களுக்கான தனி நல வாரியம்; வீடு, சுகாதாரம், பிள்ளைகள் கல்வி ஆகியன சேர்த்த பலன்கள்.",
+        "category": "Social Welfare",
+        "is_key": true,
+        "position": 18
+      },
+      {
+        "slug": "salt-worker-monsoon-aid",
+        "text": "Rs 7,000 monsoon-relief payment to salt-pan and condiment-plant workers during non-productive months.",
+        "text_ta": "உப்பளத் தொழிலாளர்கள் மற்றும் உப்பளக் கூலித் தொழிலாளர்களுக்கு மழைக்காலத்தில் பணியின்றி இருக்கும் மாதங்களில் ரூ.7,000 நிவாரணம்.",
+        "category": "Social Welfare",
+        "is_key": false,
+        "position": 19
+      },
+      {
+        "slug": "youth-unemployment-stipend",
+        "text": "Rs 2,500 monthly stipend (up to Rs 4 lakh over three years) for unemployed youth aged 18-29 while they train for a vocation.",
+        "text_ta": "12-ஆம் வகுப்பு முடித்த 18-29 வயது வேலையில்லா இளைஞர்களுக்கு ஒட்டுமொத்தமாக ரூ.4 லட்சம் வரை; மூன்றாண்டுகளுக்கு மாதம் ரூ.2,500 தொழில் பயிற்சி ஊக்கத் தொகை.",
+        "category": "Economy & Jobs",
+        "is_key": true,
+        "position": 20
+      },
+      {
+        "slug": "govt-vacancy-fill",
+        "text": "Special legislation to fill every vacant government post within a fixed timeline; bias-free, time-bound public-sector recruitment.",
+        "text_ta": "அரசுத் துறைகளில் காலியாக உள்ள அனைத்துப் பணியிடங்களையும் குறிப்பிட்ட காலத்திற்குள் நிரப்ப சிறப்புச் சட்டம்; பாரபட்சமற்ற, கால வரையறை கொண்ட பொதுத் துறை பணியமர்த்தல்.",
+        "category": "Economy & Jobs",
+        "is_key": true,
+        "position": 21
+      },
+      {
+        "slug": "education-collateral-loan",
+        "text": "Collateral-free education loans up to Rs 20 lakh for post-graduate and PhD students.",
+        "text_ta": "பட்டப்படிப்பு (PG) மற்றும் ஆராய்ச்சிப் படிப்பு (PhD) மாணவர்களுக்கு ரூ.20 லட்சம் வரை பிணையமில்லா கல்வி கடன்.",
+        "category": "Education",
+        "is_key": true,
+        "position": 22
+      },
+      {
+        "slug": "skill-training-stipend",
+        "text": "Up to Rs 5 lakh training support and Rs 8,000 monthly stipend for 10 months for employment-linked skilling of young people from poor households.",
+        "text_ta": "வறிய குடும்பங்களைச் சேர்ந்த இளைஞர்களுக்கு வேலைவாய்ப்பு இணைந்த திறன் பயிற்சிக்காக ரூ.5 லட்சம் வரை உதவி; மாதம் ரூ.8,000 உதவித்தொகை 10 மாதங்களுக்கு.",
+        "category": "Education",
+        "is_key": false,
+        "position": 23
+      },
+      {
+        "slug": "10th-top-scholarship",
+        "text": "Rs 7,500 annual scholarship for every government-school student scoring above 10 CGPA in 10th standard.",
+        "text_ta": "அரசுப் பள்ளி மாணவர்களில் 10-ஆம் வகுப்பில் 10 சதவீதம் அதிக மதிப்பெண் பெறும் மாணவர்களுக்கு ஆண்டு ஒன்றுக்கு ரூ.7,500 உதவித்தொகை.",
+        "category": "Education",
+        "is_key": false,
+        "position": 24
+      },
+      {
+        "slug": "teacher-child-education",
+        "text": "Free education up to professional courses for the children of all government teachers in Tamil Nadu.",
+        "text_ta": "தமிழ்நாட்டின் அனைத்து அரசுப் பள்ளி ஆசிரியர்களின் குழந்தைகளுக்கு சிறப்பு படிப்பு வரையிலான கல்வி அனைத்தும் இலவசம்.",
+        "category": "Education",
+        "is_key": false,
+        "position": 25
+      },
+      {
+        "slug": "student-mental-health",
+        "text": "Mental-health protection programme in every government school; counsellors and food-safety officers in 5,000 schools.",
+        "text_ta": "அரசு பள்ளி மாணவர்களுக்கு மனநல பாதுகாப்பு திட்டம்; 5,000 பள்ளிகளில் மனநல ஆலோசகர்களும் உணவுப் பாதுகாப்பு அதிகாரிகளும்.",
+        "category": "Education",
+        "is_key": false,
+        "position": 26
+      },
+      {
+        "slug": "morning-breakfast-all",
+        "text": "Morning-breakfast scheme extended to all government and aided school students across Tamil Nadu.",
+        "text_ta": "காலை உணவுத் திட்டம் அனைத்து அரசு மற்றும் உதவிபெறும் பள்ளிகளின் மாணவர்களுக்கும் விரிவாக்கம்.",
+        "category": "Education",
+        "is_key": false,
+        "position": 27
+      },
+      {
+        "slug": "msme-50-lakh-funding",
+        "text": "Up to Rs 50 lakh collateral-free technology-upgrade funding for Micro, Small and Medium Enterprises (a Rs 1,000 crore corpus).",
+        "text_ta": "குறு, சிறு, நடுத்தர நிறுவனங்களுக்கு (MSME) தொழில்நுட்ப மேம்பாட்டிற்கு பிணையமில்லாமல் ரூ.50 லட்சம் வரை நிதியுதவி; ரூ.1,000 கோடி தொகுப்பு நிதியாக ஒதுக்கப்படும்.",
+        "category": "Economy & Jobs",
+        "is_key": true,
+        "position": 28
+      },
+      {
+        "slug": "tn-supplier-preference",
+        "text": "Tamil Nadu Supplier Register — 40% of all government procurement reserved for micro, small and medium enterprises based in Tamil Nadu.",
+        "text_ta": "அரசுக் கொள்முதலில் 40% தமிழ்நாட்டைச் சேர்ந்த குறு, சிறு, நடுத்தர நிறுவனங்களுக்கு ஒதுக்கப்படும்; தமிழ்நாடு விநியோகிப்பாளர் பதிவேடு (Tamil Nadu Supplier Register) உருவாக்கம்.",
+        "category": "Economy & Jobs",
+        "is_key": true,
+        "position": 29
+      },
+      {
+        "slug": "fast-license-21-days",
+        "text": "Industrial licences in 21 days for mega industries (Rs 200 crore+), 15 days for SMEs and 7 days for micro/household enterprises.",
+        "text_ta": "ரூ.200 கோடிக்கு மேல் முதலீட்டுள்ள பெருந்தொழில்களுக்கு 21 நாட்களில், சிறு-நடுத்தர தொழில்களுக்கு 15 நாட்களில், குடிசை-குறு தொழில்களுக்கு 7 நாட்களில் உரிமம்.",
+        "category": "Economy & Jobs",
+        "is_key": false,
+        "position": 30
+      },
+      {
+        "slug": "1-5-trillion-economy",
+        "text": "Tamil Nadu to reach a US$1.5 trillion economy by 2036 through the 'Top 20' industry-transformation and global-investment plan.",
+        "text_ta": "2036-க்குள் தமிழ்நாடு 1.5 டிரில்லியன் டாலர் பொருளாதாரத்தை எட்டும்; 'Top 20' தொழிற் சிறப்புத் திட்டம் மற்றும் உலகத் தரமான முதலீட்டு வரைபடம்.",
+        "category": "Economy & Jobs",
+        "is_key": true,
+        "position": 31
+      },
+      {
+        "slug": "ev-20-by-2031",
+        "text": "20% of all vehicles in Tamil Nadu to be EVs by 2031; fast-charging stations every 20 km and EV component manufacturing hub.",
+        "text_ta": "2031-க்குள் தமிழ்நாட்டின் 20% வாகனங்கள் EV ஆக மாற்றம்; 20 கி.மீ.க்கு ஒரு Fast Charging நிலையம்; EV பாகங்கள் உற்பத்தி மையம்.",
+        "category": "Infrastructure",
+        "is_key": true,
+        "position": 32
+      },
+      {
+        "slug": "i-tamil-fintech-corridor",
+        "text": "i-Tamil FinTech Corridor — a financial-services and Cloud Server industrial zone with a three-year, Rs 30,000 crore rollout.",
+        "text_ta": "i-Tamil FinTech Corridor — நிதிச் சேவை மற்றும் Cloud Server தொழிற்பேட்டை; மூன்று ஆண்டுகளில் ரூ.30,000 கோடி முதலீடு.",
+        "category": "Economy & Jobs",
+        "is_key": false,
+        "position": 33
+      },
+      {
+        "slug": "chennai-metro-phase2",
+        "text": "Complete Chennai Metro Phase 2 and start new Coimbatore and Madurai metro-rail projects.",
+        "text_ta": "சென்னை மெட்ரோ ரயில் 2-ஆவது கட்டம் நிறைவு; கோவை மற்றும் மதுரை மெட்ரோ திட்டம் தொடக்கம்.",
+        "category": "Infrastructure",
+        "is_key": true,
+        "position": 34
+      },
+      {
+        "slug": "tuticorin-airport-upgrade",
+        "text": "Upgrade Tuticorin and Madurai airports for international operations; sea-air cargo connectivity with new rail links.",
+        "text_ta": "தூத்துக்குடி மற்றும் மதுரை விமான நிலையங்கள் சர்வதேச சேவைக்கு உயர்த்தப்படும்; கடல்-விமான சரக்கு இணைப்புக்கு புதிய ரயில் பாதைகள்.",
+        "category": "Infrastructure",
+        "is_key": false,
+        "position": 35
+      },
+      {
+        "slug": "all-panchayats-connected",
+        "text": "Every panchayat connected by all-weather roads to schools, primary health centres and major public facilities within 5 years.",
+        "text_ta": "அடுத்த ஐந்தாண்டில் அனைத்து பஞ்சாயத்துகளும் பள்ளி, ஆரம்ப சுகாதார நிலையம் மற்றும் முக்கியமான பொது இடங்களுடன் சாலைகள் மூலம் இணைக்கப்படும்.",
+        "category": "Infrastructure",
+        "is_key": false,
+        "position": 36
+      },
+      {
+        "slug": "mgnrega-150-days",
+        "text": "Rural employment guarantee extended from 100 to 150 days per household per year, with wages paid within a fixed timeline.",
+        "text_ta": "ஊரக வேலை உறுதித்திட்டம் குடும்பம் ஒன்றுக்கு ஆண்டுக்கு 100-இலிருந்து 150 நாட்களாக உயர்த்தப்படும்; கூலி குறிப்பிட்ட காலத்தில் வழங்கப்படும்.",
+        "category": "Infrastructure",
+        "is_key": false,
+        "position": 37
+      },
+      {
+        "slug": "5000-model-villages",
+        "text": "5,000 model villages with urban-grade amenities — piped water, drainage, libraries, schools — and Rs 50 lakh award for the best-performing villages.",
+        "text_ta": "5,000 கிராமங்கள் நகர்ப்புற வசதிகளுடன் மாதிரி கிராமங்களாக உருவாக்கப்படும்; சிறந்த கிராமங்களுக்கு ரூ.50 லட்சம் பரிசு.",
+        "category": "Infrastructure",
+        "is_key": false,
+        "position": 38
+      },
+      {
+        "slug": "public-toilets-every-1km",
+        "text": "Public toilets every 1 km on every urban road and at every petrol pump, bus station, metro and rail station in Tamil Nadu.",
+        "text_ta": "நகரச் சாலைகளின் இருபுறமும் ஒவ்வொரு 1 கி.மீ-க்கும் பொதுக் கழிப்பறைகள்; பெட்ரோல் பங்குகள், பேருந்து நிலையங்கள், மெட்ரோ, ரயில் நிலையங்களிலும் பாதுகாப்பான கழிப்பறை வசதிகள்.",
+        "category": "Infrastructure",
+        "is_key": false,
+        "position": 39
+      },
+      {
+        "slug": "property-tax-reform",
+        "text": "Rollback of steep property-tax hikes and a new fair, rational property-tax regime for home-owners in Tamil Nadu.",
+        "text_ta": "கடுமையான சொத்து வரி உயர்வுக் குறைப்பு; தமிழ்நாட்டு வீட்டு உரிமையாளர்களுக்கான புதிய, நியாயமான சொத்து வரி கட்டமைப்பு.",
+        "category": "Infrastructure",
+        "is_key": false,
+        "position": 40
+      },
+      {
+        "slug": "whistleblower-act",
+        "text": "A State Whistleblower Protection Act to shield citizens who expose corruption and government malpractice.",
+        "text_ta": "ஊழல் மற்றும் அரசு முறைகேடுகளை வெளிப்படுத்தும் மக்களுக்கு உரிய சட்ட அரணாக State Whistleblower Protection Act.",
+        "category": "Governance",
+        "is_key": true,
+        "position": 41
+      },
+      {
+        "slug": "lokayukta-strengthen",
+        "text": "Tamil Nadu Lokayukta strengthened with independent investigative powers and the right to prosecute elected public servants.",
+        "text_ta": "தமிழ்நாடு லோக்ஆயுக்தாவின் சுயாதீன விசாரணை அதிகாரங்கள் உயர்த்தப்பட்டு; தேர்தெடுக்கப்பட்ட பொதுப் பணியாளர்களை வழக்குத் தொடர அதிகாரம்.",
+        "category": "Governance",
+        "is_key": true,
+        "position": 42
+      },
+      {
+        "slug": "district-fair-development-budget",
+        "text": "Balanced district-development budget — 12 backward districts get a dedicated 'equitable development' plan so all districts develop together.",
+        "text_ta": "பின்தங்கிய மாவட்டங்கள் முன்னேற வரும் 'பின்தங்கிய-முன்னேற்ற' வரவுசெலவுத் திட்டம்; 12 பின்தங்கிய மாவட்டங்களுக்கான சமச்சீர் வளர்ச்சி.",
+        "category": "Governance",
+        "is_key": false,
+        "position": 43
+      },
+      {
+        "slug": "green-33-percent-forest",
+        "text": "Green Tamil Nadu — raise forest cover to 33% of the state's area by 2031, with protection of Eastern and Western Ghats biodiversity.",
+        "text_ta": "பசுமை தமிழ்நாடு — 2031-க்குள் காடுகளின் பரப்பு மாநிலப் பரப்பின் 33% ஆக உயர்த்தப்படும்; கிழக்கு மற்றும் மேற்குத் தொடர்ச்சி மலைகள் பாதுகாப்பு.",
+        "category": "Environment",
+        "is_key": true,
+        "position": 44
+      },
+      {
+        "slug": "clean-rivers",
+        "text": "Clean Rivers Mission — full rejuvenation of the Cauvery, Vaigai and Tamiraparani; strict industrial-effluent controls and encroachment removal.",
+        "text_ta": "காவிரி, வைகை, தாமிரபரணி ஆறுகள் முழுமையாக மீட்கப்படும்; தொழிற்சாலை கழிவுகளுக்கு கடுமையான கட்டுப்பாடு; ஆற்றுப் பகுதி ஆக்கிரமிப்புகள் அகற்றப்படும்.",
+        "category": "Environment",
+        "is_key": true,
+        "position": 45
+      },
+      {
+        "slug": "forest-human-conflict",
+        "text": "Solar fencing across 50 km of forest–habitation borders; Rs 10 lakh compensation for families who lose life to elephant attacks and Rs 5 lakh for injury.",
+        "text_ta": "காடுகள்-மக்கள் தொடர்பு பகுதிகளில் 50 கி.மீ சோலார் வேலிகள்; யானைத் தாக்குதலில் உயிரிழந்தவர் குடும்பத்திற்கு ரூ.10 லட்சம்; காயமடைந்தவர்களுக்கு ரூ.5 லட்சம்.",
+        "category": "Environment",
+        "is_key": false,
+        "position": 46
+      },
+      {
+        "slug": "clean-air-500-crore",
+        "text": "Clean Air Mission — a Rs 500 crore annual fund for monitoring and reducing PM2.5 and air pollution in Tamil Nadu.",
+        "text_ta": "தூய காற்று பணி — ஆண்டுதோறும் ரூ.500 கோடி நிதியில் காற்று மாசு கட்டுப்பாட்டு திட்டங்கள், PM2.5 அளவு கண்காணிப்பு.",
+        "category": "Environment",
+        "is_key": false,
+        "position": 47
+      },
+      {
+        "slug": "sports-500-scouts",
+        "text": "Identify 500 promising school athletes for intensive world-class training toward Olympic medal performances.",
+        "text_ta": "பள்ளி மாணவர்களில் விளையாட்டில் திறமையுள்ள 500 வீரர்களை அடையாளம் கண்டு; 8-14 வயதுக்குள் உலக தரத்திலான பயிற்சி ஒலிம்பிக் வெற்றிக்காக.",
+        "category": "Culture & Language",
+        "is_key": false,
+        "position": 48
+      },
+      {
+        "slug": "10-sport-stadiums",
+        "text": "10 world-class multi-sport stadiums across Tamil Nadu's district capitals with sports academies and training centres.",
+        "text_ta": "தமிழகத்தின் 10 மண்டலத் தலைநகரங்களில் உலகத்தரத்திலான பல்நோக்கு விளையாட்டு அரங்கம் (Multi-Sport Stadium); விளையாட்டு அகாடமிக்கள், பயிற்சி மையங்கள்.",
+        "category": "Culture & Language",
+        "is_key": false,
+        "position": 49
+      },
+      {
+        "slug": "sea-cultural-shipping",
+        "text": "Revive ancient Tamil maritime culture with shipping links from Nagapattinam to Sri Lanka and Malaysia via Colombo and Kuala Lumpur.",
+        "text_ta": "பண்டைய தமிழர்களின் கடல்சார் பயணங்களை மீட்டுருவாக்கம் செய்யும் விதமாக நாகப்பட்டினத்திலிருந்து இலங்கை, மலேசியாவுக்கு கொழும்பு மற்றும் கோலாலம்பூர் ஆகிய நகரங்களுக்கு கப்பல் போக்குவரத்து.",
+        "category": "Culture & Language",
+        "is_key": false,
+        "position": 50
+      }
+    ]
+  }
+]

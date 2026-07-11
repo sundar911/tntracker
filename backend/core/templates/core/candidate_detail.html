@@ -4,12 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% if current_language == "ta" and candidate.name_ta %}{{ candidate.name_ta }}{% else %}{{ candidate.name }}{% endif %} | TN Tracker</title>
-    <meta property="og:title" content="{% if current_language == 'ta' %}தமிழ்நாடு சட்டமன்றத் தேர்தல்கள் 2026{% else %}Tamil Nadu Assembly Elections 2026{% endif %}" />
-    <meta property="og:description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
+    <title>{% if current_language == "ta" and candidate.name_ta %}{{ candidate.name_ta }} | TN தேர்தல் 2026{% else %}{{ candidate.name }} | Tamil Nadu Elections 2026 | TN Tracker{% endif %}</title>
+    <meta property="og:title" content="{% if current_language == 'ta' and candidate.name_ta %}{{ candidate.name_ta }} | தமிழ்நாடு தேர்தல் 2026{% else %}{{ candidate.name }} | Tamil Nadu Elections 2026{% endif %}" />
+    <meta property="og:description" content="{% if current_language == 'ta' and candidate.name_ta %}{{ candidate.name_ta }}{% if candidate.constituency.name_ta %}, {{ candidate.constituency.name_ta }}{% endif %} தொகுதி வேட்பாளர் விவரங்கள். குற்றவழக்குகள், சொத்துக்கள், கல்வி மற்றும் தொழில் தகவல்கள்.{% else %}{{ candidate.name }}{% if candidate.party %} ({{ candidate.party.abbreviation|default:candidate.party.name }}){% endif %}, candidate from {{ candidate.constituency.name }} in Tamil Nadu Elections 2026. View criminal record, assets, and education.{% endif %}" />
     <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/core/logo.png" />
     <meta property="og:type" content="website" />
-    <meta name="description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
+    <meta property="og:url" content="https://tntracker.in/candidate/{{ candidate.pk }}/" />
+    <meta name="description" content="{% if current_language == 'ta' and candidate.name_ta %}{{ candidate.name_ta }}{% if candidate.constituency.name_ta %}, {{ candidate.constituency.name_ta }}{% endif %} தொகுதி வேட்பாளர் விவரங்கள். குற்றவழக்குகள், சொத்துக்கள், கல்வி மற்றும் தொழில் தகவல்கள்.{% else %}{{ candidate.name }}{% if candidate.party %} ({{ candidate.party.abbreviation|default:candidate.party.name }}){% endif %}, candidate from {{ candidate.constituency.name }} in Tamil Nadu Elections 2026. View criminal record, assets, and education.{% endif %}" />
+    <link rel="canonical" href="https://tntracker.in/candidate/{{ candidate.pk }}/" />
     <link rel="icon" type="image/png" href="/static/core/logo.png" />
     <link rel="stylesheet" href="/static/core/site.css" />
   </head>
@@ -178,13 +180,13 @@
             {% endif %}
             • <strong>{% if current_language == "ta" %}சொத்துகள்{% else %}Assets{% endif %}:</strong>
             {% if affidavit.assets_total %}
-              <span title="₹ {{ affidavit.assets_total|indian }}">₹ {{ affidavit.assets_total|short_indian }}</span>
+              <span title="₹ {{ affidavit.assets_total|indian }}">₹ {{ affidavit.assets_total|short_indian:current_language }}</span>
             {% else %}
               -
             {% endif %}
             • <strong>{% if current_language == "ta" %}பாக்கிகள்{% else %}Liabilities{% endif %}:</strong>
             {% if affidavit.liabilities_total %}
-              <span title="₹ {{ affidavit.liabilities_total|indian }}">₹ {{ affidavit.liabilities_total|short_indian }}</span>
+              <span title="₹ {{ affidavit.liabilities_total|indian }}">₹ {{ affidavit.liabilities_total|short_indian:current_language }}</span>
             {% else %}
               -
             {% endif %}
@@ -208,7 +210,7 @@
             </span>
             <p>
               {% if current_language == "ta" and case.description_ta %}
-                {{ case.description_ta }}
+                {{ case.description_ta|default:"விவரங்கள் எதிர்பார்க்கப்படுகிறது." }}
               {% else %}
                 {{ case.description|default:"Details pending." }}
               {% endif %}

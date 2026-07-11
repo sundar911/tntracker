@@ -97,8 +97,30 @@ COLUMN_LABEL_TA = {
     "Myneta Url": "MyNeta இணைப்பு",
     "Sitting Mla": "தற்போதைய எம்.எல்.ஏ",
     "Sitting MLA": "தற்போதைய எம்.எல்.ஏ",
+    "Constituency": "தொகுதி",
+    "District": "மாவட்டம்",
+    "Gender": "பாலினம்",
+    "Total Assets (₹)": "மொத்த சொத்து (₹)",
+    "Criminal cases": "குற்ற வழக்குகள்",
     "Education Details Clean": "கல்வி விவரங்கள்",
     "Criminal Cases Summary": "வழக்கு சுருக்கம்",
+}
+
+PROMISE_CATEGORY_TA = {
+    "Agriculture": "விவசாயம்",
+    "Culture & Language": "கலாச்சாரம் & மொழி",
+    "Economy & Jobs": "பொருளாதாரம் & வேலைவாய்ப்பு",
+    "Education": "கல்வி",
+    "Environment": "சுற்றுச்சூழல்",
+    "Governance": "ஆட்சி",
+    "Health": "சுகாதாரம்",
+    "Housing": "வீட்டுவசதி",
+    "Infrastructure": "உள்கட்டமைப்பு",
+    "Law & Order": "சட்டம் & ஒழுங்கு",
+    "Social Welfare": "சமூக நலன்",
+    "Water": "நீர்",
+    "Women & Children": "பெண்கள் & குழந்தைகள்",
+    "Other": "மற்றவை",
 }
 
 # Map legend translations

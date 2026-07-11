@@ -1,5 +1,6 @@
 .DS_Store
 .cursor/
+backend/core/static/core/candidate-photos/
 .env
 .env.local
 .env.*.local
@@ -25,4 +26,14 @@ indiavotes_discrepancy_report.txt
 indiavotes_recommendations.txt
 html_inspection.md
 docs/*.pdf
-*.png
+cookies.txt
+data/eci_2026/
+eci_cookies.txt
+eci_html/
+manifestos/
+data/*bak*
+data/.scrape_myneta_*_progress.json
+data/.scrape_final_progress.json
+data/.scrape_prominent_progress.json
+data/fct_candidates_26_LLM_extracted.csv
+.claude/settings.local.json

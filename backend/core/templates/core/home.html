@@ -4,14 +4,35 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>TN Tracker | தேர்தல் கண்காணி</title>
-    <meta property="og:title" content="{% if current_language == 'ta' %}தமிழ்நாடு சட்டமன்றத் தேர்தல்கள் 2026{% else %}Tamil Nadu Assembly Elections 2026{% endif %}" />
-    <meta property="og:description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள். 234 தொகுதிகளில் ~4000 வேட்பாளர்களின் நிதி மற்றும் சட்ட பின்னணியை ஆராயுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
+    <title>{% if current_language == 'ta' %}தமிழ்நாடு தேர்தல் கண்காணி 2026 | வேட்பாளர்களை அறிந்துகொள்ளுங்கள்{% else %}Tamil Nadu Election Tracker 2026 | Know Your Candidates | tntracker.in{% endif %}</title>
+    <meta property="og:title" content="{% if current_language == 'ta' %}தமிழ்நாடு சட்டமன்றத் தேர்தல்கள் 2026 | வேட்பாளர்களை அறிந்துகொள்ளுங்கள்{% else %}Tamil Nadu Assembly Elections 2026 | Know Your Candidates{% endif %}" />
+    <meta property="og:description" content="{% if current_language == 'ta' %}234 தொகுதிகளில் ~4000 வேட்பாளர்களின் நிதி மற்றும் சட்ட பின்னணியை ஆராயுங்கள். இலவசம், இருமொழி தேர்தல் வழிகாட்டி.{% else %}Free voter guide for Tamil Nadu Elections 2026. Compare ~4000 candidates across 234 constituencies by criminal cases, wealth, and education. Available in Tamil.{% endif %}" />
     <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/core/logo.png" />
     <meta property="og:type" content="website" />
-    <meta name="description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள். 234 தொகுதிகளில் ~4000 வேட்பாளர்களின் நிதி மற்றும் சட்ட பின்னணியை ஆராயுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
+    <meta property="og:url" content="https://tntracker.in/" />
+    <meta name="description" content="{% if current_language == 'ta' %}234 தொகுதிகளில் ~4000 வேட்பாளர்களின் நிதி மற்றும் சட்ட பின்னணியை ஆராயுங்கள். இலவசம், இருமொழி தேர்தல் வழிகாட்டி.{% else %}Free voter guide for Tamil Nadu Elections 2026. Compare ~4000 candidates across 234 constituencies by criminal cases, wealth, and education. Available in Tamil.{% endif %}" />
+    <link rel="canonical" href="https://tntracker.in/" />
     <link rel="icon" type="image/png" href="/static/core/logo.png" />
     <link rel="stylesheet" href="/static/core/site.css" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Tamil Nadu Election Tracker",
+      "alternateName": "TN Tracker",
+      "url": "https://tntracker.in",
+      "description": "Free voter guide for Tamil Nadu Assembly Elections 2026. Compare candidates across 234 constituencies by criminal cases, wealth, and education.",
+      "inLanguage": ["en", "ta"],
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://tntracker.in/search/?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
   </head>
   <body class="home">
     <header class="site-header">
@@ -40,21 +61,9 @@
             <span class="lang-sep">•</span>
             <a class="{% if current_language == 'ta' %}lang-active{% endif %}" href="/set-lang/ta/?next={{ request.get_full_path|urlencode }}">தமிழ்</a>
           </div>
-
         </div>
       </div>
     </header>
-    {% if data_vintage_label %}
-    <div class="notice-bar">
-      <div class="container">
-        {% if current_language == "ta" %}
-          அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.
-        {% else %}
-          {{ data_vintage_label }}
-        {% endif %}
-      </div>
-    </div>
-    {% endif %}
 
     <main>
       <section class="hero">
@@ -68,21 +77,29 @@
               {% endif %}
             </h1>
             <p class="hero-subtitle">
-              {% if current_language == "ta" %}
-                2021-ல் போட்டியிட்ட அனைத்து வேட்பாளர்களின் கல்வி பின்னணி, சொத்து மற்றும் குற்ற வரலாறு.
+              {% if year == "2026" %}
+                {% if current_language == "ta" %}
+                  2026 தேர்தலில் போட்டியிடும் வேட்பாளர்களின் கல்வி பின்னணி, சொத்து மற்றும் குற்ற வரலாறு.
+                {% else %}
+                  Educational background, wealth and legal history of candidates standing in 2026.
+                {% endif %}
               {% else %}
-                Educational background, wealth and legal history of all candidates who contested in 2021.
+                {% if current_language == "ta" %}
+                  2021-ல் போட்டியிட்ட அனைத்து வேட்பாளர்களின் கல்வி பின்னணி, சொத்து மற்றும் குற்ற வரலாறு.
+                {% else %}
+                  Educational background, wealth and legal history of all candidates who contested in 2021.
+                {% endif %}
               {% endif %}
             </p>
             <div class="feature-grid hero-feature-grid">
-              <a class="feature-card feature-map" href="/map/">
+              <a class="feature-card feature-map" href="/map/?year={{ year }}">
                 <div class="feature-icon"><img src="/static/core/map-icon.png" alt="Tamil Nadu Map" /></div>
                 <div class="feature-content">
                   <div class="feature-title">{% if current_language == "ta" %}வரைபடங்கள்{% else %}Maps{% endif %}</div>
-                  <p class="feature-body">{% if current_language == "ta" %}234 தொகுதிகளை ஆராயுங்கள். உங்கள் தொகுதியைக் கண்டறியுங்கள்.{% else %}Explore 234 constituencies. Find yours, view 2021 candidate data.{% endif %}</p>
+                  <p class="feature-body">{% if current_language == "ta" %}234 தொகுதிகளை ஆராயுங்கள். உங்கள் தொகுதியைக் கண்டறியுங்கள்.{% else %}Explore 234 constituencies. Find yours, view candidate data.{% endif %}</p>
                 </div>
               </a>
-              <a class="feature-card feature-candidates" href="/party-dashboard/">
+              <a class="feature-card feature-candidates" href="/party-dashboard/?year={{ year }}">
                 <div class="feature-icon"><img src="/static/core/candidates-icon.png" alt="Candidates" /></div>
                 <div class="feature-content">
                   <div class="feature-title">{% if current_language == "ta" %}வேட்பாளர்களை அறியவும்{% else %}Know your Candidates{% endif %}</div>
@@ -109,13 +126,15 @@
                 <div class="home-stat-label">{% if current_language == "ta" %}சராசரி வயது{% else %}Avg. age{% endif %}</div>
               </div>
               <div class="home-stat-card">
-                <div class="home-stat-value">{% if overall_avg_assets is not None %}<span title="₹ {{ overall_avg_assets|indian }}">₹ {{ overall_avg_assets|short_indian }}</span>{% else %}—{% endif %}</div>
+                <div class="home-stat-value">{% if overall_avg_assets is not None %}<span title="₹ {{ overall_avg_assets|indian }}">₹ {{ overall_avg_assets|short_indian:current_language }}</span>{% else %}—{% endif %}</div>
                 <div class="home-stat-label">{% if current_language == "ta" %}சராசரி சொத்து{% else %}Avg. assets{% endif %}</div>
               </div>
+              {% if year != "2026" %}
               <div class="home-stat-card">
-                <div class="home-stat-value">{% if overall_avg_expenditure is not None %}<span title="₹ {{ overall_avg_expenditure|indian }}">₹ {{ overall_avg_expenditure|short_indian }}</span>{% else %}—{% endif %}</div>
+                <div class="home-stat-value">{% if overall_avg_expenditure is not None %}<span title="₹ {{ overall_avg_expenditure|indian }}">₹ {{ overall_avg_expenditure|short_indian:current_language }}</span>{% else %}—{% endif %}</div>
                 <div class="home-stat-label">{% if current_language == "ta" %}சராசரி தேர்தல் செலவு{% else %}Avg. election expenditure{% endif %}</div>
               </div>
+              {% endif %}
             </div>
           </div>
         </div>

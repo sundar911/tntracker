@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sitemaps",
     "rest_framework",
     "django_filters",
     "core",
@@ -101,10 +102,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-DATA_VINTAGE_LABEL = os.environ.get(
-    "DATA_VINTAGE_LABEL",
-    "Official 2021 data. 2026 nominations coming soon.",
-)
+DATA_VINTAGE_LABEL = ""
 
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],

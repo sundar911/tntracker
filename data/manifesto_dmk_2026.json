@@ -1,0 +1,237 @@
+[
+  {
+    "year": 2026,
+    "party": "Dravida Munnetra Kazhagam",
+    "summary": "DMK's 2026 manifesto focuses on increasing women's welfare payments, housing for the poor, agricultural support, healthcare expansion, and infrastructure development across Tamil Nadu.",
+    "summary_ta": "திமுகவின் 2026 தேர்தல் அறிக்கையில், தமிழகம் முழுவதும் பெண்களுக்கான நலத்திட்டங்களுக்கான கொடுப்பனவுகளை அதிகரிப்பது, ஏழைகளுக்கான வீட்டுவசதி, விவசாயத்திற்கு ஆதரவு, சுகாதாரத் துறை விரிவாக்கம், உள்கட்டமைப்பு மேம்பாடு ஆகியவை குறித்து கவனம் செலுத்தப்பட்டுள்ளது.",
+    "documents": [
+      {
+        "language": "ta",
+        "source_title": "DMK Election Manifesto 2026",
+        "source_type": "official"
+      }
+    ],
+    "promises": [
+      {
+        "slug": "illatharasi-rs-8000-coupon",
+        "text": "Illatharasi Scheme: Rs. 8,000 coupon for every family to purchase household electronic appliances from local shops.",
+        "text_ta": "எலந்தராசி திட்டம்: ஒவ்வொரு குடும்பத்திற்கும் உள்ளூர் கடைகளிலிருந்து வீட்டு உபயோக மின்னணு சாதனங்களை வாங்குவதற்கு 8,000 ரூபாய் கூப்பன் வழங்கப்படுகிறது.",
+        "category": "Social Welfare",
+        "is_key": true,
+        "position": 1,
+        "tags": [
+          "social-welfare"
+        ]
+      },
+      {
+        "slug": "kalaignar-magalir-urimai-thogai-increased-to-2000",
+        "text": "Kalaignar Magalir Urimai Thogai (women's monthly grant) increased from Rs. 1,000 to Rs. 2,000 for 1.31 crore women.",
+        "text_ta": "கள்ளண்ணா மகளிரு உரிமை தொகை (பெண்களுக்கான மாதாந்திர மானியம்) 1.31 கோடி பெண்களுக்கு ரூ.1,000-லிருந்து ரூ.2,000-ஆக உயர்த்தப்பட்டுள்ளது.",
+        "category": "Women & Children",
+        "is_key": true,
+        "position": 2,
+        "tags": [
+          "women-children"
+        ]
+      },
+      {
+        "slug": "puthumaipenn-scholarship-increased-to-1500",
+        "text": "Puthumai Penn scholarship for women in higher education increased from Rs. 1,000 to Rs. 1,500 per month.",
+        "text_ta": "உயர் கல்வியில் பெண்களுக்கான புதுமைப் பெண் உதவித்தொகை ரூ. 1,000-லிருந்து ரூ. 1,500-ஆக உயர்த்தப்பட்டுள்ளது.",
+        "category": "Education",
+        "is_key": false,
+        "position": 3,
+        "tags": [
+          "education"
+        ]
+      },
+      {
+        "slug": "shg-women-entrepreneurs-5-lakh-loan",
+        "text": "SHG women can start businesses with up to Rs. 5 lakh collateral-free subsidized bank loan, creating 3 lakh new women entrepreneurs.",
+        "text_ta": "சுய உதவிக் குழுமப் பெண்கள் 5 லட்சம் ரூபாய் வரையிலான அடமானமில்லா மானிய வங்கி கடனுடன் வணிகங்களைத் தொடங்கலாம், இதன் மூலம் 3 லட்சம் புதிய பெண் தொழில்முனைவோர் உருவாகலாம்.",
+        "category": "Women & Children",
+        "is_key": false,
+        "position": 4,
+        "tags": [
+          "women-children"
+        ]
+      },
+      {
+        "slug": "old-age-pension-increased-to-2000",
+        "text": "Old-age pension increased from Rs. 1,200 to Rs. 2,000 per month.",
+        "text_ta": "முதியோர் ஓய்வூதியம் மாதத்திற்கு 1,200 ரூபாயிலிருந்து 2,000 ரூபாயாக உயர்த்தப்பட்டுள்ளது.",
+        "category": "Social Welfare",
+        "is_key": true,
+        "position": 5,
+        "tags": [
+          "social-welfare"
+        ]
+      },
+      {
+        "slug": "health-insurance-limit-raised",
+        "text": "Chief Minister's Health Insurance income ceiling raised to Rs. 5 lakh per year, coverage increased to Rs. 10 lakh per family.",
+        "text_ta": "முதலமைச்சரின் சுகாதாரக் காப்பீட்டுக் கட்டண வரம்பு ஆண்டுக்கு 5 லட்சம் ரூபாயாக உயர்த்தப்பட்டுள்ளது, குடும்பக் காப்பீட்டுக் கட்டணம் 10 லட்சம் ரூபாயாக உயர்த்தப்பட்டுள்ளது.",
+        "category": "Health",
+        "is_key": true,
+        "position": 6,
+        "tags": [
+          "health"
+        ]
+      },
+      {
+        "slug": "paddy-msp-rs-3500",
+        "text": "Paddy procurement price (MSP) increased to Rs. 3,500 per quintal.",
+        "text_ta": "நெல் கொள்முதல் விலை (எம்எஸ்பி) 3,500 ரூபாயாக உயர்த்தப்பட்டுள்ளது.",
+        "category": "Agriculture",
+        "is_key": true,
+        "position": 7,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "sugarcane-price-rs-4500",
+        "text": "Sugarcane procurement price increased to Rs. 4,500 per ton.",
+        "text_ta": "கரும்பு அறுவடை விலை ஒரு டன்னுக்கு ரூ. 4,500 ஆக உயர்ந்துள்ளது.",
+        "category": "Agriculture",
+        "is_key": false,
+        "position": 8,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "crop-damage-compensation-increased",
+        "text": "Crop damage compensation increased to Rs. 25,000 per hectare for short-term crops, Rs. 27,000 for long-term crops, and Rs. 12,000 for rain-fed crops.",
+        "text_ta": "குறுகிய கால பயிர்களுக்கு ஹெக்டேருக்கு ரூ. 25,000, நீண்ட கால பயிர்களுக்கு ரூ. 27,000, மற்றும் மழைநீர் பயிர்களுக்கு ரூ. 12,000 என பயிர் சேதம் இழப்பீடு தொகை உயர்த்தப்பட்டுள்ளது.",
+        "category": "Agriculture",
+        "is_key": false,
+        "position": 9,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "delta-canal-desilting-10500-km",
+        "text": "Desilting of 10,500 km of irrigation canals in Cauvery delta districts and 5,000 km in other districts.",
+        "text_ta": "காவிரி டெல்டா மாவட்டங்களில் 10,500 கிமீ நீளமுள்ள பாசனக் கால்வாய்களையும், மற்ற மாவட்டங்களில் 5,000 கிமீ நீளமுள்ள கால்வாய்களையும் ஆழப்படுத்தப்படும்.",
+        "category": "Agriculture",
+        "is_key": false,
+        "position": 10,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "kalaignar-kanavu-illam-5-lakh-houses",
+        "text": "Kalaignar Kanavu Illam: 5 lakh new houses to be built in the next 5 years for the homeless and poor.",
+        "text_ta": "கள்ளண்ணா கனவு இல்லம்: அடுத்த 5 ஆண்டுகளில் வீடற்ற மற்றும் ஏழை மக்களுக்காக 5 லட்சம் புதிய வீடுகள் கட்டப்படும்.",
+        "category": "Housing",
+        "is_key": true,
+        "position": 11,
+        "tags": [
+          "housing"
+        ]
+      },
+      {
+        "slug": "10000-new-buses",
+        "text": "10,000 new modern buses to be added for public transport in the next 5 years.",
+        "text_ta": "அடுத்த 5 ஆண்டுகளில் பொதுப் போக்குவரத்துக்கு 10,000 புதிய நவீன பேருந்துகள் சேர்க்கப்படும்.",
+        "category": "Infrastructure",
+        "is_key": true,
+        "position": 12,
+        "tags": [
+          "infrastructure"
+        ]
+      },
+      {
+        "slug": "breakfast-scheme-extended-to-class-8",
+        "text": "Chief Minister's Breakfast Scheme currently benefiting 19.34 lakh children to be extended further to benefit more students.",
+        "text_ta": "முதலமைச்சரின் காலை உணவுத் திட்டம் தற்போது 19.34 லட்சம் குழந்தைகளுக்கு பயனளிக்கிறது. மேலும் அதிகமான மாணவர்களுக்கு பயனளிக்கும் வகையில் விரிவுபடுத்தப்பட உள்ளது.",
+        "category": "Education",
+        "is_key": true,
+        "position": 13,
+        "tags": [
+          "education"
+        ]
+      },
+      {
+        "slug": "handloom-weaver-pension-increased",
+        "text": "Handloom weavers' old-age monthly pension increased from Rs. 1,200 to Rs. 2,000.",
+        "text_ta": "கைத்தறி நெசவாளர்களின் முதியோர் ஓய்வூதியம் 1,200 ரூபாயிலிருந்து 2,000 ரூபாயாக உயர்த்தப்பட்டுள்ளது.",
+        "category": "Social Welfare",
+        "is_key": false,
+        "position": 14,
+        "tags": [
+          "social-welfare"
+        ]
+      },
+      {
+        "slug": "shg-bank-loans-2-lakh-crore",
+        "text": "Rs. 2 lakh crore in bank loans to be provided to 5 lakh self-help groups over the next 5 years.",
+        "text_ta": "அடுத்த 5 ஆண்டுகளில் 5 லட்சம் சுய உதவிக் குழுக்களுக்கு 2 லட்சம் கோடி ரூபாய் வங்கிக் கடன்கள் வழங்கப்படும்.",
+        "category": "Economy & Jobs",
+        "is_key": true,
+        "position": 15,
+        "tags": [
+          "economy-jobs"
+        ]
+      },
+      {
+        "slug": "5-lakh-construction-workers-training",
+        "text": "Modern skill training for 5 lakh construction workers over the next 5 years.",
+        "text_ta": "அடுத்த 5 ஆண்டுகளில் 5 லட்சம் கட்டுமானத் தொழிலாளர்களுக்கு நவீன திறன் பயிற்சி அளிக்கப்படும்.",
+        "category": "Economy & Jobs",
+        "is_key": false,
+        "position": 16,
+        "tags": [
+          "economy-jobs"
+        ]
+      },
+      {
+        "slug": "senior-citizens-free-geriatric-care",
+        "text": "Free geriatric (elderly care) departments to be set up in all medical college hospitals for senior citizens.",
+        "text_ta": "மூத்த குடிமக்களுக்காக அனைத்து மருத்துவக் கல்லூரி மருத்துவமனைகளிலும் இலவச முதியோர் (முதியோர் பராமரிப்பு) துறைகள் அமைக்கப்பட வேண்டும்.",
+        "category": "Health",
+        "is_key": false,
+        "position": 17,
+        "tags": [
+          "health"
+        ]
+      },
+      {
+        "slug": "non-communicable-disease-prevention",
+        "text": "Special programme to prevent and control top 10 non-communicable diseases including heart disease, diabetes, kidney disease, and cancer.",
+        "text_ta": "இதய நோய், நீரிழிவு நோய், சிறுநீரக நோய் மற்றும் புற்றுநோய் உள்ளிட்ட 10 தொற்றா நோய்களைத் தடுப்பதற்கும் கட்டுப்படுத்துவதற்கும் சிறப்புத் திட்டம்.",
+        "category": "Health",
+        "is_key": false,
+        "position": 18,
+        "tags": [
+          "health"
+        ]
+      },
+      {
+        "slug": "net-cultivable-area-50-lakh-hectares",
+        "text": "Net cultivable area to be increased to 50 lakh hectares across Tamil Nadu.",
+        "text_ta": "தமிழ்நாட்டில் மொத்த சாகுபடி பரப்பு 50 லட்சம் ஹெக்டேராக அதிகரிக்க வேண்டும்.",
+        "category": "Agriculture",
+        "is_key": false,
+        "position": 19,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "agri-industrial-parks",
+        "text": "Agricultural industrial parks to be established at multiple locations including Thoothukudi, Madurai, Hosur, Ramanathapuram, and others.",
+        "text_ta": "தூத்துக்குடி, மதுரை, ஹோசூர், ராமநாதபுரம் மற்றும் பிற இடங்களில் பல இடங்களில் விவசாய தொழில்துறை பூங்காக்கள் அமைக்கப்படும்.",
+        "category": "Agriculture",
+        "is_key": false,
+        "position": 20,
+        "tags": [
+          "agriculture"
+        ]
+      }
+    ]
+  }
+]

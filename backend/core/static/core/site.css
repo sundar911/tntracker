@@ -377,6 +377,37 @@ video {
   user-select: none;
 }
 
+.year-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  background: #e2e8f0;
+  border-radius: 8px;
+  padding: 2px;
+  margin-right: 8px;
+}
+.year-toggle a {
+  color: #374151;
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+}
+.year-toggle a.year-active {
+  background: #ffffff;
+  color: #1e293b;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.year-toggle a:not(.year-active) {
+  opacity: 0.55;
+}
+.year-toggle a:not(.year-active):hover {
+  opacity: 0.85;
+}
+
 .nav-short {
   display: none;
 }
@@ -742,7 +773,7 @@ video {
 
 .home-stats-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 14px;
   margin-top: 24px;
 }
@@ -1023,17 +1054,28 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .candidate-header {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   gap: 12px;
-  align-items: flex-start;
+  align-items: start;
+}
+
+.candidate-photo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid #e2e8f0;
 }
 
 .candidate-badges {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   position: relative;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .party-symbol {
@@ -1043,7 +1085,7 @@ input[type="range"]::-moz-range-thumb {
   border: 3px solid #f59e0b;
   background: #ffffff;
   object-fit: contain;
-  padding: 6px;
+  padding: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
 }
@@ -1112,6 +1154,19 @@ input[type="range"]::-moz-range-thumb {
   margin-bottom: 4px;
 }
 
+.candidate-subrow {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.4;
+}
+.candidate-subrow .age-dot {
+  color: #cbd5e1;
+  margin: 0 8px;
+}
+.candidate-text {
+  min-width: 0;
+}
+
 .candidate-meta {
   display: flex;
   flex-direction: column;
@@ -1125,6 +1180,32 @@ input[type="range"]::-moz-range-thumb {
   display: inline-block;
   margin-top: 10px;
   font-size: 13px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.card-link {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 8px 12px;
+  background: #f1f5f9;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+}
+.card-link:hover {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
 }
 
 .sort-bar {
@@ -1175,6 +1256,180 @@ input[type="range"]::-moz-range-thumb {
   border: 1px solid rgba(226, 232, 240, 0.9);
   font-size: 12px;
   color: #0f172a;
+}
+
+/* ---- Promises button on candidate cards ---- */
+.promises-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  padding: 7px 16px;
+  border: 1px solid #c7d2fe;
+  border-radius: 10px;
+  background: #eef2ff;
+  color: #3730a3;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.promises-btn:hover {
+  background: #c7d2fe;
+  border-color: #818cf8;
+}
+
+/* ---- Promises modal ---- */
+.promises-modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2100;
+  overflow-y: auto;
+  padding: 20px;
+}
+.promises-modal-backdrop.open {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.promises-modal {
+  background: #fff;
+  border-radius: 16px;
+  max-width: 520px;
+  width: 100%;
+  margin-top: 40px;
+  padding: 24px;
+  position: relative;
+  box-shadow: 0 16px 48px rgba(15, 23, 42, 0.2);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.promises-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #64748b;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  padding: 0;
+}
+.promises-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-right: 32px;
+}
+.promises-modal-symbol {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #f59e0b;
+  background: #fff;
+  object-fit: contain;
+  padding: 4px;
+  flex-shrink: 0;
+}
+.promises-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+.promises-modal-subtitle {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+.promises-category {
+  margin-bottom: 12px;
+}
+.promises-category-heading {
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 16px 0 8px 0;
+  padding-bottom: 4px;
+  border-bottom: 2px solid #e2e8f0;
+}
+.promise-item {
+  padding: 8px 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #1e293b;
+  border-bottom: 1px solid #f1f5f9;
+}
+.promise-item-key {
+  font-weight: normal;
+}
+
+@media (max-width: 480px) {
+  .promises-modal-backdrop.open {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .promises-modal {
+    margin-top: 0;
+    border-radius: 16px 16px 0 0;
+    max-width: 100%;
+    max-height: 85vh;
+    padding: 20px 16px;
+  }
+}
+
+/* ---- Promises button (party detail page, larger) ---- */
+.promises-btn-party {
+  margin-bottom: 16px;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+/* ---- Manifesto badge (party dashboard) ---- */
+.manifesto-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #eef2ff;
+  color: #3730a3;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* ---- Manifesto summary (inside modal) ---- */
+.manifesto-summary {
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.promise-category-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 14px 0 6px 0;
+  padding-bottom: 3px;
+  border-bottom: 2px solid #e2e8f0;
+}
+.promise-list-item {
+  padding: 8px 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #1e293b;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .fulfilment-block {
@@ -1467,14 +1722,23 @@ a.data-card-link:focus {
 }
 
 .data-card-header {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
   gap: 10px;
   font-weight: 600;
   font-size: 16px;
   margin-bottom: 12px;
   padding-bottom: 10px;
   border-bottom: 1px solid #f1f5f9;
+}
+.data-card-header .candidate-text {
+  min-width: 0;
+}
+.data-card-header .candidate-name {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 2px;
 }
 
 .data-card-header a,
@@ -1486,7 +1750,12 @@ a.data-card-link:focus {
 .data-card-header .party-symbol {
   width: 36px;
   height: 36px;
-  padding: 4px;
+  padding: 2px;
+}
+
+.data-card-header .candidate-photo {
+  width: 36px;
+  height: 36px;
 }
 
 .data-card-body {
@@ -1770,6 +2039,14 @@ dd {
     padding: 3px 7px;
   }
 
+  .year-toggle a {
+    padding: 3px 8px;
+    font-size: 11px;
+  }
+  .year-toggle {
+    margin-right: 6px;
+  }
+
   /* --- Compact hero section --- */
   .hero {
     padding: 14px 0 10px;
@@ -1879,10 +2156,6 @@ dd {
 
   .range-values {
     justify-content: space-between;
-  }
-
-  .candidate-header {
-    flex-wrap: wrap;
   }
 
   .table {
@@ -3100,6 +3373,30 @@ body.theme-dark .indicator-unit {
   font-weight: 600;
   text-align: right;
   word-break: break-word;
+}
+
+.social-links {
+  display: flex;
+  gap: 14px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+}
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: #64748b;
+  transition: color 0.15s;
+}
+.social-icon:hover {
+  color: #1e293b;
+}
+.social-icon svg {
+  width: 20px;
+  height: 20px;
 }
 
 .candidate-modal .myneta-link {

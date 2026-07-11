@@ -4,12 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% if current_language == "ta" %}வேட்பாளர்கள் | TN Tracker{% else %}Candidates | TN Tracker{% endif %}</title>
-    <meta property="og:title" content="{% if current_language == 'ta' %}தமிழ்நாடு சட்டமன்றத் தேர்தல்கள் 2026{% else %}Tamil Nadu Assembly Elections 2026{% endif %}" />
-    <meta property="og:description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள். 234 தொகுதிகளில் ~4000 வேட்பாளர்களின் நிதி மற்றும் சட்ட பின்னணியை ஆராயுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
+    <title>{% if current_language == "ta" %}அனைத்து வேட்பாளர்களும் | தமிழ்நாடு தேர்தல் 2026 | TN Tracker{% else %}All Candidates | Tamil Nadu Elections 2026 | TN Tracker{% endif %}</title>
+    <meta property="og:title" content="{% if current_language == 'ta' %}அனைத்து வேட்பாளர்களும் | தமிழ்நாடு தேர்தல் 2026{% else %}All Candidates | Tamil Nadu Elections 2026{% endif %}" />
+    <meta property="og:description" content="{% if current_language == 'ta' %}234 தொகுதிகளில் ~4000 வேட்பாளர்களை கட்சி, மாவட்டம், வயது மற்றும் சொத்து மூலம் வடிகட்டுங்கள். தமிழ்நாடு தேர்தல் 2026.{% else %}Browse and filter ~4000 Tamil Nadu election candidates by party, district, age, wealth, and criminal cases. Tamil Nadu Assembly Elections 2026.{% endif %}" />
     <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/core/logo.png" />
     <meta property="og:type" content="website" />
-    <meta name="description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள். 234 தொகுதிகளில் ~4000 வேட்பாளர்களின் நிதி மற்றும் சட்ட பின்னணியை ஆராயுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
+    <meta property="og:url" content="https://tntracker.in/party-dashboard/" />
+    <meta name="description" content="{% if current_language == 'ta' %}234 தொகுதிகளில் ~4000 வேட்பாளர்களை கட்சி, மாவட்டம், வயது மற்றும் சொத்து மூலம் வடிகட்டுங்கள். தமிழ்நாடு தேர்தல் 2026.{% else %}Browse and filter ~4000 Tamil Nadu election candidates by party, district, age, wealth, and criminal cases. Tamil Nadu Assembly Elections 2026.{% endif %}" />
+    <link rel="canonical" href="https://tntracker.in/party-dashboard/" />
     <link rel="icon" type="image/png" href="/static/core/logo.png" />
     <link rel="stylesheet" href="/static/core/site.css" />
   </head>
@@ -46,12 +48,6 @@
     <main class="container">
       <div class="heading-with-info">
         <h1>{% if current_language == "ta" %}கட்சி காட்சிப்பலகை{% else %}Party Dashboard{% endif %}</h1>
-        {% if data_vintage_label %}
-        <button class="info-btn" id="data-info-btn" aria-label="Data information">
-          i
-          <span class="info-text">{% if current_language == "ta" %}அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.{% else %}{{ data_vintage_label }}{% endif %}</span>
-        </button>
-        {% endif %}
       </div>
 
       <section class="card" style="position:relative">
@@ -75,12 +71,14 @@
           </div>
           <div>
             <dt>{% if current_language == "ta" %}சராசரி சொத்து (₹){% else %}Avg. assets (₹){% endif %}</dt>
-            <dd>{% if overall_avg_assets is not None %}<span title="₹ {{ overall_avg_assets|indian }}">₹ {{ overall_avg_assets|short_indian }}</span>{% else %}—{% endif %}</dd>
+            <dd>{% if overall_avg_assets is not None %}<span title="₹ {{ overall_avg_assets|indian }}">₹ {{ overall_avg_assets|short_indian:current_language }}</span>{% else %}—{% endif %}</dd>
           </div>
+          {% if year != "2026" %}
           <div>
             <dt>{% if current_language == "ta" %}சராசரி தேர்தல் செலவு (₹){% else %}Avg. election expenditure (₹){% endif %}</dt>
-            <dd>{% if overall_avg_expenditure is not None %}<span title="₹ {{ overall_avg_expenditure|indian }}">₹ {{ overall_avg_expenditure|short_indian }}</span>{% else %}—{% endif %}</dd>
+            <dd>{% if overall_avg_expenditure is not None %}<span title="₹ {{ overall_avg_expenditure|indian }}">₹ {{ overall_avg_expenditure|short_indian:current_language }}</span>{% else %}—{% endif %}</dd>
           </div>
+          {% endif %}
         </dl>
       </section>
 
@@ -90,13 +88,7 @@
       <section class="card filter-section" id="filter-section">
         <h2>{% if current_language == "ta" %}வடிகட்டிகள்{% else %}Filters{% endif %}</h2>
         <form class="filters" method="get" id="filter-form">
-          <label>
-            {% if current_language == "ta" %}ஆண்டு{% else %}Year{% endif %}
-            <select name="year">
-              <option value="2021" {% if year == "2021" %}selected{% endif %}>2021</option>
-              <option value="2026" disabled style="color: #94a3b8;">2026 ({% if current_language == "ta" %}விரைவில்{% else %}coming soon{% endif %})</option>
-            </select>
-          </label>
+          <input type="hidden" name="year" value="{{ year }}">
           <label>
             {% if current_language == "ta" %}குற்ற வழக்குகள்{% else %}Criminal cases{% endif %}
             <select name="cases">
@@ -126,6 +118,7 @@
               <option value="10cr+" {% if selected_assets_range == "10cr+" %}selected{% endif %}>₹10 Cr+</option>
             </select>
           </label>
+          {% if sitting_mla or year == "2021" %}
           <label>
             {% if current_language == "ta" %}தற்போதைய எம்.எல்.ஏ{% else %}Sitting MLA{% endif %}
             <select name="sitting_mla">
@@ -140,6 +133,23 @@
               </option>
             </select>
           </label>
+          {% endif %}
+          {% if has_gender %}
+          <label>
+            {% if current_language == "ta" %}பாலினம்{% else %}Gender{% endif %}
+            <select name="gender">
+              <option value="" {% if not selected_gender %}selected{% endif %}>
+                {% if current_language == "ta" %}எல்லாம்{% else %}All{% endif %}
+              </option>
+              <option value="female" {% if selected_gender == "female" %}selected{% endif %}>
+                {% if current_language == "ta" %}பெண்{% else %}Female{% endif %}
+              </option>
+              <option value="male" {% if selected_gender == "male" %}selected{% endif %}>
+                {% if current_language == "ta" %}ஆண்{% else %}Male{% endif %}
+              </option>
+            </select>
+          </label>
+          {% endif %}
           <label>
             {% if current_language == "ta" %}கட்சிகள்{% else %}Parties{% endif %}
             <select name="party">
@@ -253,7 +263,8 @@
               <select id="card-sort-select">
                 <option value="candidate_count" selected>{% if current_language == "ta" %}வேட்பாளர்கள்{% else %}Candidates{% endif %}</option>
                 <option value="party">{% if current_language == "ta" %}கட்சி{% else %}Party{% endif %}</option>
-                <option value="total_expenditure">{% if current_language == "ta" %}மொத்த தேர்தல் செலவு{% else %}Total election expenditure{% endif %}</option>
+                {% if has_gender %}<option value="women_pct">{% if current_language == "ta" %}% பெண்{% else %}% Women{% endif %}</option>{% endif %}
+                {% if year != "2026" %}<option value="total_expenditure">{% if current_language == "ta" %}மொத்த தேர்தல் செலவு{% else %}Total election expenditure{% endif %}</option>{% endif %}
                 <option value="cases_pct">{% if current_language == "ta" %}குற்ற வழக்கு %{% else %}% w/ criminal cases{% endif %}</option>
                 <option value="avg_age">{% if current_language == "ta" %}சராசரி வயது{% else %}Avg age{% endif %}</option>
                 <option value="avg_assets">{% if current_language == "ta" %}சராசரி சொத்து{% else %}Avg assets{% endif %}</option>
@@ -272,12 +283,13 @@
             <tr>
               <th><button class="sort-link" type="button" data-sort="party">{% if current_language == "ta" %}கட்சி{% else %}Party{% endif %} <span class="sort-indicator">↕</span></button></th>
               <th><button class="sort-link active" type="button" data-sort="candidate_count">{% if current_language == "ta" %}வேட்பாளர் எண்ணிக்கை{% else %}Candidates{% endif %} <span class="sort-indicator active">▼</span></button></th>
+              {% if has_gender %}<th><button class="sort-link" type="button" data-sort="women_pct">{% if current_language == "ta" %}% பெண்{% else %}% Women{% endif %} <span class="sort-indicator">↕</span></button></th>{% endif %}
               <th><button class="sort-link" type="button" data-sort="avg_cases">{% if current_language == "ta" %}சராசரி குற்ற வழக்குகள்{% else %}Avg criminal cases{% endif %} <span class="sort-indicator">↕</span></button></th>
               <th><button class="sort-link" type="button" data-sort="cases_pct">{% if current_language == "ta" %}குற்ற வழக்குகள் உள்ளவர்களின் விகிதம்{% else %}% w/ criminal cases{% endif %} <span class="sort-indicator">↕</span></button></th>
               <th><button class="sort-link" type="button" data-sort="avg_age">{% if current_language == "ta" %}சராசரி வயது{% else %}Avg. age{% endif %} <span class="sort-indicator">↕</span></button></th>
               <th><button class="sort-link" type="button" data-sort="avg_assets">{% if current_language == "ta" %}சராசரி சொத்து (₹){% else %}Avg. assets (₹){% endif %} <span class="sort-indicator">↕</span></button></th>
-              <th><button class="sort-link" type="button" data-sort="avg_expenditure">{% if current_language == "ta" %}சராசரி தேர்தல் செலவு (₹){% else %}Avg. election expenditure (₹){% endif %} <span class="sort-indicator">↕</span></button></th>
-              <th><button class="sort-link" type="button" data-sort="total_expenditure">{% if current_language == "ta" %}மொத்த தேர்தல் செலவு (₹){% else %}Total election expenditure (₹){% endif %} <span class="sort-indicator">↕</span></button></th>
+              {% if year != "2026" %}<th><button class="sort-link" type="button" data-sort="avg_expenditure">{% if current_language == "ta" %}சராசரி தேர்தல் செலவு (₹){% else %}Avg. election expenditure (₹){% endif %} <span class="sort-indicator">↕</span></button></th>
+              <th><button class="sort-link" type="button" data-sort="total_expenditure">{% if current_language == "ta" %}மொத்த தேர்தல் செலவு (₹){% else %}Total election expenditure (₹){% endif %} <span class="sort-indicator">↕</span></button></th>{% endif %}
               <th><button class="sort-link" type="button" data-sort="top_education">{% if current_language == "ta" %}அதிகம் காணப்படும் கல்வி{% else %}Most common education{% endif %} <span class="sort-indicator">↕</span></button></th>
             </tr>
           </thead>
@@ -285,13 +297,14 @@
             {% for party in party_stats %}
             <tr data-party="{{ party.party }}"
                 data-candidate_count="{{ party.candidate_count }}"
+                data-women_pct="{{ party.women_pct|default:0 }}"
                 data-avg_cases="{{ party.avg_cases|default:0 }}"
                 data-cases_pct="{{ party.cases_pct|default:0 }}"
                 data-avg_age="{{ party.avg_age|default:0 }}"
                 data-avg_assets="{{ party.avg_assets|default:0 }}"
                 data-avg_expenditure="{{ party.avg_expenditure|default:0 }}"
                 data-total_expenditure="{{ party.total_expenditure|default:0 }}"
-                data-top_education="{{ party.top_education|default:"" }}">
+                data-top_education="{{ party.top_education_rank|default:13 }}">
               <td>
                 <div class="party-cell">
                   {% if party.party_symbol %}
@@ -305,17 +318,27 @@
                   <a class="link" href="/party/{{ party.party|urlencode }}/{% if base_query_no_party %}?{{ base_query_no_party }}{% endif %}">
                     {% if current_language == "ta" and party.party_display_ta %}{{ party.party_display_ta }}{% else %}{{ party.party_display|default:party.party }}{% endif %}
                   </a>
+                  {% if party.has_manifesto %}
+                    <span class="manifesto-badge" title="{% if current_language == 'ta' %}{{ party.key_promise_count }} முக்கிய வாக்குறுதிகள்{% else %}{{ party.key_promise_count }} key promises{% endif %}">
+                      {% if current_language == "ta" %}வாக்குறுதிகள்{% else %}Promises{% endif %}
+                    </span>
+                  {% endif %}
                 </div>
               </td>
               <td>{{ party.candidate_count|indian }}</td>
+              {% if has_gender %}<td>{{ party.women_pct }}%</td>{% endif %}
               <td>{% if party.avg_cases is not None %}{{ party.avg_cases|indian }}{% else %}—{% endif %}</td>
               <td>{{ party.cases_pct|indian }}%</td>
               <td>{% if party.avg_age is not None %}{{ party.avg_age|indian }}{% else %}—{% endif %}</td>
-              <td>{% if party.avg_assets is not None %}<span title="₹ {{ party.avg_assets|indian }}">₹ {{ party.avg_assets|short_indian }}</span>{% else %}—{% endif %}</td>
-              <td>{% if party.avg_expenditure is not None %}<span title="₹ {{ party.avg_expenditure|indian }}">₹ {{ party.avg_expenditure|short_indian }}</span>{% else %}—{% endif %}</td>
-              <td>{% if party.total_expenditure %}<span title="₹ {{ party.total_expenditure|indian }}">₹ {{ party.total_expenditure|short_indian }}</span>{% else %}—{% endif %}</td>
+              <td>{% if party.avg_assets is not None %}<span title="₹ {{ party.avg_assets|indian }}">₹ {{ party.avg_assets|short_indian:current_language }}</span>{% else %}—{% endif %}</td>
+              {% if year != "2026" %}<td>{% if party.avg_expenditure is not None %}<span title="₹ {{ party.avg_expenditure|indian }}">₹ {{ party.avg_expenditure|short_indian:current_language }}</span>{% else %}—{% endif %}</td>
+              <td>{% if party.total_expenditure %}<span title="₹ {{ party.total_expenditure|indian }}">₹ {{ party.total_expenditure|short_indian:current_language }}</span>{% else %}—{% endif %}</td>{% endif %}
               <td>{% if party.top_education %}{% if current_language == "ta" and party.top_education_ta %}{{ party.top_education_ta }}{% else %}{{ party.top_education }}{% endif %}{% else %}—{% endif %}</td>
             </tr>
+            {% empty %}
+            <tr><td colspan="100" class="muted" style="text-align:center; padding:24px;">
+              {% if current_language == "ta" %}வடிகட்டிகளுக்கு பொருந்தும் முடிவுகள் இல்லை{% else %}No rows matched the selected filters{% endif %}
+            </td></tr>
             {% endfor %}
           </tbody>
         </table>
@@ -328,13 +351,14 @@
              href="/party/{{ party.party|urlencode }}/{% if base_query_no_party %}?{{ base_query_no_party }}{% endif %}"
              data-party="{{ party.party }}"
              data-candidate_count="{{ party.candidate_count }}"
+             data-women_pct="{{ party.women_pct|default:0 }}"
              data-avg_cases="{{ party.avg_cases|default:0 }}"
              data-cases_pct="{{ party.cases_pct|default:0 }}"
              data-avg_age="{{ party.avg_age|default:0 }}"
              data-avg_assets="{{ party.avg_assets|default:0 }}"
              data-avg_expenditure="{{ party.avg_expenditure|default:0 }}"
              data-total_expenditure="{{ party.total_expenditure|default:0 }}"
-             data-top_education="{{ party.top_education|default:"" }}">
+             data-top_education="{{ party.top_education_rank|default:13 }}">
             <div class="data-card-header">
               {% if party.party_symbol %}
                 <img
@@ -345,16 +369,27 @@
                 />
               {% endif %}
               <span>{% if current_language == "ta" and party.party_display_ta %}{{ party.party_display_ta }}{% else %}{{ party.party_display|default:party.party }}{% endif %}</span>
+              {% if party.has_manifesto %}
+                <span class="manifesto-badge">{% if current_language == "ta" %}வாக்குறுதிகள்{% else %}Promises{% endif %}</span>
+              {% endif %}
             </div>
             <dl class="data-card-body">
               <div class="data-card-row">
                 <dt>{% if current_language == "ta" %}வேட்பாளர்கள்{% else %}Candidates{% endif %}</dt>
                 <dd>{{ party.candidate_count|indian }}</dd>
               </div>
+              {% if has_gender %}
+              <div class="data-card-row">
+                <dt>{% if current_language == "ta" %}% பெண்{% else %}% Women{% endif %}</dt>
+                <dd>{{ party.women_pct }}%</dd>
+              </div>
+              {% endif %}
+              {% if year != "2026" %}
               <div class="data-card-row">
                 <dt>{% if current_language == "ta" %}மொத்த தேர்தல் செலவு{% else %}Total election expenditure{% endif %}</dt>
-                <dd>{% if party.total_expenditure %}<span title="₹ {{ party.total_expenditure|indian }}">₹ {{ party.total_expenditure|short_indian }}</span>{% else %}—{% endif %}</dd>
+                <dd>{% if party.total_expenditure %}<span title="₹ {{ party.total_expenditure|indian }}">₹ {{ party.total_expenditure|short_indian:current_language }}</span>{% else %}—{% endif %}</dd>
               </div>
+              {% endif %}
               <div class="data-card-row">
                 <dt>{% if current_language == "ta" %}குற்ற வழக்கு %{% else %}% w/ criminal cases{% endif %}</dt>
                 <dd>{{ party.cases_pct|default:"—" }}%</dd>
@@ -365,7 +400,7 @@
               </div>
               <div class="data-card-row">
                 <dt>{% if current_language == "ta" %}சராசரி சொத்து{% else %}Avg. assets{% endif %}</dt>
-                <dd>{% if party.avg_assets is not None %}<span title="₹ {{ party.avg_assets|indian }}">₹ {{ party.avg_assets|short_indian }}</span>{% else %}—{% endif %}</dd>
+                <dd>{% if party.avg_assets is not None %}<span title="₹ {{ party.avg_assets|indian }}">₹ {{ party.avg_assets|short_indian:current_language }}</span>{% else %}—{% endif %}</dd>
               </div>
               <div class="data-card-row">
                 <dt>{% if current_language == "ta" %}அதிகம் காணப்படும் கல்வி{% else %}Most common education{% endif %}</dt>
@@ -373,6 +408,10 @@
               </div>
             </dl>
           </a>
+          {% empty %}
+          <p class="muted" style="text-align:center; padding:24px; grid-column: 1 / -1;">
+            {% if current_language == "ta" %}வடிகட்டிகளுக்கு பொருந்தும் முடிவுகள் இல்லை{% else %}No rows matched the selected filters{% endif %}
+          </p>
           {% endfor %}
         </div>
 
@@ -388,6 +427,8 @@
       </section>
     </main>
     <script>
+      var currentYear = '{{ year }}';
+
       /* ---- Filter persistence (sessionStorage) ---- */
       var STORAGE_KEY = 'tntracker_filters_' + window.location.pathname;
 
@@ -461,10 +502,10 @@
         /* Clear all filters */
         function clearAllFilters(e) {
           e.preventDefault();
-          var qs = 'year=2021';
+          var qs = 'year=' + currentYear;
           /* Reset all selects to first option */
           form.querySelectorAll('select').forEach(function (s) {
-            if (s.name === 'year') { s.value = '2021'; }
+            if (s.name === 'year') { s.value = currentYear; }
             else { s.selectedIndex = 0; }
           });
           applyFilters(qs);
@@ -476,7 +517,7 @@
 
         /* Handle browser back/forward */
         window.addEventListener('popstate', function () {
-          var qs = window.location.search.substring(1) || 'year=2021';
+          var qs = window.location.search.substring(1) || 'year=' + currentYear;
           /* Sync form selects with URL params */
           var params = new URLSearchParams(qs);
           form.querySelectorAll('select').forEach(function (s) {
@@ -677,18 +718,32 @@
             if (r.type === 'party' && r.symbol_url) {
               icon = '<img class="party-search-symbol" src="' + r.symbol_url + '" alt="" onerror="this.style.display=\'none\'" />';
             }
-            var name = r.type === 'party'
-              ? (currentLang === 'ta' && r.display_name_ta ? r.display_name_ta : r.display_name)
-              : (currentLang === 'ta' && r.name_ta ? r.name_ta : r.name);
+            var name = '';
+            if (r.type === 'party') {
+              name = currentLang === 'ta' && r.display_name_ta ? r.display_name_ta : r.display_name;
+            } else if (r.type === 'district' || r.type === 'constituency') {
+              name = currentLang === 'ta' && r.name_ta ? r.name_ta : r.name;
+            } else {
+              name = currentLang === 'ta' && r.name_ta ? r.name_ta : r.name;
+            }
             var subtitle = '';
             if (r.type === 'candidate') {
               var pDisp = currentLang === 'ta' && r.party_display_ta ? r.party_display_ta : r.party_display;
               var cDisp = currentLang === 'ta' && r.constituency_ta ? r.constituency_ta : r.constituency;
               subtitle = pDisp + (cDisp ? ' · ' + cDisp : '');
+            } else if (r.type === 'constituency' && r.district) {
+              subtitle = r.district;
             }
-            var typeLabel = r.type === 'party'
-              ? (currentLang === 'ta' ? 'கட்சி' : 'Party')
-              : (currentLang === 'ta' ? 'வேட்பாளர்' : 'Candidate');
+            var typeLabel = '';
+            if (r.type === 'party') {
+              typeLabel = currentLang === 'ta' ? 'கட்சி' : 'Party';
+            } else if (r.type === 'candidate') {
+              typeLabel = currentLang === 'ta' ? 'வேட்பாளர்' : 'Candidate';
+            } else if (r.type === 'district') {
+              typeLabel = currentLang === 'ta' ? 'மாவட்டம்' : 'District';
+            } else if (r.type === 'constituency') {
+              typeLabel = currentLang === 'ta' ? 'தொகுதி' : 'Constituency';
+            }
             return '<div class="party-search-dropdown-item' +
               (r.type === 'candidate' ? ' party-search-dropdown-item-candidate' : '') +
               '" data-index="' + i + '">' +
@@ -735,6 +790,14 @@
         function selectResult(result) {
           hideDropdown();
           searchInput.value = '';
+          if (result.type === 'district') {
+            window.location.href = '/party-dashboard/?year=' + currentYear + '&district=' + encodeURIComponent(result.name);
+            return;
+          }
+          if (result.type === 'constituency') {
+            window.location.href = '/party-dashboard/?year=' + currentYear + '&district=' + encodeURIComponent(result.district) + '&constituency=' + encodeURIComponent(result.name);
+            return;
+          }
           if (result.type === 'candidate') {
             /* Navigate to the party detail page with highlight param */
             var partyUrl = '/party/' + encodeURIComponent(result.party) + '/?year=' + currentYear

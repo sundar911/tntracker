@@ -4,12 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% if current_language == "ta" and party_display_name_ta %}{{ party_display_name_ta }}{% else %}{{ party_display_name }}{% endif %} | TN Tracker</title>
-    <meta property="og:title" content="{% if current_language == 'ta' %}தமிழ்நாடு சட்டமன்றத் தேர்தல்கள் 2026{% else %}Tamil Nadu Assembly Elections 2026{% endif %}" />
-    <meta property="og:description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
+    <title>{% if current_language == "ta" and party_display_name_ta %}{{ party_display_name_ta }} வேட்பாளர்கள் | TN தேர்தல் 2026{% else %}{{ party_display_name }} Candidates | Tamil Nadu Elections 2026 | TN Tracker{% endif %}</title>
+    <meta property="og:title" content="{% if current_language == 'ta' and party_display_name_ta %}{{ party_display_name_ta }} | தமிழ்நாடு தேர்தல் 2026{% else %}{{ party_display_name }} | Tamil Nadu Elections 2026{% endif %}" />
+    <meta property="og:description" content="{% if current_language == 'ta' and party_display_name_ta %}{{ party_display_name_ta }} வேட்பாளர்களின் குற்றவழக்குகள், சொத்துக்கள் மற்றும் கல்வி விவரங்கள். தமிழ்நாடு சட்டமன்றத் தேர்தல் 2026.{% else %}{{ party_display_name }} candidates in Tamil Nadu Elections 2026. View criminal cases, assets, and education backgrounds for all candidates.{% endif %}" />
     <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/core/logo.png" />
     <meta property="og:type" content="website" />
-    <meta name="description" content="{% if current_language == 'ta' %}உங்கள் வேட்பாளர்கள் மற்றும் அரசியல் கட்சிகளை தெளிவாகவும் நம்பிக்கையுடனும் அறிந்துகொள்ளுங்கள்.{% else %}Know your candidates and political parties, clearly and confidently. Explore financial and legal backgrounds of ~4000 candidates across 234 constituencies.{% endif %}" />
+    <meta property="og:url" content="https://tntracker.in/party/{{ party_name }}/" />
+    <meta name="description" content="{% if current_language == 'ta' and party_display_name_ta %}{{ party_display_name_ta }} வேட்பாளர்களின் குற்றவழக்குகள், சொத்துக்கள் மற்றும் கல்வி விவரங்கள். தமிழ்நாடு சட்டமன்றத் தேர்தல் 2026.{% else %}{{ party_display_name }} candidates in Tamil Nadu Elections 2026. View criminal cases, assets, and education backgrounds for all candidates.{% endif %}" />
+    <link rel="canonical" href="https://tntracker.in/party/{{ party_name }}/" />
     <link rel="icon" type="image/png" href="/static/core/logo.png" />
     <link rel="stylesheet" href="/static/core/site.css" />
   </head>
@@ -63,19 +65,71 @@
         {% endif %}
       </p>
 
+      {% if manifesto and key_promises %}
+      <button class="promises-btn promises-btn-party" type="button" id="party-promises-btn">
+        {% if current_language == "ta" %}தேர்தல் வாக்குறுதிகள்{% else %}Election Promises{% endif %}
+      </button>
+      <!-- Party promises modal -->
+      <div class="promises-modal-backdrop" id="party-promises-backdrop">
+        <div class="promises-modal">
+          <button class="promises-modal-close" id="party-promises-close">&times;</button>
+          <div class="promises-modal-body">
+            <div class="promises-modal-header">
+              {% if party_symbol %}
+                <img src="{{ party_symbol }}" alt="" class="promises-modal-symbol">
+              {% endif %}
+              <div>
+                <h3 class="promises-modal-title">{% if current_language == "ta" and party_display_name_ta %}{{ party_display_name_ta }}{% else %}{{ party_display_name }}{% endif %}</h3>
+                <span class="promises-modal-subtitle">{% if current_language == "ta" %}தேர்தல் வாக்குறுதிகள்{% else %}Election Promises{% endif %}</span>
+              </div>
+            </div>
+            {% if manifesto.summary or manifesto.summary_ta %}
+              <p class="manifesto-summary">
+                {% if current_language == "ta" and manifesto.summary_ta %}{{ manifesto.summary_ta }}{% else %}{{ manifesto.summary }}{% endif %}
+              </p>
+            {% endif %}
+            {% regroup key_promises by category as category_list %}
+            {% for cat in category_list %}
+              <div class="promises-category">
+                <h4 class="promises-category-heading">{% if current_language == "ta" %}{% with cg=cat.grouper %}{% if cg == "Agriculture" %}விவசாயம்{% elif cg == "Culture & Language" %}கலாச்சாரம் & மொழி{% elif cg == "Economy & Jobs" %}பொருளாதாரம் & வேலைவாய்ப்பு{% elif cg == "Education" %}கல்வி{% elif cg == "Environment" %}சுற்றுச்சூழல்{% elif cg == "Governance" %}ஆட்சி{% elif cg == "Health" %}சுகாதாரம்{% elif cg == "Housing" %}வீட்டுவசதி{% elif cg == "Infrastructure" %}உள்கட்டமைப்பு{% elif cg == "Law & Order" %}சட்டம் & ஒழுங்கு{% elif cg == "Social Welfare" %}சமூக நலன்{% elif cg == "Water" %}நீர்{% elif cg == "Women & Children" %}பெண்கள் & குழந்தைகள்{% else %}{{ cg }}{% endif %}{% endwith %}{% else %}{{ cat.grouper }}{% endif %}</h4>
+                {% for promise in cat.list %}
+                  <div class="promise-item">
+                    {% if current_language == "ta" and promise.text_ta %}{{ promise.text_ta }}{% else %}{{ promise.text }}{% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <script>
+        (function() {
+          var btn = document.getElementById('party-promises-btn');
+          var backdrop = document.getElementById('party-promises-backdrop');
+          var close = document.getElementById('party-promises-close');
+          if (!btn || !backdrop) return;
+          btn.addEventListener('click', function() {
+            backdrop.classList.add('open');
+            document.body.style.overflow = 'hidden';
+          });
+          function closeModal() {
+            backdrop.classList.remove('open');
+            document.body.style.overflow = '';
+          }
+          if (close) close.addEventListener('click', closeModal);
+          backdrop.addEventListener('click', function(e) { if (e.target === backdrop) closeModal(); });
+          document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && backdrop.classList.contains('open')) closeModal(); });
+        })();
+      </script>
+      {% endif %}
+
       <!-- Filter backdrop -->
       <div class="filter-backdrop" id="filter-backdrop"></div>
 
       <section class="card filter-section" id="filter-section">
         <h2>{% if current_language == "ta" %}வடிகட்டிகள்{% else %}Filters{% endif %}</h2>
         <form class="filters" method="get" id="filter-form">
-          <label>
-            {% if current_language == "ta" %}ஆண்டு{% else %}Year{% endif %}
-            <select name="year">
-              <option value="2021" {% if year == "2021" %}selected{% endif %}>2021</option>
-              <option value="2026" disabled style="color: #94a3b8;">2026 ({% if current_language == "ta" %}விரைவில்{% else %}coming soon{% endif %})</option>
-            </select>
-          </label>
+          <input type="hidden" name="year" value="{{ year }}">
           <label>
             {% if current_language == "ta" %}குற்ற வழக்குகள்{% else %}Criminal cases{% endif %}
             <select name="cases">
@@ -105,6 +159,7 @@
               <option value="10cr+" {% if selected_assets_range == "10cr+" %}selected{% endif %}>₹10 Cr+</option>
             </select>
           </label>
+          {% if sitting_mla or year == "2021" %}
           <label>
             {% if current_language == "ta" %}தற்போதைய எம்.எல்.ஏ{% else %}Sitting MLA{% endif %}
             <select name="sitting_mla">
@@ -119,6 +174,23 @@
               </option>
             </select>
           </label>
+          {% endif %}
+          {% if has_gender %}
+          <label>
+            {% if current_language == "ta" %}பாலினம்{% else %}Gender{% endif %}
+            <select name="gender">
+              <option value="" {% if not selected_gender %}selected{% endif %}>
+                {% if current_language == "ta" %}எல்லாம்{% else %}All{% endif %}
+              </option>
+              <option value="female" {% if selected_gender == "female" %}selected{% endif %}>
+                {% if current_language == "ta" %}பெண்{% else %}Female{% endif %}
+              </option>
+              <option value="male" {% if selected_gender == "male" %}selected{% endif %}>
+                {% if current_language == "ta" %}ஆண்{% else %}Male{% endif %}
+              </option>
+            </select>
+          </label>
+          {% endif %}
           <label>
             {% if current_language == "ta" %}மாவட்டம்{% else %}District{% endif %}
             <select name="district">
@@ -239,7 +311,7 @@
                   <a class="link myneta-link" href="{{ cell }}" target="_blank" rel="noopener">{% if current_language == "ta" %}MyNeta சுயவிவரம்{% else %}Myneta Profile{% endif %}</a>
                 {% elif column.is_currency %}
                   {% if cell %}
-                    <span title="₹ {{ cell|indian }}">₹ {{ cell|short_indian }}</span>
+                    <span title="₹ {{ cell|indian }}">₹ {{ cell|short_indian:current_language }}</span>
                   {% else %}
                     —
                   {% endif %}
@@ -266,13 +338,15 @@
           {% for row in rows %}
           <div class="data-card{% if row.is_2016 %} is-2016{% endif %}"
                data-candidate="{{ row|get_item:'candidate'|default:'' }}"
-               data-idx="{{ forloop.counter0 }}"
-               style="cursor:pointer"
+               data-idx="{{ forloop.counter0 }}" style="cursor:pointer"
                {% for column in columns %}data-{{ column.key }}="{{ row|get_item:column.key|default:"" }}" {% endfor %}>
             <div class="data-card-header">
-              {% with cand_name=row|get_item:"candidate" %}
-                <span>{{ cand_name|default:"—" }}</span>
-              {% endwith %}
+              {% with photo=row|get_item:"photo_url" %}{% if photo %}<img class="candidate-photo" src="{{ photo }}" alt="" loading="lazy" onerror="this.style.display='none'" />{% endif %}{% endwith %}
+              <div class="candidate-text">
+                {% with cand_name=row|get_item:"candidate" %}
+                <div class="candidate-name">{{ cand_name|default:"—" }}</div>
+                {% endwith %}
+              </div>
               {% if row.is_2016 %}
                 <span class="tag" style="font-size:11px; padding:2px 8px;">2016</span>
               {% endif %}
@@ -285,7 +359,7 @@
                   <dt>{% if current_language == "ta" and column.label_ta %}{{ column.label_ta }}{% else %}{{ column.label }}{% endif %}</dt>
                   <dd>
                     {% if column.is_currency %}
-                      {% if cell %}<span title="₹ {{ cell|indian }}">₹ {{ cell|short_indian }}</span>{% else %}—{% endif %}
+                      {% if cell %}<span title="₹ {{ cell|indian }}">₹ {{ cell|short_indian:current_language }}</span>{% else %}—{% endif %}
                     {% elif column.is_number %}
                       {% if cell %}{{ cell|indian }}{% else %}—{% endif %}
                     {% else %}
@@ -297,6 +371,14 @@
                 {% endif %}
               {% endfor %}
             </dl>
+            {% with aff_url=row|get_item:"affidavit_url" aff_pdf=row|get_item:"affidavit_pdf_url" %}
+            {% if aff_url or aff_pdf %}
+            <div class="card-actions">
+              {% if aff_url %}<a class="card-link" href="{{ aff_url }}" target="_blank" rel="noopener" onclick="event.stopPropagation()">{% if current_language == "ta" %}ECI சுயவிவரம் →{% else %}ECI Profile →{% endif %}</a>{% endif %}
+              {% if aff_pdf %}<a class="card-link" href="{{ aff_pdf }}" target="_blank" rel="noopener" onclick="event.stopPropagation()">{% if current_language == "ta" %}உறுதிமொழிப் படிவம் →{% else %}Affidavit PDF →{% endif %}</a>{% endif %}
+            </div>
+            {% endif %}
+            {% endwith %}
           </div>
           {% endfor %}
         </div>
@@ -393,12 +475,13 @@
           applyFilters(qs);
         });
 
+        var currentYear = '{{ year }}';
         /* Clear all filters */
         function clearAllFilters(e) {
           e.preventDefault();
-          var qs = 'year=2021';
+          var qs = 'year=' + currentYear;
           form.querySelectorAll('select').forEach(function (s) {
-            if (s.name === 'year') { s.value = '2021'; }
+            if (s.name === 'year') { s.value = currentYear; }
             else { s.selectedIndex = 0; }
           });
           applyFilters(qs);
@@ -410,7 +493,7 @@
 
         /* Handle browser back/forward */
         window.addEventListener('popstate', function () {
-          var qs = window.location.search.substring(1) || 'year=2021';
+          var qs = window.location.search.substring(1) || 'year=' + currentYear;
           var params = new URLSearchParams(qs);
           form.querySelectorAll('select').forEach(function (s) {
             var val = params.get(s.name) || '';
@@ -631,10 +714,11 @@
           try { return JSON.parse(el.textContent); } catch (e) { return []; }
         }
 
+        var isTaPage = '{{ current_language }}' === 'ta';
         function shortIndian(n) {
           if (n === null || n === undefined) return 'N/A';
-          if (n >= 10000000) return '₹ ' + (n / 10000000).toFixed(2) + ' Cr';
-          if (n >= 100000) return '₹ ' + (n / 100000).toFixed(2) + ' L';
+          if (n >= 10000000) return '₹ ' + (n / 10000000).toFixed(2) + (isTaPage ? ' கோடி' : ' Cr');
+          if (n >= 100000) return '₹ ' + (n / 100000).toFixed(2) + (isTaPage ? ' லட்சம்' : ' L');
           if (n >= 1000) return '₹ ' + (n / 1000).toFixed(1) + ' K';
           return '₹ ' + n.toLocaleString('en-IN');
         }
@@ -660,12 +744,33 @@
           if (c.criminal_cases !== null) html += '<div><dt>' + (isTa ? 'குற்ற வழக்குகள்' : 'Criminal Cases') + '</dt><dd>' + c.criminal_cases + '</dd></div>';
           html += '<div><dt>' + (isTa ? 'சொத்துகள்' : 'Assets') + '</dt><dd>' + shortIndian(c.assets) + '</dd></div>';
           html += '<div><dt>' + (isTa ? 'பாக்கிகள்' : 'Liabilities') + '</dt><dd>' + shortIndian(c.liabilities) + '</dd></div>';
-          html += '<div><dt>' + (isTa ? 'தேர்தல் செலவு' : 'Election Expenditure') + '</dt><dd>' + shortIndian(c.election_expenditure) + '</dd></div>';
-          if (c.self_profession) html += '<div><dt>' + (isTa ? 'தொழில்' : 'Profession') + '</dt><dd>' + c.self_profession + '</dd></div>';
-          if (c.spouse_profession) html += '<div><dt>' + (isTa ? 'துணைவர் தொழில்' : 'Spouse Profession') + '</dt><dd>' + c.spouse_profession + '</dd></div>';
-          if (c.education_details_clean) html += '<div><dt>' + (isTa ? 'கல்வி விவரங்கள்' : 'Education Details') + '</dt><dd>' + c.education_details_clean.replace(/\n/g, '<br>') + '</dd></div>';
+          if ('{{ year }}' !== '2026') {
+            html += '<div><dt>' + (isTa ? 'தேர்தல் செலவு' : 'Election Expenditure') + '</dt><dd>' + shortIndian(c.election_expenditure) + '</dd></div>';
+          }
+          if (c.self_profession) {
+            var profDisplay = (isTa && c.self_profession_ta) ? c.self_profession_ta : c.self_profession;
+            html += '<div><dt>' + (isTa ? 'தொழில்' : 'Profession') + '</dt><dd>' + profDisplay + '</dd></div>';
+          }
+          if (c.spouse_profession) {
+            var spProfDisplay = (isTa && c.spouse_profession_ta) ? c.spouse_profession_ta : c.spouse_profession;
+            html += '<div><dt>' + (isTa ? 'துணைவர் தொழில்' : 'Spouse Profession') + '</dt><dd>' + spProfDisplay + '</dd></div>';
+          }
+          if (c.education_details_clean) {
+            var eduDetailDisplay = (isTa && c.education_details_ta) ? c.education_details_ta : c.education_details_clean;
+            html += '<div><dt>' + (isTa ? 'கல்வி விவரங்கள்' : 'Education Details') + '</dt><dd>' + eduDetailDisplay.replace(/\n/g, '<br>') + '</dd></div>';
+          }
           if (c.criminal_cases_summary) html += '<div><dt>' + (isTa ? 'வழக்கு விவரம்' : 'Legal History') + '</dt><dd>' + c.criminal_cases_summary + '</dd></div>';
+          if (c.phone) html += '<div><dt>' + (isTa ? 'தொலைபேசி' : 'Phone') + '</dt><dd><a href="tel:' + c.phone + '">' + c.phone + '</a></dd></div>';
+          if (c.email) html += '<div><dt>' + (isTa ? 'மின்னஞ்சல்' : 'Email') + '</dt><dd><a href="mailto:' + c.email + '">' + c.email + '</a></dd></div>';
           html += '</dl>';
+          var socialHtml = '';
+          if (c.facebook) socialHtml += '<a href="' + c.facebook + '" target="_blank" rel="noopener" class="social-icon" title="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>';
+          if (c.twitter) socialHtml += '<a href="' + c.twitter + '" target="_blank" rel="noopener" class="social-icon" title="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>';
+          if (c.instagram) socialHtml += '<a href="' + c.instagram + '" target="_blank" rel="noopener" class="social-icon" title="Instagram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>';
+          if (c.youtube) socialHtml += '<a href="' + c.youtube + '" target="_blank" rel="noopener" class="social-icon" title="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>';
+          if (socialHtml) html += '<div class="social-links">' + socialHtml + '</div>';
+          if (c.affidavit_url) html += '<a class="link myneta-link" href="' + c.affidavit_url + '" target="_blank" rel="noopener">' + (isTa ? 'ECI சுயவிவரம் →' : 'ECI Profile →') + '</a>';
+          if (c.affidavit_pdf_url) html += '<a class="link myneta-link" href="' + c.affidavit_pdf_url + '" target="_blank" rel="noopener">' + (isTa ? 'உறுதிமொழிப் படிவம் (PDF) →' : 'Affidavit PDF →') + '</a>';
           if (c.myneta_url) html += '<a class="link myneta-link" href="' + c.myneta_url + '" target="_blank" rel="noopener">' + (isTa ? 'MyNeta சுயவிவரம் →' : 'MyNeta Profile →') + '</a>';
           body.innerHTML = html;
           backdrop.classList.add('open');

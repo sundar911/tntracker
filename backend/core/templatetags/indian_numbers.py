@@ -50,8 +50,47 @@ def indian(value) -> str:
 
 
 @register.filter(name="short_indian")
-def short_indian(value) -> str:
-    """Compact rupee display: >= 1 Cr shows 'X.XX Cr', >= 1 L shows 'X.X L'."""
+def short_indian(value, lang="en") -> str:
+    """Compact rupee display. Pass 'ta' for Tamil units (கோடி/லட்சம்)."""
+    if value is None:
+        return ""
+    if isinstance(value, bool):
+        return str(value)
+    if isinstance(value, (int, float, Decimal)):
+        number = value
+    else:
+        raw = str(value).strip()
+        if raw == "":
+            return ""
+        try:
+            number = Decimal(raw.replace(",", ""))
+        except (InvalidOperation, ValueError):
+            return raw
+
+    is_negative = number < 0
+    number = abs(number)
+    is_ta = lang == "ta"
+
+    CRORE = 10_000_000
+    LAKH = 100_000
+
+    if number >= CRORE:
+        shortened = float(number) / CRORE
+        text = f"{shortened:.2f}".rstrip("0").rstrip(".")
+        result = f"{text} கோடி" if is_ta else f"{text} Cr"
+    elif number >= LAKH:
+        shortened = float(number) / LAKH
+        text = f"{shortened:.1f}".rstrip("0").rstrip(".")
+        result = f"{text} லட்சம்" if is_ta else f"{text} L"
+    else:
+        return _format_indian_number(value)
+
+    return f"-{result}" if is_negative else result
+
+
+@register.filter(name="short_indian_ta")
+def short_indian_ta(value) -> str:
+    """Tamil variant: >= 1 Cr shows 'X.XX கோடி', >= 1 L shows 'X.X லட்சம்'."""
     if value is None:
         return ""
     if isinstance(value, bool):
@@ -76,11 +115,11 @@ def short_indian(value) -> str:
     if number >= CRORE:
         shortened = float(number) / CRORE
         text = f"{shortened:.2f}".rstrip("0").rstrip(".")
-        result = f"{text} Cr"
+        result = f"{text} கோடி"
     elif number >= LAKH:
         shortened = float(number) / LAKH
         text = f"{shortened:.1f}".rstrip("0").rstrip(".")
-        result = f"{text} L"
+        result = f"{text} லட்சம்"
     else:
         return _format_indian_number(value)
 

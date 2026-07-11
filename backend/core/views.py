@@ -10,7 +10,7 @@ from urllib.parse import urlencode
 
 from django.conf import settings
 from django.db.models import Prefetch, Q
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from rest_framework import viewsets, filters
@@ -36,6 +36,7 @@ from .tamil_translations import (
     COLUMN_LABEL_TA,
     EDUCATION_TA,
     PARTY_NAME_TA,
+    PROMISE_CATEGORY_TA,
     RESOURCE_CATEGORY_TA,
     RESOURCE_TITLE_TA,
     STATUS_TA,
@@ -44,14 +45,32 @@ from .tamil_translations import (
 from .templatetags.indian_numbers import short_indian
 
 
+def robots_txt(request):
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /admin/",
+        "Disallow: /api/",
+        "Disallow: /set-lang/",
+        "Disallow: /feedback/",
+        "Disallow: /map/data/",
+        "",
+        "Sitemap: https://tntracker.in/sitemap.xml",
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")
+
+
 def home(request):
-    # Load 2021 candidate data for overview stats
+    year = request.GET.get("year", "2026").strip()
+    if year not in {"2021", "2026"}:
+        year = "2026"
     data_dir = settings.BASE_DIR.parent / "data"
-    csv_path = data_dir / "fct_candidates_21.csv"
+    csv_path = data_dir / ("fct_candidates_26.csv" if year == "2026" else "fct_candidates_21.csv")
     rows = _load_party_rows(str(csv_path))
     stats = _compute_overview_stats(rows)
 
     return render(request, "core/home.html", {
+        "year": year,
         "total_parties": stats["total_parties"],
         "total_candidates": stats["total_candidates"],
         "overall_avg_cases": stats["overall_avg_cases"],
@@ -175,14 +194,22 @@ def resources(request):
 
 
 def map_view(request):
+    year = request.GET.get("year", "2026").strip()
+    if year not in {"2021", "2026"}:
+        year = "2026"
     return render(request, "core/map.html", {
+        "year": year,
         "party_label_ta_json": json.dumps(PARTY_NAME_TA, ensure_ascii=False),
     })
 
 
-@lru_cache(maxsize=1)
-def _load_smla_rows() -> list[dict]:
-    csv_path = settings.BASE_DIR.parent / "data" / "fct_candidates_21.csv"
+@lru_cache(maxsize=2)
+def _load_smla_rows(year: str = "2026") -> list[dict]:
+    data_dir = settings.BASE_DIR.parent / "data"
+    if year == "2026":
+        csv_path = data_dir / "fct_candidates_26.csv"
+    else:
+        csv_path = data_dir / "fct_candidates_21.csv"
     if not csv_path.exists():
         return []
     with csv_path.open("r", encoding="utf-8") as handle:
@@ -190,11 +217,51 @@ def _load_smla_rows() -> list[dict]:
         return list(reader)
 
 
+@lru_cache(maxsize=1)
+def _constituency_district_lookup() -> dict[str, str]:
+    """Normalized constituency name -> district name from DB (used for 2026 data lacking district col)."""
+    lookup = {}
+    for name, district in Constituency.objects.values_list("name", "district"):
+        key = _normalize_constituency_name(name)
+        if key and district:
+            lookup[key] = district.strip()
+    return lookup
+
+
+def _get_district_for_row(row: dict, year: str) -> str:
+    """Return the district for a CSV row, deriving from DB for 2026 which lacks a district column."""
+    if year == "2021":
+        return _row_value(row, ("2021_district", "district"))
+    # 2026: try the row first, then fall back to DB lookup
+    direct = (row.get("district") or "").strip()
+    if direct:
+        return direct
+    constituency = (row.get("constituency") or "").strip()
+    if not constituency:
+        return ""
+    key = _normalize_constituency_name(constituency)
+    return _constituency_district_lookup().get(key, "")
+
+
+_CONSTITUENCY_ALIASES = {
+    # ECI 2026 name → GeoJSON/DB canonical name (after normalization)
+    "CHEPAUK THIRUVALLIKENI": "CHEPAUK THIRUVALLIKEN",
+    "COLACHAL": "COLACHEL",
+    "PAPPIREDDIPATTI": "PAPPIREDDIPPATTI",
+    "THIRUVOTTIYUR": "TIRUVOTTIYUR",
+    "TIRUPPATTUR": "TIRUPATTUR",
+    "TIRUCHIRAPPALLI EAST": "TIRUCHIRAPPALLI",
+}
+
+
 def _normalize_constituency_name(name: Optional[str]) -> str:
     raw = (name or "").strip().upper()
     raw = re.sub(r"\s*:\s*BYE ELECTION.*$", "", raw)
     normalized = re.sub(r"[^A-Z0-9]+", " ", raw)
-    return re.sub(r"\s+", " ", normalized).strip()
+    normalized = re.sub(r"\s+", " ", normalized).strip()
+    # Strip trailing reservation markers (SC/ST) so "ARAKKONAM SC" == "ARAKKONAM"
+    normalized = re.sub(r"\s+(SC|ST)$", "", normalized)
+    return _CONSTITUENCY_ALIASES.get(normalized, normalized)
 
 
 def _is_2016_row(row: dict) -> bool:
@@ -202,7 +269,7 @@ def _is_2016_row(row: dict) -> bool:
     constituency_name = _normalize_constituency_name(
         row.get("2021_constituency") or row.get("constituency")
     )
-    return candidate_name == "ambethkumar s" and constituency_name == "VANDAVASI SC"
+    return candidate_name == "ambethkumar s" and constituency_name == "VANDAVASI"
 
 
 @lru_cache(maxsize=1)
@@ -316,7 +383,7 @@ def _load_names_ta() -> dict:
 def _get_tamil_name(english_name: str) -> str:
     """Look up Tamil transliteration for a name. Falls back to English."""
     ta_map = _load_names_ta()
-    return ta_map.get(english_name, english_name)
+    return ta_map.get(english_name) or ta_map.get(english_name.title()) or english_name
 
 
 def _display_party_name_ta(party_name: str) -> str:
@@ -338,7 +405,17 @@ def _display_party_name_ta(party_name: str) -> str:
 
 
 PROMINENT_PARTIES = {
+    "DMK", "Dravida Munnetra Kazhagam",
+    "AIADMK", "All India Anna Dravida Munnetra Kazhagam",
+    "BJP", "Bharatiya Janata Party",
+    "INC", "Indian National Congress",
+    "CPI", "Communist Party of India",
+    "CPI(M)", "Communist Party of India (Marxist)",
+    "Communist Party of India (Marxist-Leninist) (Liberation)",
+    "Pattali Makkal Katchi", "PMK",
+    "Viduthalai Chiruthaigal Katchi", "VCK",
     "Naam Tamilar Katchi", "NTK",
+    "Tamilaga Vettri Kazhagam", "TVK",
     "Makkal Needhi Maiam", "MNM",
     "Desiya Murpokku Dravida Kazhagam", "DMDK",
     "Amma Makkal Munnettra Kazagam", "AMMK",
@@ -358,6 +435,19 @@ PARTY_ALIASES: dict[str, list[str]] = {
     "Amma Makkal Munnettra Kazagam": ["AMMK"],
     "Makkal Needhi Maiam": ["MNM"],
     "Naam Tamilar Katchi": ["NTK"],
+    "Tamilaga Vettri Kazhagam": ["TVK"],
+    "Dravida Munnetra Kazhagam": ["DMK"],
+    "All India Anna Dravida Munnetra Kazhagam": ["AIADMK"],
+    "Bharatiya Janata Party": ["BJP"],
+    "Indian National Congress": ["INC", "Congress"],
+    "Communist Party of India (Marxist-Leninist) (Liberation)": ["CPI(ML)(L)", "CPIML"],
+}
+
+CANDIDATE_ALIASES: dict[str, list[str]] = {
+    "O.Panneerselvam": ["OPS", "O Panneerselvam"],
+    "Palaniswami K": ["EPS", "Edappadi Palaniswami", "Edappadi K Palaniswami"],
+    "M.K. Stalin": ["MKS", "Stalin"],
+    "Udhayanidhi Stalin": ["Udhayanidhi"],
 }
 
 PARTY_COLORS = {
@@ -381,20 +471,23 @@ PARTY_COLORS = {
 
 LOCAL_PARTY_SYMBOLS = {
     # DMK
-    "dmk": "dmk.svg",
-    "dravida munnetra kazhagam": "dmk.svg",
+    "dmk": "dmk.png",
+    "dravida munnetra kazhagam": "dmk.png",
     # AIADMK
-    "aiadmk": "aiadmk.svg",
-    "all india anna dravida munnetra kazhagam": "aiadmk.svg",
+    "aiadmk": "aiadmk_final.png",
+    "all india anna dravida munnetra kazhagam": "aiadmk_final.png",
     # BJP
-    "bjp": "bjp.svg",
-    "bharatiya janata party": "bjp.svg",
+    "bjp": "bjp.png",
+    "bharatiya janata party": "bjp.png",
     # INC
-    "inc": "inc.svg",
-    "indian national congress": "inc.svg",
+    "inc": "inc.png",
+    "indian national congress": "inc.png",
     # NTK
-    "ntk": "ntk.svg",
-    "naam tamilar katchi": "ntk.svg",
+    "ntk": "ntk_final.png",
+    "naam tamilar katchi": "ntk_final.png",
+    # TVK
+    "tvk": "tvk_symbol_final.jpeg",
+    "tamilaga vettri kazhagam": "tvk_symbol_final.jpeg",
     # PMK
     "pmk": "pmk.svg",
     "pattali makkal katchi": "pmk.svg",
@@ -440,8 +533,65 @@ def _party_symbol_url(party_name: Optional[str]) -> Optional[str]:
     return None
 
 
+def _candidate_count_color(count: int) -> str:
+    if count == 0:
+        return "#E2E8F0"
+    if count <= 2:
+        return "#BFDBFE"
+    if count <= 5:
+        return "#60A5FA"
+    return "#2563EB"
+
+
 def map_data(request):
-    rows = _load_smla_rows()
+    year = request.GET.get("year", "2026").strip()
+    if year not in {"2021", "2026"}:
+        year = "2026"
+
+    if year == "2026":
+        return _map_data_2026(request)
+    return _map_data_2021(request)
+
+
+def _map_data_2026(request):
+    rows = _load_smla_rows("2026")
+    candidate_counts: Counter = Counter()
+    for row in rows:
+        key = _normalize_constituency_name(row.get("constituency"))
+        if key:
+            candidate_counts[key] += 1
+
+    features = []
+    for constituency in Constituency.objects.exclude(boundary_geojson__isnull=True):
+        raw_key = _normalize_constituency_name(constituency.name)
+        count = candidate_counts.get(raw_key, 0)
+        features.append({
+            "type": "Feature",
+            "properties": {
+                "id": constituency.id,
+                "name": constituency.name,
+                "name_ta": constituency.name_ta or "",
+                "district": constituency.district or "",
+                "district_ta": constituency.district_ta or "",
+                "candidate_count": count,
+                "party": "",
+                "party_color": _candidate_count_color(count),
+                "vacant": False,
+                "unknown": False,
+            },
+            "geometry": constituency.boundary_geojson,
+        })
+    legend = [
+        {"party": "6+ candidates", "party_ta": "6+ வேட்பாளர்கள்", "color": "#2563EB"},
+        {"party": "3-5 candidates", "party_ta": "3-5 வேட்பாளர்கள்", "color": "#60A5FA"},
+        {"party": "1-2 candidates", "party_ta": "1-2 வேட்பாளர்கள்", "color": "#BFDBFE"},
+        {"party": "No candidates yet", "party_ta": "வேட்பாளர்கள் இல்லை", "color": "#E2E8F0"},
+    ]
+    return JsonResponse({"type": "FeatureCollection", "features": features, "legend": legend, "year": "2026"})
+
+
+def _map_data_2021(request):
+    rows = _load_smla_rows("2021")
     sitting_lookup: dict[str, dict] = {}
     constituency_seen: set[str] = set()
     official_lookup = _load_official_constituencies()
@@ -531,7 +681,7 @@ def map_data(request):
         )
         if color
     ]
-    return JsonResponse({"type": "FeatureCollection", "features": features, "legend": legend})
+    return JsonResponse({"type": "FeatureCollection", "features": features, "legend": legend, "year": "2021"})
 
 
 def _calculate_bounds(boundary_geojson):
@@ -745,12 +895,12 @@ def party_dashboard_search(request):
     if len(query) < 2:
         return JsonResponse({"results": []})
 
-    year = request.GET.get("year", "2021").strip()
+    year = request.GET.get("year", "2026").strip()
     if year not in {"2021", "2026"}:
-        year = "2021"
+        year = "2026"
 
     data_dir = settings.BASE_DIR.parent / "data"
-    csv_path = data_dir / ("tn_2026_candidates.csv" if year == "2026" else "fct_candidates_21.csv")
+    csv_path = data_dir / ("fct_candidates_26.csv" if year == "2026" else "fct_candidates_21.csv")
     rows = _load_party_rows(str(csv_path))
     if not rows:
         return JsonResponse({"results": []})
@@ -794,6 +944,49 @@ def party_dashboard_search(request):
                 "score": score,
             })
 
+    # Score districts
+    district_ta_map_d = dict(
+        Constituency.objects.exclude(district_ta="").values_list("district", "district_ta")
+    )
+    district_set: dict[str, str] = {}
+    for row in rows:
+        d = _get_district_for_row(row, year)
+        if d and d not in district_set:
+            district_set[d] = district_ta_map_d.get(d, "")
+
+    for district_en, district_ta in district_set.items():
+        score = _fuzzy_match_score(query_lower, district_en.lower())
+        if district_ta:
+            score = max(score, _fuzzy_match_score(query_lower, district_ta.lower()))
+        if score > 0:
+            scored.append({
+                "type": "district",
+                "name": district_en,
+                "name_ta": district_ta,
+                "score": score,
+            })
+
+    # Score constituencies
+    constituency_set: dict[str, tuple[str, str]] = {}
+    for row in rows:
+        c = _row_value(row, constituency_key)
+        if c and c not in constituency_set:
+            d = _get_district_for_row(row, year)
+            constituency_set[c] = (constituency_ta_map.get(c, ""), d)
+
+    for const_en, (const_ta, const_district) in constituency_set.items():
+        score = _fuzzy_match_score(query_lower, const_en.lower())
+        if const_ta:
+            score = max(score, _fuzzy_match_score(query_lower, const_ta.lower()))
+        if score > 0:
+            scored.append({
+                "type": "constituency",
+                "name": const_en,
+                "name_ta": const_ta,
+                "district": const_district,
+                "score": score,
+            })
+
     # Score candidates (deduplicate by name+party)
     seen_candidates: set[tuple[str, str]] = set()
     for row in rows:
@@ -807,6 +1000,9 @@ def party_dashboard_search(request):
         # Also match against Tamil name
         if name_ta:
             score = max(score, _fuzzy_match_score(query_lower, name_ta.lower()))
+        # Also match against popular aliases/nicknames
+        for alias in CANDIDATE_ALIASES.get(candidate, []):
+            score = max(score, _fuzzy_match_score(query_lower, alias.lower()))
         if score > 0:
             constituency_en = _row_value(row, constituency_key)
             scored.append({
@@ -818,7 +1014,7 @@ def party_dashboard_search(request):
                 "party_display_ta": _display_party_name_ta(party),
                 "constituency": constituency_en,
                 "constituency_ta": constituency_ta_map.get(constituency_en, ""),
-                "district": _row_value(row, district_key),
+                "district": _get_district_for_row(row, year),
                 "score": score,
             })
 
@@ -837,6 +1033,9 @@ def set_language(request, language: str):
     return redirect(next_url)
 
 def constituency_detail(request, constituency_id: int):
+    year = request.GET.get("year", "2026").strip()
+    if year not in {"2021", "2026"}:
+        year = "2026"
     constituency = get_object_or_404(
         Constituency.objects.all(),
         pk=constituency_id,
@@ -847,60 +1046,69 @@ def constituency_detail(request, constituency_id: int):
             party_symbols[party.name.strip().lower()] = party.symbol_url
         if party.abbreviation:
             party_symbols[party.abbreviation.strip().lower()] = party.symbol_url
-    rows = _load_smla_rows()
-    constituency_seen: set[str] = set()
-    district_candidates: dict[str, set[str]] = defaultdict(set)
-    alias_by_district: dict[str, dict[str, str]] = defaultdict(dict)
-    for row in rows:
-        constituency_key = _normalize_constituency_name(row.get("2021_constituency"))
-        district_key = _normalize_constituency_name(row.get("2021_district"))
-        if constituency_key:
-            constituency_seen.add(constituency_key)
-            if district_key:
-                district_candidates[district_key].add(constituency_key)
-            official_key = _normalize_constituency_name(row.get("const_off"))
-            if official_key:
-                alias_by_district[district_key][official_key] = constituency_key
-                alias_by_district[""].setdefault(official_key, constituency_key)
-    explicit_aliases = {
-        "PALACODU": "PALACODE",
-        "THALLI": "THALLY",
-        "SHOZHINGANALLUR": "SHOLINGANALLUR",
-        "VANDAVASI": "VANDAVASI SC",
-        "VANDAVASI SC": "VANDAVASI SC",
-    }
-    for raw, mapped in explicit_aliases.items():
-        alias_by_district[""].setdefault(raw, mapped)
-        for district_key in district_candidates.keys():
-            alias_by_district[district_key].setdefault(raw, mapped)
-    explicit_district_aliases = {
-        "TIRUVANNAMALAI": {"VANDAVASI SC": "VANDAVASI SC", "VANDAVASI": "VANDAVASI SC"},
-        "VILUPPURAM": {"VANDAVASI SC": "VANDAVASI SC", "VANDAVASI": "VANDAVASI SC"},
-        "TIRUPATHUR": {"TIRUPPATTUR": "TIRUPATTUR"},
-        "VELLORE": {"TIRUPPATTUR": "TIRUPATTUR"},
-        "SIVAGANGA": {"TIRUPPATTUR": "TIRUPPATHUR"},
-    }
-    for district_key, mapping in explicit_district_aliases.items():
-        for raw, mapped in mapping.items():
-            alias_by_district[district_key].setdefault(raw, mapped)
 
-    # Force correct global alias for Tirupathur (overrides any auto-generated alias)
-    # GeoJSON has "Tiruppattur" -> normalized "TIRUPPATTUR", CSV has "TIRUPATTUR"
-    alias_by_district[""]["TIRUPPATTUR"] = "TIRUPATTUR"
+    if year == "2026":
+        rows = _load_smla_rows("2026")
+        norm_key = _normalize_constituency_name(constituency.name)
+        candidates = [
+            row for row in rows
+            if _normalize_constituency_name(row.get("constituency")) == norm_key
+        ]
+        district_name = constituency.district or ""
+    else:
+        rows = _load_smla_rows("2021")
+        constituency_seen: set[str] = set()
+        district_candidates: dict[str, set[str]] = defaultdict(set)
+        alias_by_district: dict[str, dict[str, str]] = defaultdict(dict)
+        for row in rows:
+            constituency_key = _normalize_constituency_name(row.get("2021_constituency"))
+            district_key = _normalize_constituency_name(row.get("2021_district"))
+            if constituency_key:
+                constituency_seen.add(constituency_key)
+                if district_key:
+                    district_candidates[district_key].add(constituency_key)
+                official_key = _normalize_constituency_name(row.get("const_off"))
+                if official_key:
+                    alias_by_district[district_key][official_key] = constituency_key
+                    alias_by_district[""].setdefault(official_key, constituency_key)
+        explicit_aliases = {
+            "PALACODU": "PALACODE",
+            "THALLI": "THALLY",
+            "SHOZHINGANALLUR": "SHOLINGANALLUR",
+            "VANDAVASI": "VANDAVASI SC",
+            "VANDAVASI SC": "VANDAVASI SC",
+        }
+        for raw, mapped in explicit_aliases.items():
+            alias_by_district[""].setdefault(raw, mapped)
+            for district_key in district_candidates.keys():
+                alias_by_district[district_key].setdefault(raw, mapped)
+        explicit_district_aliases = {
+            "TIRUVANNAMALAI": {"VANDAVASI SC": "VANDAVASI SC", "VANDAVASI": "VANDAVASI SC"},
+            "VILUPPURAM": {"VANDAVASI SC": "VANDAVASI SC", "VANDAVASI": "VANDAVASI SC"},
+            "TIRUPATHUR": {"TIRUPPATTUR": "TIRUPATTUR"},
+            "VELLORE": {"TIRUPPATTUR": "TIRUPATTUR"},
+            "SIVAGANGA": {"TIRUPPATTUR": "TIRUPPATHUR"},
+        }
+        for district_key, mapping in explicit_district_aliases.items():
+            for raw, mapped in mapping.items():
+                alias_by_district[district_key].setdefault(raw, mapped)
 
-    constituency_key = _resolve_constituency_key(
-        _normalize_constituency_name(constituency.name),
-        _normalize_constituency_name(constituency.district),
-        constituency_seen,
-        district_candidates,
-        alias_by_district,
-        cutoff=0.85,
-    )
-    candidates = [
-        row for row in rows
-        if _normalize_constituency_name(row.get("2021_constituency")) == constituency_key
-    ]
-    district_name = (candidates[0].get("2021_district") if candidates else None) or constituency.district
+        # Force correct global alias for Tirupathur (overrides any auto-generated alias)
+        alias_by_district[""]["TIRUPPATTUR"] = "TIRUPATTUR"
+
+        resolved_key = _resolve_constituency_key(
+            _normalize_constituency_name(constituency.name),
+            _normalize_constituency_name(constituency.district),
+            constituency_seen,
+            district_candidates,
+            alias_by_district,
+            cutoff=0.85,
+        )
+        candidates = [
+            row for row in rows
+            if _normalize_constituency_name(row.get("2021_constituency")) == resolved_key
+        ]
+        district_name = (candidates[0].get("2021_district") if candidates else None) or constituency.district
     current_language = request.session.get("language", "en")
 
     REGION_TA = {
@@ -914,8 +1122,17 @@ def constituency_detail(request, constituency_id: int):
     region_raw = constituency.region or ""
     region_display = REGION_TA.get(region_raw, region_raw) if current_language == "ta" else region_raw
 
-    # Attach key promises for each party/coalition (best-effort; missing data is OK).
+    # Attach key promises for each party/coalition.
     party_lookup: dict[str, Party] = {}
+    coalition_by_party_id: dict[int, int] = {}
+    manifesto_by_party_id: dict[int, Manifesto] = {}
+    manifesto_by_coalition_id: dict[int, Manifesto] = {}
+    promise_chips_by_manifesto_id: dict[int, list[dict]] = {}
+    all_promises_by_manifesto_id: dict[int, list[dict]] = {}
+    state_assessment_by_party_promise: dict[tuple[int, int], PromiseAssessment] = {}
+    constituency_assessment_by_promise: dict[int, PromiseAssessment] = {}
+    claim_by_party_id: dict[int, PartyFulfilmentClaim] = {}
+
     for party in Party.objects.all().only("id", "name", "abbreviation"):
         if party.name:
             party_lookup[party.name.strip().lower()] = party
@@ -924,29 +1141,22 @@ def constituency_detail(request, constituency_id: int):
 
     party_ids: set[int] = set()
     for row in candidates:
-        raw_party = (row.get("party") or "").strip().lower()
-        match = party_lookup.get(raw_party)
-        if match:
-            party_ids.add(match.id)
+            raw_party = (row.get("party") or "").strip().lower()
+            match = party_lookup.get(raw_party)
+            if match:
+                party_ids.add(match.id)
 
-    coalition_by_party_id: dict[int, int] = {}
     if party_ids:
-        election_2021 = Election.objects.filter(year=2021).first()
+        election_obj = Election.objects.filter(year=int(year)).first()
         memberships = CoalitionMembership.objects.select_related("coalition", "coalition__election").filter(
             party_id__in=party_ids
         )
-        if election_2021:
-            memberships = memberships.filter(coalition__election=election_2021)
+        if election_obj:
+            memberships = memberships.filter(coalition__election=election_obj)
         for membership in memberships:
             if membership.party_id and membership.coalition_id:
                 coalition_by_party_id.setdefault(membership.party_id, membership.coalition_id)
 
-    manifesto_by_party_id: dict[int, Manifesto] = {}
-    manifesto_by_coalition_id: dict[int, Manifesto] = {}
-    promise_chips_by_manifesto_id: dict[int, list[dict]] = {}
-    state_assessment_by_party_promise: dict[tuple[int, int], PromiseAssessment] = {}
-    constituency_assessment_by_promise: dict[int, PromiseAssessment] = {}
-    claim_by_party_id: dict[int, PartyFulfilmentClaim] = {}
     if party_ids:
         coalition_ids = {cid for cid in coalition_by_party_id.values() if cid}
         manifestos = (
@@ -965,6 +1175,7 @@ def constituency_detail(request, constituency_id: int):
             m.id for m in list(manifesto_by_party_id.values()) + list(manifesto_by_coalition_id.values()) if m
         }
         if selected_manifesto_ids:
+            # Key promises (up to 4 per manifesto for card chips)
             promises = (
                 ManifestoPromise.objects.filter(manifesto_id__in=selected_manifesto_ids, is_key=True)
                 .only("id", "manifesto_id", "slug", "text", "text_ta", "position")
@@ -982,6 +1193,33 @@ def constituency_detail(request, constituency_id: int):
                 if not text:
                     continue
                 bucket.append({"id": promise.id, "slug": promise.slug, "text": text})
+
+            # All promises (for popup modal, up to 30 per manifesto)
+            all_promises_qs = (
+                ManifestoPromise.objects.filter(manifesto_id__in=selected_manifesto_ids)
+                .only("id", "manifesto_id", "slug", "text", "text_ta", "category", "position", "is_key")
+                .order_by("position", "id")
+            )
+            for promise in all_promises_qs:
+                bucket = all_promises_by_manifesto_id.setdefault(promise.manifesto_id, [])
+                if len(bucket) >= 30:
+                    continue
+                text = (
+                    promise.text_ta.strip()
+                    if current_language == "ta" and promise.text_ta
+                    else (promise.text.strip() if promise.text else "")
+                )
+                if not text:
+                    continue
+                cat = promise.category or ""
+                bucket.append({
+                    "id": promise.id,
+                    "slug": promise.slug,
+                    "text": text,
+                    "category": cat,
+                    "category_ta": PROMISE_CATEGORY_TA.get(cat, cat),
+                    "is_key": promise.is_key,
+                })
 
             promise_ids = {chip["id"] for chips in promise_chips_by_manifesto_id.values() for chip in chips if chip.get("id")}
             if promise_ids:
@@ -1012,12 +1250,12 @@ def constituency_detail(request, constituency_id: int):
                     if assessment.promise_id not in constituency_assessment_by_promise:
                         constituency_assessment_by_promise[assessment.promise_id] = assessment
 
-            election_2021 = Election.objects.filter(year=2021).first()
+            election_for_claims = Election.objects.filter(year=int(year)).first()
             claim_qs = PartyFulfilmentClaim.objects.filter(party_id__in=party_ids).select_related(
                 "source_document", "election"
             )
-            if election_2021:
-                claim_qs = claim_qs.filter(election=election_2021)
+            if election_for_claims:
+                claim_qs = claim_qs.filter(election=election_for_claims)
             claim_qs = claim_qs.order_by("-as_of", "-id")
             for claim in claim_qs:
                 if claim.party_id and claim.party_id not in claim_by_party_id:
@@ -1051,11 +1289,30 @@ def constituency_detail(request, constituency_id: int):
             "label": "சராசரி சொத்துகள்" if _ta else "Avg assets",
             "value": f"₹ {short_indian(round(avg_assets, 0))}" if avg_assets is not None else "N/A",
         },
-        {
+    ]
+    # Most common education tile
+    edu_counter: Counter = Counter()
+    for row in candidates:
+        edu = (row.get("education_category") or row.get("education") or "").strip()
+        if edu:
+            edu_counter[edu] += 1
+    top_edu = ""
+    for edu_name, _ in edu_counter.most_common():
+        if edu_name and edu_name != "Others":
+            top_edu = edu_name
+            break
+    if not top_edu and edu_counter:
+        top_edu = edu_counter.most_common(1)[0][0]
+    if top_edu:
+        summary_cards.append({
+            "label": "அதிகம் காணப்படும் கல்வி" if _ta else "Most common education",
+            "value": EDUCATION_TA.get(top_edu, top_edu) if _ta else top_edu,
+        })
+    if year == "2021":
+        summary_cards.append({
             "label": "சராசரி தேர்தல் செலவு" if _ta else "Avg expenditure",
             "value": f"₹ {short_indian(round(avg_expenditure, 0))}" if avg_expenditure is not None else "N/A",
-        },
-    ]
+        })
 
     candidate_cards = []
     for row in candidates:
@@ -1068,6 +1325,7 @@ def constituency_detail(request, constituency_id: int):
             manifesto_by_coalition_id.get(coalition_id) if coalition_id else None
         ) or (manifesto_by_party_id.get(party_obj.id) if party_obj else None)
         key_promises = promise_chips_by_manifesto_id.get(manifesto.id, []) if manifesto else []
+        all_promises = all_promises_by_manifesto_id.get(manifesto.id, []) if manifesto else []
 
         state_delivery = None
         constituency_delivery = None
@@ -1150,7 +1408,8 @@ def constituency_detail(request, constituency_id: int):
             }
         name_en = (row.get("candidate") or "").strip() or "Unknown"
         party_en = (row.get("party") or "").strip() or "Independent / Unknown"
-        education_en = (row.get("education") or "").strip()
+        education_en = (row.get("education_category") or row.get("education") or "").strip()
+        education_details_raw = (row.get("education_details") or row.get("education_formatted") or row.get("education_details_clean") or "").strip()
         candidate_cards.append(
             {
                 "name": name_en,
@@ -1169,12 +1428,26 @@ def constituency_detail(request, constituency_id: int):
                 "sitting": str(row.get("sitting_MLA", "")).strip() == "1",
                 "myneta_url": (row.get("myneta_url") or "").strip(),
                 "self_profession": (row.get("self_profession") or "").strip(),
+                "self_profession_ta": (row.get("self_profession_ta") or "").strip(),
                 "spouse_profession": (row.get("spouse_profession") or "").strip(),
-                "education_details_clean": (row.get("education_formatted") or row.get("education_details_clean") or "").strip(),
+                "spouse_profession_ta": (row.get("spouse_profession_ta") or "").strip(),
+                "education_details_clean": education_details_raw,
+                "education_details_ta": (row.get("education_details_ta") or "").strip(),
                 "criminal_cases_summary": (row.get("legal_summary_short") or row.get("criminal_cases_summary") or "").strip(),
                 "key_promises": key_promises,
+                "all_promises": all_promises,
                 "state_delivery": state_delivery,
                 "constituency_delivery": constituency_delivery,
+                "photo_url": (row.get("photo_url") or "").strip(),
+                "affidavit_url": (row.get("affidavit_url") or "").strip(),
+                "affidavit_pdf_url": (row.get("affidavit_pdf_url") or "").strip(),
+                "gender": (row.get("gender") or "").strip(),
+                "phone": (row.get("phone") or "").strip(),
+                "email": (row.get("email") or "").strip(),
+                "facebook": (row.get("facebook") or "").strip(),
+                "twitter": (row.get("twitter") or "").strip(),
+                "instagram": (row.get("instagram") or "").strip(),
+                "youtube": (row.get("youtube") or "").strip(),
             }
         )
     candidate_cards.sort(key=lambda c: (not c["sitting"],))
@@ -1182,6 +1455,7 @@ def constituency_detail(request, constituency_id: int):
         request,
         "core/constituency_detail.html",
         {
+            "year": year,
             "constituency": constituency,
             "district_name": district_name,
             "summary_cards": summary_cards,
@@ -1344,6 +1618,8 @@ def _compute_overview_stats(rows: list[dict]) -> dict:
         party_set.add(party_name)
 
         cases_value = _parse_int(row.get("criminal_cases"))
+        if cases_value is not None and cases_value > 500:
+            cases_value = None  # discard obviously corrupt data
         age_value = _parse_int(row.get("age"))
         assets_value = _parse_int(row.get("total_assets_rs"))
         expenditure_value = _parse_int(row.get("election_expenditure_rs"))
@@ -1399,13 +1675,14 @@ def _passes_bucket_filter(value, bucket_min, bucket_max) -> bool:
 
 
 def party_dashboard(request):
-    year = request.GET.get("year", "2021").strip()
+    year = request.GET.get("year", "2026").strip()
     if year not in {"2021", "2026"}:
-        year = "2021"
+        year = "2026"
     cases_filter = request.GET.get("cases", "").strip()
     age_group_filter = request.GET.get("age_group", "").strip()
     assets_range_filter = request.GET.get("assets_range", "").strip()
     sitting_filter = request.GET.get("sitting_mla", "").strip()
+    gender_filter = request.GET.get("gender", "").strip()
     district_filter = request.GET.get("district", "").strip()
     constituency_filter = request.GET.get("constituency", "").strip()
     selected_party = request.GET.get("party", "").strip()
@@ -1420,9 +1697,10 @@ def party_dashboard(request):
     assets_filter_active = assets_range_filter in ASSETS_BUCKETS
 
     data_dir = settings.BASE_DIR.parent / "data"
-    csv_path = data_dir / ("tn_2026_candidates.csv" if year == "2026" else "fct_candidates_21.csv")
+    csv_path = data_dir / ("fct_candidates_26.csv" if year == "2026" else "fct_candidates_21.csv")
     rows = _load_party_rows(str(csv_path))
     has_sitting = bool(rows and "sitting_MLA" in rows[0])
+    has_gender = bool(rows and "gender" in rows[0])
 
     filtered_rows: list[dict] = []
     party_set = set()
@@ -1436,7 +1714,7 @@ def party_dashboard(request):
         assets_value = _parse_int(row.get("total_assets_rs"))
         sitting_value = _parse_int(row.get("sitting_MLA"))
         party_name = (row.get("party") or "").strip() or "Independent / Unknown"
-        district_name = _row_value(row, district_key)
+        district_name = _get_district_for_row(row, year)
         constituency_name = _row_value(row, constituency_key)
         party_set.add(party_name)
         if district_name:
@@ -1451,6 +1729,10 @@ def party_dashboard(request):
             continue
         if has_sitting and sitting_filter in {"0", "1"}:
             if sitting_value is None or str(sitting_value) != sitting_filter:
+                continue
+        if has_gender and gender_filter in {"male", "female"}:
+            row_gender = (row.get("gender") or "").strip().lower()
+            if row_gender != gender_filter:
                 continue
         if selected_party and party_name != selected_party:
             continue
@@ -1472,6 +1754,7 @@ def party_dashboard(request):
         "expenditure_total": 0,
         "expenditure_count": 0,
         "sitting_total": 0,
+        "women_count": 0,
         "education_counts": Counter(),
     })
 
@@ -1480,13 +1763,17 @@ def party_dashboard(request):
         party = (row.get("party") or "").strip() or "Independent / Unknown"
         cases_value = _parse_int(row.get("criminal_cases"))
         age_value = _parse_int(row.get("age"))
-        education_value = (row.get("education") or "").strip()
+        education_value = (row.get("education_category") or row.get("education") or "").strip()
         assets_value = _parse_int(row.get("total_assets_rs"))
         expenditure_value = _parse_int(row.get("election_expenditure_rs"))
         sitting_value = _parse_int(row.get("sitting_MLA"))
 
+        gender_value = (row.get("gender") or "").strip().lower()
+
         bucket = party_data[party]
         bucket["count"] += 1
+        if gender_value == "female":
+            bucket["women_count"] += 1
         if cases_value is not None:
             bucket["cases_total"] += cases_value
             bucket["cases_count"] += 1
@@ -1507,6 +1794,40 @@ def party_dashboard(request):
         if education_value:
             bucket["education_counts"][education_value] += 1
 
+    # Build manifesto lookup for party dashboard badges
+    _party_manifesto_info: dict[str, dict] = {}
+    _dash_party_objs = {
+        p.name.strip().lower(): p
+        for p in Party.objects.all().only("id", "name", "abbreviation")
+        if p.name
+    }
+    for abbr_p in Party.objects.all().only("id", "abbreviation"):
+        if abbr_p.abbreviation:
+            _dash_party_objs.setdefault(abbr_p.abbreviation.strip().lower(), abbr_p)
+    _dash_manifesto_ids = set()
+    for m in Manifesto.objects.filter(
+        constituency__isnull=True, candidate__isnull=True, party__isnull=False
+    ).select_related("party").order_by("-last_updated"):
+        if m.party and m.party.name:
+            key = m.party.name.strip().lower()
+            if key not in _party_manifesto_info:
+                _party_manifesto_info[key] = {"manifesto_id": m.id, "has_manifesto": True, "key_promise_count": 0}
+                _dash_manifesto_ids.add(m.id)
+            if m.party.abbreviation:
+                abbr_key = m.party.abbreviation.strip().lower()
+                if abbr_key not in _party_manifesto_info:
+                    _party_manifesto_info[abbr_key] = _party_manifesto_info[key]
+    if _dash_manifesto_ids:
+        from django.db.models import Count
+        _counts = (
+            ManifestoPromise.objects.filter(manifesto_id__in=_dash_manifesto_ids, is_key=True)
+            .values("manifesto_id")
+            .annotate(cnt=Count("id"))
+        )
+        _count_map = {row["manifesto_id"]: row["cnt"] for row in _counts}
+        for info in _party_manifesto_info.values():
+            info["key_promise_count"] = _count_map.get(info["manifesto_id"], 0)
+
     party_stats = []
     for party, stats in party_data.items():
         avg_cases = (
@@ -1521,14 +1842,28 @@ def party_dashboard(request):
             else None
         )
         cases_pct = round((stats["cases_positive"] / stats["count"]) * 100, 1) if stats["count"] else 0.0
-        top_education = stats["education_counts"].most_common(1)
+        edu_ranking = stats["education_counts"].most_common()
+        top_edu_en = ""
+        for edu_name, _ in edu_ranking:
+            if edu_name and edu_name != "Others":
+                top_edu_en = edu_name
+                break
+        if not top_edu_en and edu_ranking:
+            top_edu_en = edu_ranking[0][0]
         avg_expenditure = (
             round(stats["expenditure_total"] / stats["expenditure_count"], 0)
             if stats["expenditure_count"]
             else None
         )
         total_expenditure = stats["expenditure_total"]
-        top_edu_en = top_education[0][0] if top_education else ""
+        _EDU_RANK = {
+            "Doctorate": 1, "Post Graduate": 2, "Graduate Professional": 3,
+            "Graduate": 4, "Diploma": 5, "12th Pass": 6, "10th Pass": 7,
+            "8th Pass": 8, "5th Pass": 9, "Literate": 10, "Illiterate": 11,
+            "Others": 12,
+        }
+        edu_rank = _EDU_RANK.get(top_edu_en, 13)
+        women_pct = round((stats["women_count"] / stats["count"]) * 100, 1) if stats["count"] else 0.0
         party_stats.append(
             {
                 "party": party,
@@ -1536,6 +1871,7 @@ def party_dashboard(request):
                 "party_display_ta": _display_party_name_ta(party),
                 "party_symbol": _party_symbol_url(party),
                 "candidate_count": stats["count"],
+                "women_pct": women_pct,
                 "avg_cases": avg_cases,
                 "avg_age": avg_age,
                 "avg_assets": avg_assets,
@@ -1543,7 +1879,10 @@ def party_dashboard(request):
                 "total_expenditure": total_expenditure,
                 "cases_pct": cases_pct,
                 "top_education": top_edu_en,
+                "top_education_rank": edu_rank,
                 "top_education_ta": EDUCATION_TA.get(top_edu_en, top_edu_en),
+                "has_manifesto": _party_manifesto_info.get(party.strip().lower(), {}).get("has_manifesto", False),
+                "key_promise_count": _party_manifesto_info.get(party.strip().lower(), {}).get("key_promise_count", 0),
             }
         )
 
@@ -1585,6 +1924,7 @@ def party_dashboard(request):
         "age_group": age_group_filter,
         "assets_range": assets_range_filter,
         "sitting_mla": sitting_filter,
+        "gender": gender_filter,
         "party": selected_party,
         "district": district_filter,
         "constituency": constituency_filter,
@@ -1641,6 +1981,8 @@ def party_dashboard(request):
             "selected_age_group": age_group_filter,
             "selected_assets_range": assets_range_filter,
             "sitting_mla": sitting_filter if has_sitting else "",
+            "has_gender": has_gender,
+            "selected_gender": gender_filter,
             "rows_count": len(filtered_rows),
             "party_options": party_options,
             "selected_party": selected_party,
@@ -1655,9 +1997,9 @@ def party_dashboard(request):
 
 
 def party_detail(request, party_name: str):
-    year = request.GET.get("year", "2021").strip()
+    year = request.GET.get("year", "2026").strip()
     if year not in {"2021", "2026"}:
-        year = "2021"
+        year = "2026"
     party_display_name = _display_party_name(party_name)
     party_display_name_ta = _display_party_name_ta(party_name)
     party_symbol = _party_symbol_url(party_name)
@@ -1665,6 +2007,7 @@ def party_detail(request, party_name: str):
     age_group_filter = request.GET.get("age_group", "").strip()
     assets_range_filter = request.GET.get("assets_range", "").strip()
     sitting_filter = request.GET.get("sitting_mla", "").strip()
+    gender_filter = request.GET.get("gender", "").strip()
     district_filter = request.GET.get("district", "").strip()
     constituency_filter = request.GET.get("constituency", "").strip()
 
@@ -1676,10 +2019,11 @@ def party_detail(request, party_name: str):
     assets_filter_active = assets_range_filter in ASSETS_BUCKETS
 
     data_dir = settings.BASE_DIR.parent / "data"
-    csv_path = data_dir / ("tn_2026_candidates.csv" if year == "2026" else "fct_candidates_21.csv")
+    csv_path = data_dir / ("fct_candidates_26.csv" if year == "2026" else "fct_candidates_21.csv")
     rows = _load_party_rows(str(csv_path))
 
     has_sitting = bool(rows and "sitting_MLA" in rows[0])
+    has_gender = bool(rows and "gender" in rows[0])
     district_key = ("2021_district", "district")
     constituency_key = ("2021_constituency", "constituency")
     district_set = set()
@@ -1690,7 +2034,7 @@ def party_detail(request, party_name: str):
         if (row.get("party") or "").strip() != party_name:
             continue
         all_party_rows.append(row)
-        district_name = _row_value(row, district_key)
+        district_name = _get_district_for_row(row, year)
         constituency_name = _row_value(row, constituency_key)
         if district_name:
             district_set.add(district_name)
@@ -1703,7 +2047,7 @@ def party_detail(request, party_name: str):
         age_value = _parse_int(row.get("age"))
         assets_value = _parse_int(row.get("total_assets_rs"))
         sitting_value = _parse_int(row.get("sitting_MLA"))
-        district_name = _row_value(row, district_key)
+        district_name = _get_district_for_row(row, year)
         constituency_name = _row_value(row, constituency_key)
 
         if cases_filter_active and not _passes_bucket_filter(cases_value, cases_min, cases_max):
@@ -1715,6 +2059,10 @@ def party_detail(request, party_name: str):
         if has_sitting and sitting_filter in {"0", "1"}:
             if sitting_value is None or str(sitting_value) != sitting_filter:
                 continue
+        if has_gender and gender_filter in {"male", "female"}:
+            row_gender = (row.get("gender") or "").strip().lower()
+            if row_gender != gender_filter:
+                continue
         if district_filter and district_name != district_filter:
             continue
         if constituency_filter and constituency_name != constituency_filter:
@@ -1725,13 +2073,20 @@ def party_detail(request, party_name: str):
     excluded_headers = {
         "party", "sitting_MLA", "bye_election", "total_assets", "liabilities", "const_off",
         "liabilities_rs", "myneta_url",
-        "education_details", "criminal_cases_details", "election_expenditure",
+        "education", "education_details", "criminal_cases_details", "election_expenditure",
         "education_details_clean", "criminal_cases_summary",
         "self_profession", "spouse_profession",
+        "photo_url", "affidavit_url", "affidavit_pdf_url", "pdf_path", "current_status",
+        "phone", "email", "facebook", "twitter", "instagram", "youtube",
+        "address", "fathers_name", "gender",
+        "self_profession_ta", "spouse_profession_ta", "education_details_ta",
     }
+    # 2026 has no election-expenditure data (not filed yet); hide that column only.
+    if year == "2026":
+        excluded_headers.add("election_expenditure_rs")
     allowed_headers = [header for header in headers if header not in excluded_headers]
-    # Ensure election_expenditure_rs is included
-    if "election_expenditure_rs" not in allowed_headers and "election_expenditure_rs" in (headers or []):
+    # Ensure election_expenditure_rs is included (2021 only)
+    if year != "2026" and "election_expenditure_rs" not in allowed_headers and "election_expenditure_rs" in (headers or []):
         allowed_headers.append("election_expenditure_rs")
     label_overrides = {
         "total_assets_rs": "Total Assets (₹)",
@@ -1739,10 +2094,12 @@ def party_detail(request, party_name: str):
         "criminal_cases": "Criminal cases",
         "2021_constituency": "Constituency",
         "2021_district": "District",
+        "constituency": "Constituency",
+        "education_category": "Education",
         "education_formatted": "Education Details",
         "legal_summary_short": "Legal History",
     }
-    non_sortable = {"candidate", "2021_constituency", "2021_district", "education_formatted", "legal_summary_short"}
+    non_sortable = {"candidate", "2021_constituency", "2021_district", "constituency", "education_formatted", "legal_summary_short"}
     columns = []
     for header in allowed_headers:
         label_en = label_overrides.get(header, header.replace("_", " ").title())
@@ -1755,7 +2112,7 @@ def party_detail(request, party_name: str):
             "is_sortable": header not in non_sortable,
         })
     # Card view: reorder so Education, Age, Criminal Cases come first
-    card_order = ["candidate", "education", "age", "criminal_cases"]
+    card_order = ["candidate", "education_category", "education", "age", "criminal_cases"]
     card_exclude = {"education_formatted", "legal_summary_short"}
     col_by_key = {c["key"]: c for c in columns}
     card_columns = [col_by_key[k] for k in card_order if k in col_by_key]
@@ -1766,21 +2123,45 @@ def party_detail(request, party_name: str):
         constituency_header = "2021_constituency"
     elif "constituency" in allowed_headers:
         constituency_header = "constituency"
+    current_language = request.session.get("language", "en")
+    _constituency_ta_map = dict(
+        Constituency.objects.exclude(name_ta="").values_list("name", "name_ta")
+    ) if current_language == "ta" else {}
     rows_table = []
     candidate_modal_data = []
     for row in party_rows:
         row_data = {header: row.get(header, "") for header in allowed_headers}
+        row_data["photo_url"] = (row.get("photo_url") or "").strip()
+        row_data["affidavit_url"] = (row.get("affidavit_url") or "").strip()
+        row_data["affidavit_pdf_url"] = (row.get("affidavit_pdf_url") or "").strip()
         const_off = (row.get("const_off") or "").strip()
         if constituency_header and const_off:
             row_data[constituency_header] = const_off
         for district_header in ("2021_district", "district"):
-            if district_header in row_data and row_data[district_header]:
-                row_data[district_header] = str(row_data[district_header]).strip().title()
+            if district_header in row_data:
+                val = row_data[district_header]
+                if not val and year == "2026":
+                    val = _get_district_for_row(row, year)
+                if val:
+                    row_data[district_header] = str(val).strip().title()
+        # Translate gender value for Tamil
+        if current_language == "ta" and "gender" in row_data:
+            row_data["gender"] = GENDER_TA.get(row_data["gender"], row_data["gender"])
+        # Translate constituency name for Tamil
+        if current_language == "ta" and constituency_header and row_data.get(constituency_header):
+            row_data[constituency_header] = _constituency_ta_map.get(row_data[constituency_header], row_data[constituency_header])
+        # Translate candidate name for Tamil
+        if current_language == "ta" and "candidate" in row_data:
+            row_data["candidate"] = _get_tamil_name(row_data["candidate"])
+        # Translate education category for Tamil
+        if current_language == "ta" and "education_category" in row_data:
+            edu_cat = row_data["education_category"]
+            row_data["education_category"] = EDUCATION_TA.get(edu_cat, edu_cat)
         row_data["is_2016"] = _is_2016_row(row)
         rows_table.append(row_data)
         # Modal extended data
         cand_name_en = (row.get("candidate") or "").strip()
-        edu_en = (row.get("education") or "").strip()
+        edu_en = (row.get("education_category") or row.get("education") or "").strip()
         candidate_modal_data.append({
             "name": cand_name_en,
             "name_ta": _get_tamil_name(cand_name_en),
@@ -1792,16 +2173,46 @@ def party_detail(request, party_name: str):
             "liabilities": _parse_int(row.get("liabilities_rs")),
             "election_expenditure": _parse_int(row.get("election_expenditure_rs")),
             "self_profession": (row.get("self_profession") or "").strip(),
+            "self_profession_ta": (row.get("self_profession_ta") or "").strip(),
             "spouse_profession": (row.get("spouse_profession") or "").strip(),
-            "education_details_clean": (row.get("education_formatted") or row.get("education_details_clean") or "").strip(),
+            "spouse_profession_ta": (row.get("spouse_profession_ta") or "").strip(),
+            "education_details_clean": (row.get("education_details") or row.get("education_formatted") or row.get("education_details_clean") or "").strip(),
+            "education_details_ta": (row.get("education_details_ta") or "").strip(),
             "criminal_cases_summary": (row.get("legal_summary_short") or row.get("criminal_cases_summary") or "").strip(),
             "myneta_url": (row.get("myneta_url") or "").strip(),
+            "affidavit_url": (row.get("affidavit_url") or "").strip(),
+            "affidavit_pdf_url": (row.get("affidavit_pdf_url") or "").strip(),
+            "photo_url": (row.get("photo_url") or "").strip(),
+            "phone": (row.get("phone") or "").strip(),
+            "email": (row.get("email") or "").strip(),
+            "facebook": (row.get("facebook") or "").strip(),
+            "twitter": (row.get("twitter") or "").strip(),
+            "instagram": (row.get("instagram") or "").strip(),
+            "youtube": (row.get("youtube") or "").strip(),
         })
     available_constituencies = sorted(district_map.get(district_filter, set())) if district_filter else sorted(
         {const for consts in district_map.values() for const in consts}
     )
 
     party_obj = Party.objects.filter(name=party_name).first() or Party.objects.filter(abbreviation=party_name).first()
+
+    # Load manifesto and promises for this party
+    party_manifesto = None
+    party_manifesto_promises = []
+    party_key_promises = []
+    if party_obj:
+        party_manifesto = (
+            Manifesto.objects.filter(party=party_obj, constituency__isnull=True, candidate__isnull=True)
+            .order_by("-last_updated", "-id")
+            .first()
+        )
+        if party_manifesto:
+            party_manifesto_promises = list(
+                ManifestoPromise.objects.filter(manifesto=party_manifesto)
+                .only("id", "slug", "text", "text_ta", "category", "position", "is_key")
+                .order_by("position", "id")[:30]
+            )
+            party_key_promises = [p for p in party_manifesto_promises if p.is_key]
 
     # Tamil lookups for districts/constituencies
     district_ta_map = dict(
@@ -1842,10 +2253,15 @@ def party_detail(request, party_name: str):
             "selected_age_group": age_group_filter,
             "selected_assets_range": assets_range_filter,
             "sitting_mla": sitting_filter if has_sitting else "",
+            "has_gender": has_gender,
+            "selected_gender": gender_filter,
             "districts": districts_list,
             "selected_district": district_filter,
             "constituencies": constituencies_list,
             "selected_constituency": constituency_filter,
+            "manifesto": party_manifesto,
+            "manifesto_promises": party_manifesto_promises,
+            "key_promises": party_key_promises,
         },
     )
 

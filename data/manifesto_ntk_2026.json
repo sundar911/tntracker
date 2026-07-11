@@ -1,0 +1,292 @@
+[
+  {
+    "year": 2026,
+    "party": "Naam Tamilar Katchi",
+    "summary": "NTK's 2026 governance blueprint focuses on 100% organic farming, banning chemical fertilizers, structural agricultural reform, fishermen's rights, elderly care, and Tamil identity — emphasizing systemic change over cash handouts.",
+    "summary_ta": "என்டிகே-இன் 2026 ஆளுகை வரைபடம் 100% இயற்கை வேளாண்மை, இரசாயன உரங்கள் தடை, கட்டமைப்பு விவசாய சீர்திருத்தம், மீனவர்களின் உரிமைகள், முதியோர் பராமரிப்பு, தமிழ் அடையாளத்தை வலியுறுத்துதல் ஆகியவற்றில் கவனம் செலுத்துகிறது-பணப் பரிமாற்றத்திற்கு பதிலாக அமைப்பு ரீதியான மாற்றத்திற்கு முக்கியத்துவம் அளிக்கிறது.",
+    "documents": [
+      {
+        "language": "ta",
+        "source_title": "NTK Governance Blueprint 2026",
+        "source_type": "official"
+      }
+    ],
+    "promises": [
+      {
+        "slug": "100-percent-organic-farming",
+        "text": "Make Tamil Nadu a 100% organic farming state, following Bhutan's model, by completely banning chemical pesticides and fertilizers.",
+        "text_ta": "பூடானின் மாதிரியைப் பின்பற்றி, இரசாயன பூச்சிக்கொல்லிகள் மற்றும் உரங்களை முழுமையாக தடை செய்வதன் மூலம் தமிழ்நாட்டை 100% இயற்கை வேளாண் மாநிலமாக மாற்ற வேண்டும்.",
+        "category": "Agriculture",
+        "is_key": true,
+        "position": 1,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "ban-chemical-fertilizers-pesticides",
+        "text": "Completely ban life-killing chemical fertilizers (Ammonium Nitrate, Monocrotophos, Chlorpyriphos, Endosulfan etc.) and replace with organic alternatives.",
+        "text_ta": "உயிர்க்கொல்லி இரசாயன உரங்களை (அமோனியம் நைட்ரேட், மோனோகிரோடோஃபோஸ், குளோரோபைரிஃபோஸ், எண்டோசல்பான் போன்றவை) முற்றிலும் தடைசெய்து அதற்கு பதிலாக இயற்கை உரங்களைப் பயன்படுத்த வேண்டும்.",
+        "category": "Agriculture",
+        "is_key": true,
+        "position": 2,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "21-lakh-new-farmlands",
+        "text": "Create 21 lakh new farmlands from government-held land and lease them to farming families on 25-year renewable terms.",
+        "text_ta": "அரசுக்குச் சொந்தமான நிலத்திலிருந்து 21 லட்சம் புதிய விவசாய நிலங்களை உருவாக்கி, அவற்றை 25 ஆண்டு புதுப்பிக்கத்தக்க கால அளவிற்கு விவசாயக் குடும்பங்களுக்கு குத்தகைக்கு வழங்குங்கள்.",
+        "category": "Agriculture",
+        "is_key": true,
+        "position": 3,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "nammazhvar-organic-farming-colleges",
+        "text": "Establish Nammazhvar Organic Farming Colleges in every district, with government sponsorship for training abroad in countries like Bhutan, Australia, and Switzerland.",
+        "text_ta": "பூட்டான், ஆஸ்திரேலியா, சுவிட்சர்லாந்து போன்ற நாடுகளில் பயிற்சி பெறுவதற்காக ஒவ்வொரு மாவட்டத்திலும் அரசு நிதியுதவியுடன் நம்மாழ்வார் இயற்கை வேளாண் கல்லூரிகளை நிறுவ வேண்டும்.",
+        "category": "Agriculture",
+        "is_key": true,
+        "position": 4,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "agriculture-declared-government-service",
+        "text": "Declare agriculture as a government service and treat farmers as government workers, ensuring their welfare and dignity.",
+        "text_ta": "வேளாண்மையை ஒரு அரசு சேவையாக அறிவித்து, விவசாயிகளை அரசு ஊழியர்களாக கருதி, அவர்களின் நலன் மற்றும் கண்ணியத்தை உறுதி செய்யுங்கள்.",
+        "category": "Agriculture",
+        "is_key": true,
+        "position": 5,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "farmers-set-own-prices",
+        "text": "Farmers themselves will determine the price of their produce — the government and middlemen will not decide prices for them.",
+        "text_ta": "விவசாயிகள் தாங்களாகவே தங்கள் விளைபொருட்களின் விலையை நிர்ணயிப்பார்கள்-அரசு மற்றும் இடைத்தரகர்கள் அவர்களுக்காக விலைகளை நிர்ணயிக்க மாட்டார்கள்.",
+        "category": "Agriculture",
+        "is_key": true,
+        "position": 6,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "seyaraman-heritage-seed-bank",
+        "text": "Establish a 'Seyaraman' heritage seed bank to preserve and distribute 126 traditional rice varieties free to farming families.",
+        "text_ta": "விவசாயக் குடும்பங்களுக்கு இலவசமாக 126 பாரம்பரிய அரிசி வகைகளைப் பாதுகாக்கவும் விநியோகிக்கவும் 'சீராமண்' பாரம்பரிய விதை வங்கியை நிறுவுங்கள்.",
+        "category": "Agriculture",
+        "is_key": false,
+        "position": 7,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "sugarcane-farmers-fair-price",
+        "text": "Government will directly engage with sugarcane farmers, set up farmer welfare boards, and ensure they receive fair prices without middleman exploitation.",
+        "text_ta": "கரும்பு விவசாயிகளுடன் அரசாங்கம் நேரடியாக ஈடுபடும், விவசாய நல வாரியங்களை அமைக்கும், மேலும் அவர்கள் நடுத்தர வர்க்க சுரண்டல் இன்றி நியாயமான விலையைப் பெறுவதை உறுதி செய்யும்.",
+        "category": "Agriculture",
+        "is_key": false,
+        "position": 8,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "crop-insurance-national-crops",
+        "text": "Insurance coverage for paddy, wheat, sugarcane, pulses, oilseeds, millet and other nationally important crops when farmers grow them.",
+        "text_ta": "விவசாயிகள் பயிரிடும் நெல், கோதுமை, கரும்பு, பருப்பு வகைகள், எண்ணெய் வித்துக்கள், சிறுதானியங்கள் மற்றும் பிற தேசிய முக்கியத்துவம் வாய்ந்த பயிர்களுக்கான காப்பீட்டுத் திட்டம்.",
+        "category": "Agriculture",
+        "is_key": false,
+        "position": 9,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "industrial-hemp-legalization",
+        "text": "Legalize industrial hemp cultivation in Tamil Nadu — a plant with 50,000 uses including textiles, medicine, food, paper, and biofuel.",
+        "text_ta": "தமிழ்நாட்டில் தொழில்துறை கஞ்சா சாகுபடியை சட்டப்பூர்வமாக்க வேண்டும் - கஞ்சா 50,000 பயன்பாடுகளைக் கொண்டுள்ளது, இதில் ஜவுளி, மருத்துவம், உணவு, காகிதம் மற்றும் உயிரி எரிபொருள் ஆகியவை அடங்கும்.",
+        "category": "Agriculture",
+        "is_key": true,
+        "position": 10,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "organic-hydroponics-urban-farming",
+        "text": "Introduce organic hydroponics and aquaponics farming in cities to meet urban food needs without soil.",
+        "text_ta": "மண் இல்லாமல் நகர்ப்புற உணவுத் தேவைகளைப் பூர்த்தி செய்ய நகரங்களில் கரிம நீர் மற்றும் நீர்வாழ் தாவரவளர்ப்பு விவசாயத்தை அறிமுகப்படுத்துங்கள்.",
+        "category": "Agriculture",
+        "is_key": false,
+        "position": 11,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "neythal-padai-coast-guard",
+        "text": "Create 'Neythal Padai' — a dedicated Tamil Nadu coast guard force to protect fishermen from Sri Lankan navy attacks and sea threats.",
+        "text_ta": "இலங்கை கடற்படையின் தாக்குதல்கள் மற்றும் கடல் அச்சுறுத்தல்களிலிருந்து மீனவர்களை பாதுகாக்க 'நெத்தல் படையை' உருவாக்குங்கள்.",
+        "category": "Law & Order",
+        "is_key": true,
+        "position": 12,
+        "tags": [
+          "law-order"
+        ]
+      },
+      {
+        "slug": "separate-fisheries-ministry",
+        "text": "Create a separate Fisheries Ministry in the state government, since the current system under a broader department neglects fishermen's needs.",
+        "text_ta": "மாநில அரசில் தனி மீன்வள அமைச்சகத்தை உருவாக்குங்கள், ஏனெனில் பரந்த துறையின் கீழ் உள்ள தற்போதைய அமைப்பு மீனவர்களின் தேவைகளை புறக்கணிக்கிறது.",
+        "category": "Governance",
+        "is_key": false,
+        "position": 13,
+        "tags": [
+          "governance"
+        ]
+      },
+      {
+        "slug": "reclaim-katchatheevu",
+        "text": "Take legal and political action to reclaim Katchatheevu island and restore Tamil fishermen's traditional fishing rights in those waters.",
+        "text_ta": "கatchatheevu தீவை மீட்டெடுத்து, தமிழ் மீனவர்களின் பாரம்பரிய மீன்பிடி உரிமைகளை அந்த நீரில் மீட்டெடுக்க சட்ட மற்றும் அரசியல் நடவடிக்கை எடுக்க வேண்டும்.",
+        "category": "Governance",
+        "is_key": true,
+        "position": 14,
+        "tags": [
+          "governance"
+        ]
+      },
+      {
+        "slug": "one-house-per-fisherman-family",
+        "text": "Provide one house to every fisherman family, with land rights ensuring fishermen living near the sea are never displaced.",
+        "text_ta": "ஒவ்வொரு மீனவக் குடும்பத்திற்கும் ஒரு வீடு வழங்குங்கள், கடலுக்கு அருகில் வசிக்கும் மீனவர்கள் ஒருபோதும் இடம்பெயரக் கூடாது என்பதற்குரிய நில உரிமைகளை வழங்குங்கள்.",
+        "category": "Housing",
+        "is_key": false,
+        "position": 15,
+        "tags": [
+          "housing"
+        ]
+      },
+      {
+        "slug": "remove-sea-fishing-ban",
+        "text": "Remove the annual sea fishing ban and instead implement sustainable marine fishing practices that do not hurt fishermen's livelihoods.",
+        "text_ta": "வருடாந்திர கடல் மீன்பிடி தடை நீக்கிவிட்டு, மீனவர்களின் வாழ்வாதாரத்தை பாதிக்காத நிலையான கடல் மீன்பிடி நடைமுறைகளை செயல்படுத்துங்கள்.",
+        "category": "Social Welfare",
+        "is_key": false,
+        "position": 16,
+        "tags": [
+          "social-welfare"
+        ]
+      },
+      {
+        "slug": "anpucholai-elderly-homes",
+        "text": "Build 'Anpucholai' homes for abandoned elderly with full medical care, cultural activities, and 24-hour support.",
+        "text_ta": "கைவிடப்பட்ட முதியோருக்கு முழுமையான மருத்துவப் பராமரிப்பு, கலாச்சார நடவடிக்கைகள் மற்றும் 24 மணி நேர ஆதரவுடன் 'அன்புச்சோலை' வீடுகளைக் கட்டவும்.",
+        "category": "Social Welfare",
+        "is_key": true,
+        "position": 17,
+        "tags": [
+          "social-welfare"
+        ]
+      },
+      {
+        "slug": "free-travel-pass-for-elderly",
+        "text": "Free lifetime travel pass for all senior citizens aged 65 and above across Tamil Nadu.",
+        "text_ta": "தமிழ்நாட்டில் 65 மற்றும் அதற்கு மேற்பட்ட வயதுடைய அனைத்து மூத்த குடிமக்களுக்கும் வாழ்நாள் முழுவதும் இலவச பயணக் காசோலை வழங்கப்படுகிறது.",
+        "category": "Social Welfare",
+        "is_key": false,
+        "position": 18,
+        "tags": [
+          "social-welfare"
+        ]
+      },
+      {
+        "slug": "geriatric-medical-specialists",
+        "text": "Create dedicated geriatric (elderly care) medical seats in medical colleges and train specialist doctors for elderly health needs.",
+        "text_ta": "மருத்துவக் கல்லூரிகளில் வயதானோருக்கென பிரத்யேக மருத்துவப் பிரிவுகள் அமைக்க வேண்டும், மேலும் வயதானோரின் சுகாதாரத் தேவைகளுக்காக நிபுணத்துவம் வாய்ந்த மருத்துவர்களுக்குப் பயிற்சி அளிக்க வேண்டும்.",
+        "category": "Health",
+        "is_key": false,
+        "position": 19,
+        "tags": [
+          "health"
+        ]
+      },
+      {
+        "slug": "anputthalar-orphan-children-homes",
+        "text": "Build 'Anputthalar' homes for orphaned and abandoned children with education, medical care, and self-confidence training until they become self-sufficient.",
+        "text_ta": "அனாதை மற்றும் கைவிடப்பட்ட குழந்தைகளுக்கு கல்வி, மருத்துவப் பராமரிப்பு மற்றும் தன்னம்பிக்கை பயிற்சி அளித்து, அவர்கள் சுயமாக வாழத் தொடங்கும் வரை 'அன்புத்தலர்' வீடுகளைக் கட்டி அபிவிருத்தி செய்யுங்கள்.",
+        "category": "Women & Children",
+        "is_key": true,
+        "position": 20,
+        "tags": [
+          "women-children"
+        ]
+      },
+      {
+        "slug": "learning-disability-centers",
+        "text": "Set up learning disability centers in all schools to identify and support children with Dyslexia, Dyscalculia, and ADHD through specially trained teachers.",
+        "text_ta": "குறிப்பாகப் பயிற்சி பெற்ற ஆசிரியர்கள் மூலம், டிஸ்லெக்ஸியா, டிஸ்கல்குலியா மற்றும் ஏடிஹெச்டி உள்ள குழந்தைகளைக் கண்டறிந்து அவர்களுக்கு உதவி செய்ய அனைத்துப் பள்ளிகளிலும் கற்றல் குறைபாடு மையங்களை அமைக்கவும்.",
+        "category": "Education",
+        "is_key": false,
+        "position": 21,
+        "tags": [
+          "education"
+        ]
+      },
+      {
+        "slug": "food-as-medicine-diabetes",
+        "text": "Combat Tamil Nadu's 22.7% diabetes rate by bringing back traditional rice varieties that have lower glycemic index, turning food into medicine.",
+        "text_ta": "பாரம்பரிய அரிசி வகைகளை மீண்டும் கொண்டு வந்து, கிளைசெமிக் குறியீடு குறைவாக உள்ள உணவு வகைகளை உணவில் சேர்ப்பதன் மூலம் தமிழ்நாட்டின் 22.7% நீரிழிவு விகிதத்தைக் குறைக்கலாம்.",
+        "category": "Health",
+        "is_key": false,
+        "position": 22,
+        "tags": [
+          "health"
+        ]
+      },
+      {
+        "slug": "palm-tree-national-tree-promotion",
+        "text": "Declare palmyra palm as Tamil national tree, promote toddy and palm sugar as national beverages to create livelihoods in every district.",
+        "text_ta": "ஒவ்வொரு மாவட்டத்திலும் வாழ்வாதாரத்தை உருவாக்க, தேங்காய் மரத்தை தமிழ் தேசிய மரமாகவும், தேங்காய் சாறு மற்றும் தேங்காய் சர்க்கரையை தேசிய பானங்களாகவும் அறிவிக்க வேண்டும்.",
+        "category": "Culture & Language",
+        "is_key": false,
+        "position": 23,
+        "tags": [
+          "culture-language"
+        ]
+      },
+      {
+        "slug": "district-cold-storage-vegetable-farms",
+        "text": "Set up cold storage and natural preservation facilities in every district so farmers' vegetables and fruits don't go to waste.",
+        "text_ta": "ஒவ்வொரு மாவட்டத்திலும் உறைவிடம் மற்றும் இயற்கை பாதுகாப்பு வசதிகளை ஏற்படுத்திக் கொள்ள வேண்டும், இதனால் விவசாயிகளின் காய்கறிகளும் பழங்களும் வீணாகாமல் பாதுகாக்கப்படும்.",
+        "category": "Agriculture",
+        "is_key": false,
+        "position": 24,
+        "tags": [
+          "agriculture"
+        ]
+      },
+      {
+        "slug": "coconut-value-added-products",
+        "text": "Develop coconut-based industries: oil extraction, shell crafts, coir products, coconut toothpaste, mattresses, and bamboo alternatives from coconut fibre.",
+        "text_ta": "தேங்காய் அடிப்படையிலான தொழிற்சாலைகளை உருவாக்குங்கள்: தேங்காய் எண்ணெய் பிரித்தெடுத்தல், ஓடு கைவினைப் பொருட்கள், தேங்காய் பற்பசை, மெத்தைகள், தேங்காய் நார் கொண்டு செய்யப்படும் மூங்கில் மாற்றுப் பொருட்கள்.",
+        "category": "Economy & Jobs",
+        "is_key": false,
+        "position": 25,
+        "tags": [
+          "economy-jobs"
+        ]
+      }
+    ]
+  }
+]
