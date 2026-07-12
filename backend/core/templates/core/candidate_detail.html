@@ -50,9 +50,6 @@
         <a class="link" href="/constituency/{{ candidate.constituency.id }}/">
           ← {% if current_language == "ta" %}தொகுதி{% else %}Back to constituency{% endif %}
         </a>
-        {% if data_vintage_label %}
-        <div class="banner">{% if current_language == "ta" %}அதிகாரப்பூர்வ 2021 முடிவுகள். 2026 வேட்புமனு விரைவில்.{% else %}{{ data_vintage_label }}{% endif %}</div>
-        {% endif %}
       </div>
       <h1>
         {% if current_language == "ta" and candidate.name_ta %}{{ candidate.name_ta }}{% else %}{{ candidate.name }}{% endif %}

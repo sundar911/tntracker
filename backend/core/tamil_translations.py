@@ -64,6 +64,7 @@ RESOURCE_CATEGORY_TA = {
 
 # Resource page title translations
 RESOURCE_TITLE_TA = {
+    "MyNeta - Tamil Nadu 2026 Candidate Affidavits": "MyNeta - தமிழ்நாடு 2026 வேட்பாளர் வாக்குமூலங்கள்",
     "MyNeta - Tamil Nadu Assembly Elections": "MyNeta - தமிழ்நாடு சட்டமன்றத் தேர்தல்கள்",
     "MyNeta - Asset Comparison of Re-contesting Winners": "MyNeta - மீண்டும் போட்டியிடும் வெற்றியாளர்களின் சொத்து ஒப்பீடு",
     "MLA Election Expenditure Analysis 2021 (ADR)": "சட்டமன்ற உறுப்பினர் தேர்தல் செலவு பகுப்பாய்வு 2021 (ADR)",

@@ -100,6 +100,15 @@ def resources(request):
     """External resources page with curated links to election data sources."""
     resources_list = [
         {
+            "title": "MyNeta - Tamil Nadu 2026 Candidate Affidavits",
+            "title_ta": RESOURCE_TITLE_TA.get("MyNeta - Tamil Nadu 2026 Candidate Affidavits", ""),
+            "url": "https://myneta.info/TamilNadu2026/",
+            "description": "Full affidavit data for all 2026 Tamil Nadu assembly election candidates — criminal cases, assets, liabilities, education and income tax details, constituency by constituency.",
+            "description_ta": "2026 தமிழ்நாடு சட்டமன்றத் தேர்தல் வேட்பாளர்கள் அனைவரின் முழுமையான வாக்குமூலத் தரவு — குற்ற வழக்குகள், சொத்துக்கள், கடன்கள், கல்வி மற்றும் வருமான வரி விவரங்கள், தொகுதி வாரியாக.",
+            "category": "Affidavits",
+            "category_ta": RESOURCE_CATEGORY_TA.get("Affidavits", ""),
+        },
+        {
             "title": "MyNeta - Tamil Nadu Assembly Elections",
             "title_ta": RESOURCE_TITLE_TA.get("MyNeta - Tamil Nadu Assembly Elections", ""),
             "url": "https://myneta.info/state_assembly.php?state=Tamil%20Nadu",
