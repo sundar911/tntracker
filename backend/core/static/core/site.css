@@ -3344,6 +3344,49 @@ body.theme-dark .indicator-unit {
   margin: 0 0 16px 0;
 }
 
+.candidate-modal-winner {
+  display: inline-block;
+  background: #fefce8;
+  border: 1px solid #facc15;
+  color: #854d0e;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+}
+
+.assets-breakdown summary {
+  cursor: pointer;
+  min-height: 24px;
+}
+
+.assets-breakdown[open] summary {
+  font-weight: 600;
+}
+
+.assets-breakdown-rows {
+  margin-top: 6px;
+  padding-left: 12px;
+  border-left: 2px solid #e2e8f0;
+}
+
+.assets-breakdown-rows > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 3px 0;
+  font-size: 13px;
+  color: #475569;
+}
+
+.family-note {
+  margin: 12px 0 0 0;
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
 .candidate-modal-dl {
   margin: 0;
 }

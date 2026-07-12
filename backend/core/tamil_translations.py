@@ -102,6 +102,7 @@ COLUMN_LABEL_TA = {
     "District": "மாவட்டம்",
     "Gender": "பாலினம்",
     "Total Assets (₹)": "மொத்த சொத்து (₹)",
+    "Family Assets (₹)": "குடும்பச் சொத்து (₹)",
     "Criminal cases": "குற்ற வழக்குகள்",
     "Education Details Clean": "கல்வி விவரங்கள்",
     "Criminal Cases Summary": "வழக்கு சுருக்கம்",
@@ -126,6 +127,10 @@ PROMISE_CATEGORY_TA = {
 
 # Map legend translations
 PARTY_NAME_TA = {
+    "Tamilaga Vettri Kazhagam": "தமிழக வெற்றிக் கழகம்",
+    "TVK": "த.வெ.க",
+    "Indian Union Muslim League": "இந்திய யூனியன் முஸ்லிம் லீக்",
+    "IUML": "இ.யூ.மு.லீ",
     "DMK": "தி.மு.க",
     "AIADMK": "அ.இ.அ.தி.மு.க",
     "IND": "சுயேச்சை",

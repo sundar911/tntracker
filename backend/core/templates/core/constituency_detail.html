@@ -75,7 +75,7 @@
           <span class="sort-label">{% if current_language == "ta" %}வரிசைப்படுத்து{% else %}Sort by{% endif %}:</span>
           <button class="sort-btn" data-sort="age">{% if current_language == "ta" %}வயது{% else %}Age{% endif %}</button>
           <button class="sort-btn" data-sort="cases">{% if current_language == "ta" %}வழக்குகள்{% else %}Cases{% endif %}</button>
-          <button class="sort-btn" data-sort="assets">{% if current_language == "ta" %}சொத்துகள்{% else %}Assets{% endif %}</button>
+          <button class="sort-btn" data-sort="assets">{% if current_language == "ta" %}சொத்துகள்{% else %}Assets{% endif %}</button>
           {% if year != "2026" %}<button class="sort-btn" data-sort="expenditure">{% if current_language == "ta" %}செலவு{% else %}Expenditure{% endif %}</button>{% endif %}
         </div>
         <div class="candidate-grid">
@@ -126,7 +126,7 @@
               {% if candidate.education %}<span>{% if current_language == "ta" %}கல்வி{% else %}Education{% endif %}: {% if current_language == "ta" and candidate.education_ta %}{{ candidate.education_ta }}{% else %}{{ candidate.education }}{% endif %}</span>{% endif %}
               {% if candidate.age %}<span>{% if current_language == "ta" %}வயது{% else %}Age{% endif %}: {{ candidate.age|indian }}</span>{% endif %}
               {% if candidate.criminal_cases is not None %}<span>{% if current_language == "ta" %}வழக்குகள்{% else %}Cases{% endif %}: {{ candidate.criminal_cases|indian }}</span>{% endif %}
-              <span>{% if current_language == "ta" %}சொத்துகள்{% else %}Assets{% endif %}: {% if candidate.assets %}<span title="₹ {{ candidate.assets|indian }}">₹ {{ candidate.assets|short_indian:current_language }}</span>{% else %}N/A{% endif %}</span>
+              <span>{% if current_language == "ta" %}குடும்பச் சொத்துகள்{% else %}Family assets{% endif %}: {% if candidate.assets %}<span title="₹ {{ candidate.assets|indian }}">₹ {{ candidate.assets|short_indian:current_language }}</span>{% else %}N/A{% endif %}</span>
               {% if year != "2026" %}<span>{% if current_language == "ta" %}தேர்தல் செலவு{% else %}Election Expenditure{% endif %}: {% if candidate.election_expenditure %}<span title="₹ {{ candidate.election_expenditure|indian }}">₹ {{ candidate.election_expenditure|short_indian:current_language }}</span>{% else %}N/A{% endif %}</span>{% endif %}
             </div>
             {% if candidate.affidavit_url or candidate.affidavit_pdf_url %}
@@ -296,6 +296,11 @@
             criminal_cases: {{ c.criminal_cases|default:"null" }},
             assets: {{ c.assets|default:"null" }},
             liabilities: {{ c.liabilities|default:"null" }},
+            movable_assets: {{ c.movable_assets|default_if_none:"null" }},
+            immovable_assets: {{ c.immovable_assets|default_if_none:"null" }},
+            pan_given: "{{ c.pan_given|escapejs }}",
+            serious_ipc: {{ c.serious_ipc|default_if_none:"null" }},
+            is_winner: {{ c.is_winner|yesno:"true,false" }},
             election_expenditure: {{ c.election_expenditure|default:"null" }},
             self_profession: "{{ c.self_profession|escapejs }}",
             self_profession_ta: "{{ c.self_profession_ta|escapejs }}",
@@ -341,12 +346,24 @@
           var displayEdu = (isTa && c.education_ta) ? c.education_ta : c.education;
           var html = '<h3 class="candidate-modal-name">' + displayName + '</h3>';
           html += '<p class="candidate-modal-party">' + displayParty + '</p>';
+          if (c.is_winner) {
+            html += '<p class="candidate-modal-winner">🏆 ' + (isTa ? '2026 தேர்தலில் வெற்றி' : 'Won the 2026 election') + '</p>';
+          }
           html += '<dl class="candidate-modal-dl">';
           if (c.age !== null) html += '<div><dt>' + (isTa ? 'வயது' : 'Age') + '</dt><dd>' + c.age + '</dd></div>';
           if (c.education) html += '<div><dt>' + (isTa ? 'கல்வி' : 'Education') + '</dt><dd>' + displayEdu + '</dd></div>';
           if (c.criminal_cases !== null) html += '<div><dt>' + (isTa ? 'குற்ற வழக்குகள்' : 'Criminal Cases') + '</dt><dd>' + c.criminal_cases + '</dd></div>';
-          html += '<div><dt>' + (isTa ? 'சொத்துகள்' : 'Assets') + '</dt><dd>' + shortIndian(c.assets) + '</dd></div>';
-          html += '<div><dt>' + (isTa ? 'பாக்கிகள்' : 'Liabilities') + '</dt><dd>' + shortIndian(c.liabilities) + '</dd></div>';
+          if (c.serious_ipc !== null) html += '<div><dt>' + (isTa ? 'கடுமையான IPC குற்றச்சாட்டுகள்' : 'Serious IPC Charges') + '</dt><dd>' + c.serious_ipc + '</dd></div>';
+          var assetsDd = shortIndian(c.assets);
+          if (c.assets !== null && (c.movable_assets !== null || c.immovable_assets !== null)) {
+            assetsDd = '<details class="assets-breakdown"><summary>' + shortIndian(c.assets) + '</summary><div class="assets-breakdown-rows">';
+            if (c.movable_assets !== null) assetsDd += '<div><span>' + (isTa ? 'அசையும் சொத்து' : 'Movable') + '</span><span>' + shortIndian(c.movable_assets) + '</span></div>';
+            if (c.immovable_assets !== null) assetsDd += '<div><span>' + (isTa ? 'அசையா சொத்து' : 'Immovable') + '</span><span>' + shortIndian(c.immovable_assets) + '</span></div>';
+            assetsDd += '</div></details>';
+          }
+          html += '<div><dt>' + (isTa ? 'குடும்பச் சொத்துகள்' : 'Family Assets') + '</dt><dd>' + assetsDd + '</dd></div>';
+          html += '<div><dt>' + (isTa ? 'குடும்பப் பாக்கிகள்' : 'Family Liabilities') + '</dt><dd>' + shortIndian(c.liabilities) + '</dd></div>';
+          if (c.pan_given) html += '<div><dt>' + (isTa ? 'PAN தாக்கல்' : 'PAN Given') + '</dt><dd>' + (c.pan_given === 'Y' ? (isTa ? 'ஆம்' : 'Yes') : (isTa ? 'இல்லை' : 'No')) + '</dd></div>';
           if ('{{ year }}' !== '2026') {
             html += '<div><dt>' + (isTa ? 'தேர்தல் செலவு' : 'Election Expenditure') + '</dt><dd>' + shortIndian(c.election_expenditure) + '</dd></div>';
           }
@@ -363,6 +380,9 @@
             html += '<div><dt>' + (isTa ? 'கல்வி விவரங்கள்' : 'Education Details') + '</dt><dd>' + eduDetailDisplay + '</dd></div>';
           }
           if (c.criminal_cases_summary) html += '<div><dt>' + (isTa ? 'வழக்கு விவரம்' : 'Legal History') + '</dt><dd>' + c.criminal_cases_summary + '</dd></div>';
+          html += '<p class="family-note">' + (isTa
+            ? 'சொத்துகளும் பாக்கிகளும் வேட்பாளர் வாக்குமூலத்தில் அறிவித்த குடும்ப மொத்தம் (சுயம், துணைவர், சார்ந்தவர்கள்).'
+            : 'Assets and liabilities are the family total declared in the affidavit (self, spouse and dependents).') + '</p>';
           if (c.phone) html += '<div><dt>' + (isTa ? 'தொலைபேசி' : 'Phone') + '</dt><dd><a href="tel:' + c.phone + '">' + c.phone + '</a></dd></div>';
           if (c.email) html += '<div><dt>' + (isTa ? 'மின்னஞ்சல்' : 'Email') + '</dt><dd><a href="mailto:' + c.email + '">' + c.email + '</a></dd></div>';
           html += '</dl>';

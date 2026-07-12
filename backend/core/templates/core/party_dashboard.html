@@ -124,7 +124,7 @@
               <option value="10cr+" {% if selected_assets_range == "10cr+" %}selected{% endif %}>₹10 Cr+</option>
             </select>
           </label>
-          {% if sitting_mla or year == "2021" %}
+          {% if has_sitting %}
           <label>
             {% if current_language == "ta" %}தற்போதைய எம்.எல்.ஏ{% else %}Sitting MLA{% endif %}
             <select name="sitting_mla">
@@ -267,8 +267,8 @@
             <label>
               {% if current_language == "ta" %}வரிசைப்படுத்து{% else %}Sort by{% endif %}
               <select id="card-sort-select">
-                <option value="candidate_count" selected>{% if current_language == "ta" %}வேட்பாளர்கள்{% else %}Candidates{% endif %}</option>
-                <option value="party">{% if current_language == "ta" %}கட்சி{% else %}Party{% endif %}</option>
+                {% if year == "2026" %}<option value="seats" selected>{% if current_language == "ta" %}வென்ற தொகுதிகள்{% else %}Seats won{% endif %}</option>{% endif %}
+                <option value="candidate_count" {% if year != "2026" %}selected{% endif %}>{% if current_language == "ta" %}வேட்பாளர்கள்{% else %}Candidates{% endif %}</option>
                 {% if has_gender %}<option value="women_pct">{% if current_language == "ta" %}% பெண்{% else %}% Women{% endif %}</option>{% endif %}
                 {% if year != "2026" %}<option value="total_expenditure">{% if current_language == "ta" %}மொத்த தேர்தல் செலவு{% else %}Total election expenditure{% endif %}</option>{% endif %}
                 <option value="cases_pct">{% if current_language == "ta" %}குற்ற வழக்கு %{% else %}% w/ criminal cases{% endif %}</option>
@@ -288,7 +288,8 @@
           <thead>
             <tr>
               <th><button class="sort-link" type="button" data-sort="party">{% if current_language == "ta" %}கட்சி{% else %}Party{% endif %} <span class="sort-indicator">↕</span></button></th>
-              <th><button class="sort-link active" type="button" data-sort="candidate_count">{% if current_language == "ta" %}வேட்பாளர் எண்ணிக்கை{% else %}Candidates{% endif %} <span class="sort-indicator active">▼</span></button></th>
+              {% if year == "2026" %}<th><button class="sort-link active" type="button" data-sort="seats">{% if current_language == "ta" %}வென்ற தொகுதிகள்{% else %}Seats won{% endif %} <span class="sort-indicator active">▼</span></button></th>{% endif %}
+              <th><button class="sort-link {% if year != "2026" %}active{% endif %}" type="button" data-sort="candidate_count">{% if current_language == "ta" %}வேட்பாளர் எண்ணிக்கை{% else %}Candidates{% endif %} <span class="sort-indicator {% if year != "2026" %}active{% endif %}">{% if year != "2026" %}▼{% else %}↕{% endif %}</span></button></th>
               {% if has_gender %}<th><button class="sort-link" type="button" data-sort="women_pct">{% if current_language == "ta" %}% பெண்{% else %}% Women{% endif %} <span class="sort-indicator">↕</span></button></th>{% endif %}
               <th><button class="sort-link" type="button" data-sort="avg_cases">{% if current_language == "ta" %}சராசரி குற்ற வழக்குகள்{% else %}Avg criminal cases{% endif %} <span class="sort-indicator">↕</span></button></th>
               <th><button class="sort-link" type="button" data-sort="cases_pct">{% if current_language == "ta" %}குற்ற வழக்குகள் உள்ளவர்களின் விகிதம்{% else %}% w/ criminal cases{% endif %} <span class="sort-indicator">↕</span></button></th>
@@ -302,6 +303,7 @@
           <tbody>
             {% for party in party_stats %}
             <tr data-party="{{ party.party }}"
+                data-seats="{{ party.seats|default:0 }}"
                 data-candidate_count="{{ party.candidate_count }}"
                 data-women_pct="{{ party.women_pct|default:0 }}"
                 data-avg_cases="{{ party.avg_cases|default:0 }}"
@@ -331,6 +333,7 @@
                   {% endif %}
                 </div>
               </td>
+              {% if year == "2026" %}<td>{{ party.seats|indian }}</td>{% endif %}
               <td>{{ party.candidate_count|indian }}</td>
               {% if has_gender %}<td>{{ party.women_pct }}%</td>{% endif %}
               <td>{% if party.avg_cases is not None %}{{ party.avg_cases|indian }}{% else %}—{% endif %}</td>
@@ -356,6 +359,7 @@
           <a class="data-card data-card-link"
              href="/party/{{ party.party|urlencode }}/{% if base_query_no_party %}?{{ base_query_no_party }}{% endif %}"
              data-party="{{ party.party }}"
+             data-seats="{{ party.seats|default:0 }}"
              data-candidate_count="{{ party.candidate_count }}"
              data-women_pct="{{ party.women_pct|default:0 }}"
              data-avg_cases="{{ party.avg_cases|default:0 }}"
@@ -380,6 +384,12 @@
               {% endif %}
             </div>
             <dl class="data-card-body">
+              {% if year == "2026" %}
+              <div class="data-card-row">
+                <dt>{% if current_language == "ta" %}வென்ற தொகுதிகள்{% else %}Seats won{% endif %}</dt>
+                <dd>{{ party.seats|indian }}</dd>
+              </div>
+              {% endif %}
               <div class="data-card-row">
                 <dt>{% if current_language == "ta" %}வேட்பாளர்கள்{% else %}Candidates{% endif %}</dt>
                 <dd>{{ party.candidate_count|indian }}</dd>

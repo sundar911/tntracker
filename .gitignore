@@ -1,6 +1,5 @@
 .DS_Store
 .cursor/
-backend/core/static/core/candidate-photos/
 .env
 .env.local
 .env.*.local

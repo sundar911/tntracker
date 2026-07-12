@@ -738,12 +738,24 @@
           var displayEdu = isTa && c.education_ta ? c.education_ta : c.education;
           var html = '<h3 class="candidate-modal-name">' + displayName + '</h3>';
           html += '<p class="candidate-modal-party">' + displayParty + '</p>';
+          if (c.is_winner) {
+            html += '<p class="candidate-modal-winner">🏆 ' + (isTa ? '2026 தேர்தலில் வெற்றி' : 'Won the 2026 election') + '</p>';
+          }
           html += '<dl class="candidate-modal-dl">';
           if (c.age !== null) html += '<div><dt>' + (isTa ? 'வயது' : 'Age') + '</dt><dd>' + c.age + '</dd></div>';
           if (c.education) html += '<div><dt>' + (isTa ? 'கல்வி' : 'Education') + '</dt><dd>' + displayEdu + '</dd></div>';
           if (c.criminal_cases !== null) html += '<div><dt>' + (isTa ? 'குற்ற வழக்குகள்' : 'Criminal Cases') + '</dt><dd>' + c.criminal_cases + '</dd></div>';
-          html += '<div><dt>' + (isTa ? 'சொத்துகள்' : 'Assets') + '</dt><dd>' + shortIndian(c.assets) + '</dd></div>';
-          html += '<div><dt>' + (isTa ? 'பாக்கிகள்' : 'Liabilities') + '</dt><dd>' + shortIndian(c.liabilities) + '</dd></div>';
+          if (c.serious_ipc !== null && c.serious_ipc !== undefined) html += '<div><dt>' + (isTa ? 'கடுமையான IPC குற்றச்சாட்டுகள்' : 'Serious IPC Charges') + '</dt><dd>' + c.serious_ipc + '</dd></div>';
+          var assetsDd = shortIndian(c.assets);
+          if (c.assets !== null && (c.movable_assets != null || c.immovable_assets != null)) {
+            assetsDd = '<details class="assets-breakdown"><summary>' + shortIndian(c.assets) + '</summary><div class="assets-breakdown-rows">';
+            if (c.movable_assets != null) assetsDd += '<div><span>' + (isTa ? 'அசையும் சொத்து' : 'Movable') + '</span><span>' + shortIndian(c.movable_assets) + '</span></div>';
+            if (c.immovable_assets != null) assetsDd += '<div><span>' + (isTa ? 'அசையா சொத்து' : 'Immovable') + '</span><span>' + shortIndian(c.immovable_assets) + '</span></div>';
+            assetsDd += '</div></details>';
+          }
+          html += '<div><dt>' + (isTa ? 'குடும்பச் சொத்துகள்' : 'Family Assets') + '</dt><dd>' + assetsDd + '</dd></div>';
+          html += '<div><dt>' + (isTa ? 'குடும்பப் பாக்கிகள்' : 'Family Liabilities') + '</dt><dd>' + shortIndian(c.liabilities) + '</dd></div>';
+          if (c.pan_given) html += '<div><dt>' + (isTa ? 'PAN தாக்கல்' : 'PAN Given') + '</dt><dd>' + (c.pan_given === 'Y' ? (isTa ? 'ஆம்' : 'Yes') : (isTa ? 'இல்லை' : 'No')) + '</dd></div>';
           if ('{{ year }}' !== '2026') {
             html += '<div><dt>' + (isTa ? 'தேர்தல் செலவு' : 'Election Expenditure') + '</dt><dd>' + shortIndian(c.election_expenditure) + '</dd></div>';
           }
@@ -763,6 +775,9 @@
           if (c.phone) html += '<div><dt>' + (isTa ? 'தொலைபேசி' : 'Phone') + '</dt><dd><a href="tel:' + c.phone + '">' + c.phone + '</a></dd></div>';
           if (c.email) html += '<div><dt>' + (isTa ? 'மின்னஞ்சல்' : 'Email') + '</dt><dd><a href="mailto:' + c.email + '">' + c.email + '</a></dd></div>';
           html += '</dl>';
+          html += '<p class="family-note">' + (isTa
+            ? 'சொத்துகளும் பாக்கிகளும் வேட்பாளர் வாக்குமூலத்தில் அறிவித்த குடும்ப மொத்தம் (சுயம், துணைவர், சார்ந்தவர்கள்).'
+            : 'Assets and liabilities are the family total declared in the affidavit (self, spouse and dependents).') + '</p>';
           var socialHtml = '';
           if (c.facebook) socialHtml += '<a href="' + c.facebook + '" target="_blank" rel="noopener" class="social-icon" title="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>';
           if (c.twitter) socialHtml += '<a href="' + c.twitter + '" target="_blank" rel="noopener" class="social-icon" title="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>';
